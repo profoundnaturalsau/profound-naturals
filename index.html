@@ -992,10 +992,12 @@
 
   /* ── RESPONSIVE ── */
   @media(max-width:900px){
-    nav { padding:0 20px; }
+    nav { padding:0 20px; height:60px; }
+    .nav-logo img { height:36px; max-width:180px; }
     .nav-links { display:none; }
     .nav-search-wrap { display:none; }
     .nav-hamburger { display:flex; }
+    .announcement { font-size:.65rem; letter-spacing:.1em; padding:10px 16px; }
     .hero { grid-template-columns:1fr; }
     .hero-visual { min-height:320px; }
     .hero-text { padding:40px 24px 32px; align-items:stretch; }
@@ -1908,18 +1910,15 @@ function renderProducts() {
   allProductsOrder = shuffled(products);
   const initialCount = window.innerWidth <= 900 ? 4 : 5;
 
-  // On mobile: ensure at most 1 badged product in the initial set
-  let initial;
-  if (window.innerWidth <= 900) {
-    const badged   = allProductsOrder.filter(p => p.badge);
-    const unbadged = allProductsOrder.filter(p => !p.badge);
-    // Pick at most 1 badged, fill the rest with unbadged
-    const oneBadged = badged.slice(0, 1);
-    const fillCount = initialCount - oneBadged.length;
-    initial = shuffled([...oneBadged, ...unbadged.slice(0, fillCount)]);
-  } else {
-    initial = allProductsOrder.slice(0, initialCount);
-  }
+  // Ensure at most 1 Bestseller and 1 Rare in the initial set
+  const bestsellers = allProductsOrder.filter(p => p.badge === 'Bestseller');
+  const rares       = allProductsOrder.filter(p => p.badge === 'Rare');
+  const unbadged    = allProductsOrder.filter(p => !p.badge);
+  const oneBest     = bestsellers.slice(0, 1);
+  const oneRare     = rares.slice(0, 1);
+  const badged      = [...oneBest, ...oneRare];
+  const fillCount   = initialCount - badged.length;
+  const initial     = shuffled([...badged, ...unbadged.slice(0, fillCount)]);
 
   grid.innerHTML = initial.map((p, i) => productCardHTML(p, i)).join('');
 }

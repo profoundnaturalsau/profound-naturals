@@ -51,6 +51,14 @@
   *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
   html { scroll-behavior:smooth; }
 
+  /* Scrollbar styling — Chrome, Edge, Safari */
+  ::-webkit-scrollbar { width:6px; height:6px; }
+  ::-webkit-scrollbar-track { background:var(--bg); }
+  ::-webkit-scrollbar-thumb { background:var(--green); border-radius:3px; }
+  ::-webkit-scrollbar-thumb:hover { background:var(--green-lt); }
+  /* Firefox */
+  * { scrollbar-width:thin; scrollbar-color:var(--green) var(--bg); }
+
   /* Green tap highlight + no blue outline on all interactive elements */
   a, button, [onclick], [role="button"],
   .product-card, .hero-product-card, .badge-modal-card,

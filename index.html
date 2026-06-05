@@ -113,7 +113,6 @@
     display:flex; align-items:center; text-decoration:none;
   }
   .nav-logo img { height:68px; width:auto; display:block; }
-  .mobile-menu-logo img { height:68px; width:auto; display:block; }
 
   .nav-links { display:flex; gap:36px; list-style:none; }
   .nav-links a {
@@ -1118,6 +1117,7 @@
     transform:translateX(-100%);
     transition:transform .38s cubic-bezier(.4,0,.2,1);
     box-shadow:20px 0 80px rgba(0,0,0,.5);
+    overflow:hidden;
   }
   .mobile-menu.open { transform:translateX(0); }
 
@@ -1129,7 +1129,7 @@
   .mobile-menu-logo {
     display:flex; align-items:center; text-decoration:none;
   }
-  .mobile-menu-logo img { height:40px; width:auto; display:block; }
+  .mobile-menu-logo img { height:44px; width:auto; max-width:220px; display:block; }
   .mobile-menu-close {
     background:none; border:none; font-size:1.2rem;
     cursor:pointer; color:var(--white-dim); transition:color .2s;

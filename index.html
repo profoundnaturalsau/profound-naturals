@@ -2138,21 +2138,44 @@ function closeNotifyModalDirect() {
     document.body.classList.remove('modal-open');
   }
 }
-function submitNotify() {
+async function submitNotify() {
   const email = document.getElementById('notifyEmail').value.trim();
   if (!email || !email.includes('@')) {
     document.getElementById('notifyEmail').focus();
     return;
   }
-  document.getElementById('notifyConfirm').classList.add('show');
-  document.getElementById('notifyEmail').style.display = 'none';
-  document.querySelector('.notify-modal-submit').style.display = 'none';
-  setTimeout(closeNotifyModalDirect, 2800);
-  // Reset for next open
-  setTimeout(() => {
-    document.getElementById('notifyEmail').style.display = '';
-    document.querySelector('.notify-modal-submit').style.display = '';
-  }, 3000);
+  const btn = document.querySelector('.notify-modal-submit');
+  const productName = document.getElementById('notifyTitle').textContent;
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+  try {
+    const res = await fetch('/.netlify/functions/notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, productName }),
+    });
+    if (res.ok) {
+      document.getElementById('notifyConfirm').classList.add('show');
+      document.getElementById('notifyEmail').style.display = 'none';
+      btn.style.display = 'none';
+      setTimeout(closeNotifyModalDirect, 2800);
+      setTimeout(() => {
+        document.getElementById('notifyEmail').style.display = '';
+        document.getElementById('notifyEmail').value = '';
+        btn.style.display = '';
+        btn.textContent = 'Notify Me When Available';
+        btn.disabled = false;
+        document.getElementById('notifyConfirm').classList.remove('show');
+      }, 3000);
+    } else {
+      throw new Error('Server error');
+    }
+  } catch {
+    btn.textContent = 'Try again';
+    btn.style.background = '#6b2d2d';
+    btn.disabled = false;
+    setTimeout(() => { btn.textContent = 'Notify Me When Available'; btn.style.background = ''; }, 3000);
+  }
 }
 
 
@@ -2191,15 +2214,63 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-function checkout() {
+async function checkout() {
+  if (!cart.length) return;
   showToast('Connecting to secure checkout...');
-  setTimeout(() => alert('Demo mode - in your live store this redirects to Stripe Checkout with Afterpay, Klarna & Zip enabled.'), 800);
+  try {
+    const items = cart.map(item => ({
+      name: item.name,
+      category: item.category,
+      price: item.price,
+      qty: item.qty,
+      variant: item.variant || null,
+    }));
+    const res = await fetch('/.netlify/functions/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items }),
+    });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      throw new Error(data.error || 'Checkout failed');
+    }
+  } catch (err) {
+    showToast('Checkout unavailable — please try again.');
+    console.error('Checkout error:', err);
+  }
 }
 
-function subscribeNewsletter(btn) {
-  btn.textContent = 'Subscribed ✓';
-  btn.style.background = '#2d6b40';
-  setTimeout(() => { btn.textContent = 'Subscribe'; btn.style.background = ''; }, 3000);
+async function subscribeNewsletter(btn) {
+  const input = btn.previousElementSibling;
+  const email = input ? input.value.trim() : '';
+  if (!email || !email.includes('@')) {
+    if (input) input.focus();
+    return;
+  }
+  btn.textContent = 'Subscribing...';
+  btn.disabled = true;
+  try {
+    const res = await fetch('/.netlify/functions/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    if (res.ok) {
+      btn.textContent = 'Subscribed ✓';
+      btn.style.background = '#2d6b40';
+      if (input) input.value = '';
+      setTimeout(() => { btn.textContent = 'Subscribe'; btn.style.background = ''; btn.disabled = false; }, 4000);
+    } else {
+      throw new Error('Server error');
+    }
+  } catch {
+    btn.textContent = 'Try again';
+    btn.style.background = '#6b2d2d';
+    btn.disabled = false;
+    setTimeout(() => { btn.textContent = 'Subscribe'; btn.style.background = ''; }, 3000);
+  }
 }
 
 renderProducts();

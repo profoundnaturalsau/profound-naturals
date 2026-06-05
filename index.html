@@ -954,8 +954,62 @@
   .modal-category { font-size:.64rem; letter-spacing:.2em; text-transform:uppercase; color:var(--green-lt); margin-bottom:10px; }
   .modal-name { font-family:var(--serif); font-size:1.8rem; font-weight:400; margin-bottom:16px; line-height:1.2; color:var(--white); }
   .modal-desc { font-size:.85rem; color:var(--white-dim); line-height:1.8; margin-bottom:24px; font-weight:300; }
-  .modal-ingredients { font-size:.72rem; color:var(--white-dim); line-height:1.7; margin-bottom:28px; padding:16px; background:var(--green-pale); border-left:2px solid var(--green); }
-  .modal-ingredients strong { display:block; font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--green-lt); margin-bottom:6px; font-weight:500; }
+  .modal-ingredients { font-size:.62rem; color:var(--white-dim); line-height:1.7; margin-bottom:28px; padding:16px; background:var(--green-pale); border-left:2px solid var(--green); opacity:.75; }
+  .modal-ingredients strong { display:block; font-size:.58rem; letter-spacing:.12em; text-transform:uppercase; color:var(--green-lt); margin-bottom:6px; font-weight:500; }
+
+  /* ── POLICY MODAL ── */
+  .policy-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,.82);
+    z-index:1000; display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none; transition:opacity .3s;
+    backdrop-filter:blur(10px);
+  }
+  .policy-overlay.open { opacity:1; pointer-events:all; }
+  .policy-modal {
+    background:var(--surface); border:1px solid var(--border);
+    width:min(720px, 94vw); max-height:88vh;
+    display:flex; flex-direction:column;
+    transform:scale(.95); transition:transform .3s;
+    box-shadow:0 32px 100px rgba(0,0,0,.8);
+  }
+  .policy-overlay.open .policy-modal { transform:scale(1); }
+  .policy-modal-header {
+    padding:28px 32px 20px;
+    border-bottom:1px solid var(--border-sub);
+    display:flex; align-items:center; justify-content:space-between;
+    flex-shrink:0;
+  }
+  .policy-modal-title {
+    font-family:var(--serif); font-size:1.5rem; font-weight:300; color:var(--white);
+  }
+  .policy-modal-title small {
+    display:block; font-family:var(--sans); font-size:.6rem;
+    letter-spacing:.2em; text-transform:uppercase;
+    color:var(--white-dim); margin-bottom:4px;
+  }
+  .policy-modal-close {
+    background:none; border:none; font-size:1.2rem;
+    cursor:pointer; color:var(--white-dim); transition:color .2s;
+  }
+  .policy-modal-close:hover { color:var(--white); }
+  .policy-modal-body {
+    padding:28px 32px; overflow-y:auto;
+    font-family:var(--sans); font-size:.85rem;
+    color:var(--white-dim); line-height:1.8;
+  }
+  .policy-modal-body h3 {
+    font-family:var(--serif); font-size:1.1rem; font-weight:400;
+    color:var(--white); margin:24px 0 8px;
+  }
+  .policy-modal-body h3:first-child { margin-top:0; }
+  .policy-modal-body p { margin-bottom:12px; }
+  .policy-modal-body ul { padding-left:20px; margin-bottom:12px; }
+  .policy-modal-body ul li { margin-bottom:6px; }
+  .policy-modal-body strong { color:var(--white); }
+  .policy-modal-body .policy-note {
+    background:var(--surface-2); border-left:2px solid var(--green);
+    padding:12px 16px; margin:16px 0; font-size:.8rem;
+  }
   .modal-price { font-family:var(--sans); font-size:1.8rem; font-weight:300; letter-spacing:.08em; font-variant-numeric:tabular-nums; margin-bottom:6px; color:var(--white); }
   .modal-afterpay { font-size:.7rem; color:var(--white-dim); margin-bottom:20px; }
   .modal-add-btn { background:var(--green); color:var(--white); border:none; padding:16px; font-family:var(--sans); font-size:.74rem; letter-spacing:.15em; text-transform:uppercase; cursor:pointer; transition:background .2s; margin-top:auto; }
@@ -1671,11 +1725,11 @@
     <div class="footer-col">
       <h4>Help</h4>
       <ul>
-        <li><a href="#">Shipping &amp; Returns</a></li>
-        <li><a href="#">FAQ</a></li>
-        <li><a href="#">Contact Us</a></li>
-        <li><a href="#">Afterpay FAQ</a></li>
-        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#" onclick="event.preventDefault(); openPolicyModal('returns')">Shipping &amp; Returns</a></li>
+        <li><a href="#" onclick="event.preventDefault(); openPolicyModal('returns')">FAQ</a></li>
+        <li><a href="#contact">Contact Us</a></li>
+        <li><a href="#" onclick="event.preventDefault(); openPolicyModal('returns')">Afterpay FAQ</a></li>
+        <li><a href="#" onclick="event.preventDefault(); openPolicyModal('returns')">Privacy Policy</a></li>
       </ul>
     </div>
   </div>
@@ -1686,6 +1740,41 @@
     </div>
   </div>
 </footer>
+
+<!-- RETURNS POLICY MODAL -->
+<div class="policy-overlay" id="returnsOverlay" onclick="closePolicyModal(event,'returns')">
+  <div class="policy-modal" id="returnsModal">
+    <div class="policy-modal-header">
+      <div class="policy-modal-title">
+        <small>Profound Naturals</small>
+        Returns & Refund Policy
+      </div>
+      <button class="policy-modal-close" onclick="closePolicyModalDirect('returns')">✕</button>
+    </div>
+    <div class="policy-modal-body">
+      <p>Profound Naturals hand-crafts every product with care and attention. As natural, small-batch items, slight variations in colour, texture or appearance may occur between batches — these are not defects but a hallmark of genuine handcrafted goods.</p>
+      <p>All products are made and sold in accordance with Australian Consumer Law.</p>
+
+      <h3>1. Faulty or Damaged Items</h3>
+      <p>If a product arrives with a major manufacturing defect or is damaged in transit, the customer is entitled to a full refund or replacement at their choice. For minor defects, Profound Naturals will offer a replacement or refund at its discretion. Every product is stood behind fully.</p>
+
+      <h3>2. Change of Mind</h3>
+      <p>Due to the personal and hygiene-sensitive nature of Profound Naturals products, returns or refunds for change of mind cannot be accepted. This includes personal preferences relating to scent, texture or appearance.</p>
+
+      <h3>3. Storage & Exclusions</h3>
+      <p>Natural ingredients require proper care. Products must be stored in a cool, dry place away from direct sunlight and heat. This policy does not cover damage resulting from improper storage, misuse, or general wear and tear following delivery.</p>
+      <div class="policy-note">Profound Naturals is not liable for adverse physical reactions — including skin irritation, allergic responses or sensitivities — to naturally occurring botanical concentrates. A patch test is strongly recommended prior to first use, particularly for those with known sensitivities.</div>
+
+      <h3>4. How to Report a Fault</h3>
+      <p>To lodge a claim, please contact Profound Naturals within 7 days of delivery:</p>
+      <ul>
+        <li>Email <strong>hello@profoundnaturals.com.au</strong> with the order number and clear photos of the defect</li>
+        <li>Once verified, return instructions will be provided and all return shipping costs covered</li>
+        <li>Replacements are dispatched promptly, subject to standard Australia Post delivery timeframes</li>
+      </ul>
+    </div>
+  </div>
+</div>
 
 <!-- CART OVERLAY + DRAWER -->
 <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
@@ -1842,33 +1931,34 @@ function openInBrowser() {
 
 const products = [
   // ── Botanical Perfumes
-  { id:1,  name:"Carrot Cake",      category:"Botanical Perfume", emoji:"🌾", bg:"#2a1e10", price:108.96, size:"50ml", badge:null,        desc:"A warm, gourmand botanical perfume - rich and comforting with spiced carrot, sweet vanilla and earthy undertones.", ingredients:"Carrot Seed Extract, Vanilla Absolute, Warm Spice Blend, Cedarwood, Jojoba Carrier" },
-  { id:2,  name:"Velvet Forest",    category:"Botanical Perfume", emoji:"🌲", bg:"#0e1f12", price:79.80,  size:"50ml", badge:null,        desc:"A deep, resinous forest accord - mossy greens, aged timber and dark amber entwined in pure botanical spirit.", ingredients:"Oakmoss Absolute, Vetiver, Atlas Cedarwood, Benzoin Resin, Black Spruce" },
-  { id:3,  name:"Jazz Lounge",      category:"Botanical Perfume", emoji:"🎷", bg:"#1a1020", price:88.88,  size:"50ml", badge:"Bestseller",        desc:"Smoky, sensual and sophisticated - a late-night botanical blend of tobacco flower, dark oud and smooth sandalwood.", ingredients:"Tobacco Absolute, Oud Resin, Sandalwood, Patchouli, Benzoin" },
+  { id:1,  name:"Carrot Cake",      category:"Botanical Perfume", emoji:"🌾", bg:"#2a1e10", price:108.96, size:"50ml", badge:null,        desc:"A sweetly spiced opening of cinnamon bark and nutmeg sets the tone from the first breath, lingering through every stage of wear. Osmanthus and jasmine bring a velvety, gourmand softness to the heart while creamy benzoin, vanilla oleoresin and vanilla essential oil wrap everything in a rich, layered warmth. Sweet without being sugary, floral without being light - this is comfort in a bottle.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Organic Benzoin Resin (Styrax benzoin), Organic Vanilla Oleoresin (Vanilla planifolia), Organic Vanilla Essential Oil (Vanilla planifolia), Organic Jasmine Absolute (Jasminum grandiflorum), Organic Osmanthus Oil (Osmanthus fragrans), Organic Cinnamon Bark Oil (Cinnamomum zeylanicum), Organic Nutmeg Oil (Myristica fragrans)" },
+  { id:2,  name:"Velvet Forest",    category:"Botanical Perfume", emoji:"🌲", bg:"#0e1f12", price:79.80,  size:"50ml", badge:null,        desc:"Mediterranean cypress opens with a cool, green freshness before Australian native blue cypress deepens the accord with smoke and ancient earth. Baltic amber brings a warm, honeyed resin to the heart while creamy amyris sandalwood softens the base. Ambrette lingers as a velvety, pear-kissed musk - making Velvet Forest as close to living woodland as a bottle can hold.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Organic Baltic Amber (Pinus succinifera), Organic Cypress (Cupressus sempervirens), Organic Blue Cypress Oil (Callitris intratropica), Organic Sandalwood (Amyris balsamifera), Organic Ambrette Oil (Abelmoschus moschatus)" },
+  { id:3,  name:"Jazz Lounge",      category:"Botanical Perfume", emoji:"🎷", bg:"#1a1020", price:88.88,  size:"50ml", badge:"Bestseller", desc:"A brooding, resinous accord where galbanum opens with wild green sharpness before davana weaves through the heart, bringing a boozy, fruity warmth with an animalic edge. Australian native blue cypress adds smoke and ancient wood, while labdanum and amber draw it to a dark, leathery close. Bold, sensual and completely unforgettable.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Davana, Blue Cypress (Australian Native - Callitris intratropica), Galbanum, Labdanum, Amber" },
   { id:4,  name:"Floral Fantasy",   category:"Botanical Perfume", emoji:"💐", bg:"#2a1828", price:98.00,  size:"50ml", badge:null,        desc:"A lush bouquet of living botanicals - neroli, ylang ylang and tuberose dancing over a soft musky base.", ingredients:"Neroli Absolute, Ylang Ylang, Tuberose, Rose Otto, White Musk" },
-  { id:5,  name:"Pr-nfr",           category:"Botanical Perfume", emoji:"𓂀", bg:"#1c1a10", price:99.95,  size:"50ml", badge:null,        desc:"Pine Amber - an ancient-inspired accord of wild pine resin, golden amber and warm frankincense, grounded in sacred botanical tradition.", ingredients:"Pine Resin Absolute, Amber Accord, Frankincense CO2, Cedarwood, Myrrh" },
-  { id:6,  name:"Pr-nfrt",          category:"Botanical Perfume", emoji:"𓁿", bg:"#20101a", price:118.76, size:"50ml", badge:"Bestseller",        desc:"Floral Amber - a radiant, feminine bloom of rose, jasmine and lotus over a warm amber and sandalwood base. Named for beauty itself.", ingredients:"Rose Absolute, Jasmine Sambac, Blue Lotus, Amber Accord, Sandalwood" },
+  { id:5,  name:"Pr-nfr",           category:"Botanical Perfume", emoji:"𓂀", bg:"#1c1a10", price:99.95,  size:"50ml", badge:null,        desc:"Inspired by the sacred embalming rooms of ancient Egypt, Pr-Nfr opens with an instant, clean forest freshness of black spruce before myrrh weaves a smoky, ceremonial earthiness into the heart - the same sacred resin used in ancient ritual and preservation. Warm Baltic amber and rich vanilla oleoresin settle into the base, drawing it to a deeply resinous, honeyed close. Simple in composition, profound in character - Pr-Nfr is a timeless, skin-warming fragrance that settles beautifully and lasts.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Organic Baltic Amber (Pinus succinifera), Organic Vanilla Oleoresin (Vanilla planifolia), Organic Myrrh EO, Organic Black Spruce Oil (Picea mariana)" },
+  { id:6,  name:"Pr-nfrt",          category:"Botanical Perfume", emoji:"𓁿", bg:"#20101a", price:118.76, size:"50ml", badge:"Bestseller", desc:"Floral Amber - a radiant, feminine bloom of rose, jasmine and lotus over a warm amber and sandalwood base. Named for beauty itself.", ingredients:"Rose Absolute, Jasmine Sambac, Blue Lotus, Amber Accord, Sandalwood" },
   // ── Natural Soaps
-  { id:7,  name:"Hemp Soap - Lavender",              category:"Natural Soap", emoji:"💜", bg:"#1a1428", price:9.00,  size:null, badge:null, desc:"A gentle hemp-based soap bar infused with pure lavender essential oil - soothing, calming and kind to all skin types.", ingredients:"Hemp Seed Oil, Lavender Essential Oil, Coconut Oil, Shea Butter, Glycerin" },
-  { id:8,  name:"Hemp Soap - Eucalyptus",            category:"Natural Soap", emoji:"🌿", bg:"#101e14", price:8.00,  size:null, badge:null, desc:"A refreshing hemp soap with invigorating eucalyptus - cleansing, clarifying and perfect for an energising daily ritual.", ingredients:"Hemp Seed Oil, Eucalyptus Essential Oil, Coconut Oil, Aloe Vera, Glycerin" },
-  { id:9,  name:"Blk Soap - Daisy & Daffodil",      category:"Natural Soap", emoji:"🖤", bg:"#141414", price:14.00, size:null, badge:null, desc:"Crafted with authentic African black soap from Ghana, this bar combines traditional deep-cleansing power with activated charcoal and bright floral botanicals - a light, cheerful scent of daisy and daffodil.", ingredients:"African Black Soap (Ghana), Activated Charcoal, Daisy Extract, Daffodil Absolute, Coconut Oil, Shea Butter" },
-  { id:10, name:"Blk Soap - Woody Eucalyptus",       category:"Natural Soap", emoji:"🖤", bg:"#0e160e", price:14.00, size:null, badge:null, desc:"Crafted with authentic African black soap from Ghana, this bar pairs traditional deep-cleansing properties with activated charcoal and a grounding woody eucalyptus blend - purifying, earthy and forest-fresh.", ingredients:"African Black Soap (Ghana), Activated Charcoal, Eucalyptus Essential Oil, Cedarwood, Vetiver, Coconut Oil" },
+  { id:7,  name:"Hemp Soap - Lavender",         category:"Natural Soap", emoji:"💜", bg:"#1a1428", price:9.00,  size:null, badge:null, desc:"A gentle, conditioning soap bar crafted on a rich base of extra virgin olive oil, coconut oil and hemp seed oil. Lavandin Grosso - a bold, intense variety of lavender known for its lasting clean scent - fills every lather with a fresh, herbaceous calm. Sweet almond oil and castor oil add a creamy, skin-loving richness that soothes as it cleanses. Simple, pure and deeply satisfying.", ingredients:"Olive Oil (Grade A Extra Virgin), Sustainable Palm Oil, Coconut Oil, Safflower Oil, Glycerine (Vegetable Origin), Hemp Seed Oil (Unrefined), Purified Water, Sodium Hydroxide (Saponifying Agent), Sorbitol, Propylene Glycol (Vegetable Glycerine Derived), Sorbitan Oleate (Emulsifier), Oat Protein, Ricinus communis (Castor Oil), Prunus Amygdalus Dulcis (Organic Sweet Almond Oil), Lavandula Hybrida B (Lavandin Grosso) Essential Oil" },
+  { id:8,  name:"Hemp Soap - Eucalyptus",       category:"Natural Soap", emoji:"🌿", bg:"#101e14", price:9.00,  size:null, badge:null, desc:"A deeply cleansing botanical soap bar built on a nourishing base of extra virgin olive oil, coconut oil and hemp seed oil. Two varieties of eucalyptus - the sharp, clarifying Kochii and the softer, more rounded Radiata - create a full-spectrum eucalyptus experience that awakens the senses and leaves skin feeling clean and refreshed. Enriched with apricot kernel oil, oat protein and Abyssinian oil for a gentle, conditioning lather that never strips.", ingredients:"Olive Oil (Grade A Extra Virgin), Sustainable Palm Oil, Coconut Oil, Safflower Oil, Glycerine (Vegetable Origin), Hemp Seed Oil (Unrefined), Purified Water, Sodium Hydroxide (Saponifying Agent), Sorbitol, Propylene Glycol (Vegetable Glycerine Derived), Sorbitan Oleate (Emulsifier), Oat Protein, Crambe Abyssinica (Abyssinian Oil Refined), Prunus Armeniaca (Apricot Kernel Oil), Eucalyptus Kochii EO, Eucalyptus Radiata EO" },
+  { id:9,  name:"Blk Soap - Daisy & Daffodil",  category:"Natural Soap", emoji:"🌼", bg:"#141414", price:14.00, size:null, badge:null, desc:"Crafted with authentic African black soap from Ghana, this bar combines traditional deep-cleansing power with activated charcoal and bright floral botanicals - a light, cheerful scent of daisy and daffodil.", ingredients:"African Black Soap (Ghana), Activated Charcoal, Daisy Extract, Daffodil Absolute, Coconut Oil, Shea Butter" },
+  { id:10, name:"Blk Soap - Woody Eucalyptus",  category:"Natural Soap", emoji:"🖤", bg:"#0e160e", price:14.00, size:null, badge:null, desc:"Crafted with authentic African black soap from Ghana, this bar pairs traditional deep-cleansing properties with activated charcoal and a grounding woody eucalyptus blend - purifying, earthy and forest-fresh.", ingredients:"African Black Soap (Ghana), Activated Charcoal, Eucalyptus Essential Oil, Cedarwood, Vetiver, Coconut Oil" },
+  { id:25, name:"Hemp Soap - Peppermint",       category:"Natural Soap", emoji:"🌱", bg:"#0a1e14", price:9.00,  size:null, badge:null, desc:"A refreshing, skin-loving soap bar built on a nourishing base of extra virgin olive oil, coconut oil and hemp seed oil. Peppermint essential oil delivers a powerful, long-lasting coolness that awakens the senses while golden jojoba and sweet almond oil leave skin soft and conditioned. Pure, simple and invigorating.\n\n⚠️ Not recommended for use on sensitive areas - the cooling effect is powerful and long-lasting.", ingredients:"Olive Oil (Grade A Extra Virgin), Sustainable Palm Oil, Coconut Oil, Safflower Oil, Glycerine (Vegetable Origin), Hemp Seed Oil (Unrefined), Purified Water, Sodium Hydroxide (Saponifying Agent), Sorbitol, Propylene Glycol (Vegetable Glycerine Derived), Sorbitan Oleate (Emulsifier), Oat Protein, Simmondsia chinensis (Golden Jojoba Oil), Prunus Amygdalus Dulcis (Organic Sweet Almond Oil), Mentha Arvensis (Peppermint EO)" },
   // ── Jewellery
   { id:11, name:"Aroma Necklaces", category:"Jewellery", emoji:"📿", bg:"#1e1c14", price:18.00, size:null, badge:"Bestseller", desc:"A hand-crafted diffuser necklace with a lava stone pendant - add a drop of your favourite essential oil and carry your scent all day.", ingredients:"Lava Stone, Essential Oil Compatible, Adjustable Chain, Hypoallergenic", variants:["Gold","Silver","Rose Gold"] },
   // ── Essential Oils
   { id:12, name:"Virginian Cedarwood",    category:"100% Pure Essential Oil", emoji:"🌲", bg:"#1a1a0e", price:14.95, size:"10ml", badge:null, desc:"A warm, woody essential oil steam-distilled from Virginian cedarwood - grounding and calming with a soft, dry timber scent.", ingredients:"Cedrus Virginiana (100% Pure Essential Oil)" },
   { id:13, name:"Himalayan Cedarwood",    category:"100% Pure Essential Oil", emoji:"🏔️", bg:"#141c1a", price:9.95,  size:"10ml", badge:null, desc:"A rich, balsamic cedarwood steam-distilled from the Himalayan region - deeper and more resinous than Virginian cedarwood, with a warm, woody sweetness.", ingredients:"Cedrus Deodara (100% Pure Essential Oil)" },
-  { id:14, name:"Lavandin Grosso",        category:"100% Pure Essential Oil", emoji:"💜", bg:"#1a1428", price:11.95, size:"10ml", badge:null, desc:"A robust lavender hybrid with a deeper, more camphoraceous scent than true lavender - perfect for diffusing and relaxation blends.", ingredients:"Lavandula x Intermedia (100% Pure Essential Oil)" },
+  { id:14, name:"Lavandin Grosso",        category:"100% Pure Essential Oil", emoji:"💜", bg:"#1a1428", price:11.95, size:"10ml", badge:null, desc:"A robust lavender hybrid with a deeper, more intense scent than true lavender - perfect for diffusing and relaxation blends.", ingredients:"Lavandula x Intermedia (100% Pure Essential Oil)" },
   { id:15, name:"Aussie Mint",            category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1e14", price:11.95, size:"10ml", badge:null, desc:"A bright, invigorating mint oil sourced from Australian-grown plants - crisp, cooling and energising with a clean fresh finish.", ingredients:"Mentha Piperita (100% Pure Essential Oil)" },
-  { id:16, name:"Jasmine",               category:"100% Pure Absolute Oil", emoji:"🌸", bg:"#2a1a20", price:59.95, size:"10ml", badge:"Rare", inStock:false, desc:"One of nature's most prized florals - a rich, heady jasmine absolute with an intoxicating sweetness that lingers beautifully on the skin.", ingredients:"Jasminum Grandiflorum (100% Pure Absolute)" },
+  { id:16, name:"Jasmine",               category:"100% Pure Absolute Oil",  emoji:"🌸", bg:"#2a1a20", price:59.95, size:"10ml", badge:"Rare", inStock:false, desc:"One of nature's most prized florals - a rich, heady jasmine absolute with an intoxicating sweetness that lingers beautifully on the skin.", ingredients:"Jasminum Grandiflorum (100% Pure Absolute)" },
   { id:17, name:"Bergamot",              category:"100% Pure Essential Oil", emoji:"🍋", bg:"#1a200e", price:16.95, size:"10ml", badge:null, desc:"A bright, citrusy-floral oil cold-pressed from Italian bergamot rind - uplifting, balancing and a classic base note in fine perfumery.", ingredients:"Citrus Bergamia (100% Pure Essential Oil)" },
   { id:18, name:"Eucalyptus Blue Gum",   category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1c16", price:9.95,  size:"10ml", badge:"Bestseller", desc:"The classic Australian eucalyptus - sharp, camphorous and powerfully clarifying. Ideal for diffusing and respiratory support blends.", ingredients:"Eucalyptus Globulus (100% Pure Essential Oil)" },
   { id:19, name:"Eucalyptus Radiata",    category:"100% Pure Essential Oil", emoji:"🌿", bg:"#101e18", price:11.95, size:"10ml", badge:null, desc:"A softer, more refined eucalyptus with a lighter, crisper aroma than Blue Gum - gentle enough for everyday use and skin blends.", ingredients:"Eucalyptus Radiata (100% Pure Essential Oil)" },
   { id:20, name:"Eucalyptus Kochii",     category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1a12", price:11.95, size:"10ml", badge:null, desc:"A rare Western Australian eucalyptus with an exceptionally high cineole content - clean, medicinal and beautifully pure.", ingredients:"Eucalyptus Kochii (100% Pure Essential Oil)" },
   { id:21, name:"Blue Tansy",            category:"100% Pure Essential Oil", emoji:"💙", bg:"#0e1020", price:44.95, size:"10ml", badge:"Rare", desc:"A stunning deep blue oil steam-distilled from Moroccan blue tansy flowers - soothing, anti-inflammatory and deeply calming with a sweet, herbaceous aroma.", ingredients:"Tanacetum Annuum (100% Pure Essential Oil)" },
   { id:22, name:"Tea Tree",              category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1c0e", price:9.95,  size:"10ml", badge:null, desc:"Pure Australian tea tree oil - the gold standard in natural antiseptic and cleansing. Sharp, medicinal and an essential in every home.", ingredients:"Melaleuca Alternifolia (100% Pure Essential Oil)" },
-  { id:23, name:"Sandalwood",       category:"100% Pure Essential Oil", emoji:"🪵", bg:"#1e140a", price:36.00, size:"10ml", badge:"Rare", desc:"A deeply precious and sacred oil steam-distilled from the heartwood of Indian sandalwood - rich, creamy and woody with a warm, sweet softness that lingers on the skin for hours.", ingredients:"Santalum Album (100% Pure Essential Oil)" },
-  { id:24, name:"Baltic Amber",     category:"100% Pure Essential Oil", emoji:"🟡", bg:"#1c1508", price:49.95, size:"10ml", badge:"Rare", desc:"An extraordinary oil extracted from genuine Baltic amber — fossilised tree resin between 40 and 70 million years old. Warm, earthy and resinous with subtle woody and smoky undertones. One of the rarest ingredients in botanical perfumery.", ingredients:"Baltic Amber (Pinus succinifera) Extract, 40–70 Million Year Old Fossilised Resin" },
+  { id:23, name:"Sandalwood",            category:"100% Pure Essential Oil", emoji:"🪵", bg:"#1e140a", price:36.00, size:"10ml", badge:"Rare", desc:"A deeply precious and sacred oil steam-distilled from the heartwood of Indian sandalwood - rich, creamy and woody with a warm, sweet softness that lingers on the skin for hours.", ingredients:"Santalum Album (100% Pure Essential Oil)" },
+  { id:24, name:"Baltic Amber",          category:"100% Pure Essential Oil", emoji:"🟡", bg:"#1c1508", price:49.95, size:"10ml", badge:"Rare", desc:"An extraordinary oil extracted from genuine Baltic amber - fossilised tree resin between 40 and 70 million years old. Warm, earthy and resinous with subtle woody and smoky undertones. One of the rarest ingredients in botanical perfumery.", ingredients:"Baltic Amber (Pinus succinifera) Extract, 40-70 Million Year Old Fossilised Resin" },
 ];
 
 let cart = [];
@@ -2051,7 +2141,28 @@ function clearSearch() {
   handleSearch('');
 }
 
-// ── COLLECTION MODALS (Fragrance & Soaps) ──
+// ── POLICY MODALS ──
+function openPolicyModal(type) {
+  const overlay = document.getElementById(type + 'Overlay');
+  if (!overlay) return;
+  requestAnimationFrame(() => {
+    overlay.classList.add('open');
+    document.body.classList.add('modal-open');
+  });
+}
+
+function closePolicyModal(e, type) {
+  const overlay = document.getElementById(type + 'Overlay');
+  if (e.target === overlay) closePolicyModalDirect(type);
+}
+
+function closePolicyModalDirect(type) {
+  const overlay = document.getElementById(type + 'Overlay');
+  if (overlay) overlay.classList.remove('open');
+  if (!document.querySelector('.modal-overlay.open, .notify-overlay.open, .badge-modal-overlay.open, .collection-modal-overlay.open, .nefertem-overlay.open, .policy-overlay.open')) {
+    document.body.classList.remove('modal-open');
+  }
+}
 const collectionConfig = {
   fragrance: {
     overlayId: 'fragranceModalOverlay',

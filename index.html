@@ -1280,7 +1280,35 @@
   .nefertem-card-icon { font-size:3rem; margin-bottom:10px; }
   .nefertem-card-category { font-size:.55rem; letter-spacing:.18em; text-transform:uppercase; color:rgba(212,160,23,.7); margin-bottom:6px; }
   .nefertem-card-name { font-family:var(--serif); font-size:1.05rem; color:#e8c96a; margin-bottom:6px; line-height:1.2; }
-  .nefertem-card-price { font-size:.82rem; color:rgba(212,160,23,.6); font-variant-numeric:tabular-nums; }
+  /* ── IN-APP BROWSER BANNER ── */
+  .inapp-banner {
+    display:none; position:fixed; bottom:0; left:0; right:0;
+    background:var(--surface-2); border-top:1px solid var(--border);
+    padding:14px 20px; z-index:500;
+    align-items:center; justify-content:space-between; gap:12px;
+    box-shadow:0 -8px 32px rgba(0,0,0,.5);
+  }
+  .inapp-banner.show { display:flex; }
+  .inapp-banner-text {
+    font-family:var(--sans); font-size:.75rem; color:var(--white-dim);
+    letter-spacing:.03em; line-height:1.5; flex:1;
+  }
+  .inapp-banner-text strong { color:var(--green-lt); }
+  .inapp-banner-btn {
+    background:var(--green); color:var(--bg);
+    border:none; padding:10px 18px;
+    font-family:var(--sans); font-size:.7rem;
+    letter-spacing:.1em; text-transform:uppercase;
+    cursor:pointer; white-space:nowrap; flex-shrink:0;
+    transition:background .2s;
+  }
+  .inapp-banner-btn:hover { background:var(--green-lt); }
+  .inapp-banner-close {
+    background:none; border:none; color:var(--white-dim);
+    font-size:1rem; cursor:pointer; flex-shrink:0; padding:4px;
+    transition:color .2s;
+  }
+  .inapp-banner-close:hover { color:var(--white); }
 
   /* ── GREEN COLLECTION MODALS (Fragrance & Soaps) ── */
   .collection-modal-overlay {
@@ -1733,6 +1761,12 @@
   </div>
 </div>
 
+<div class="inapp-banner" id="inappBanner">
+  <span class="inapp-banner-text">For the best experience — and secure checkout — <strong>open in your browser</strong></span>
+  <button class="inapp-banner-btn" onclick="openInBrowser()">Open</button>
+  <button class="inapp-banner-close" onclick="document.getElementById('inappBanner').classList.remove('show')" aria-label="Dismiss">✕</button>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <!-- NEFERTEM COLLECTION MODAL -->
@@ -1792,6 +1826,17 @@
 
 const DASH = '<span style="font-size:.5em;vertical-align:middle;margin:0 .2em">-</span>';
 function d(str) { return str ? str.replace(/-/g, DASH) : str; }
+
+// ── IN-APP BROWSER DETECTION ──
+(function() {
+  const ua = navigator.userAgent || '';
+  const isInApp = /FBAN|FBAV|Instagram|Messenger|LinkedInApp|Twitter|Snapchat|TikTok|Line\/|MicroMessenger|WeChat/i.test(ua);
+  if (isInApp) document.getElementById('inappBanner').classList.add('show');
+})();
+
+function openInBrowser() {
+  window.open(window.location.href, '_blank');
+}
 
 const products = [
   // ── Botanical Perfumes

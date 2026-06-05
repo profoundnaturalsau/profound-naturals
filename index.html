@@ -332,10 +332,10 @@
     animation:btnPrimaryGlow 3s ease-in-out infinite;
   }
   @keyframes btnPrimaryGlow {
-    0%,100% { box-shadow:0 0 10px rgba(184,232,50,0.15); border-color:rgba(184,232,50,0.6); }
-    50%      { box-shadow:0 0 22px rgba(184,232,50,0.40); border-color:rgba(184,232,50,1); }
+    0%,100% { box-shadow:0 0 12px rgba(184,232,50,0.25), 0 0 4px rgba(184,232,50,0.15); border-color:rgba(184,232,50,0.75); }
+    50%      { box-shadow:0 0 28px rgba(184,232,50,0.65), 0 0 8px rgba(184,232,50,0.3); border-color:rgba(184,232,50,1); }
   }
-  .btn-primary:hover, .btn-primary:active { background:#b8e832; color:var(--surface); font-weight:600; transform:translateY(-1px); }
+  .btn-primary:hover, .btn-primary:active { background:#b8e832; color:#080d09; font-weight:600; transform:translateY(-1px); }
   .btn-primary::before {
     content:''; position:absolute; inset:-6px; z-index:-1;
     background:#b8e832; filter:blur(16px); opacity:0;
@@ -358,7 +358,7 @@
     0%,100% { box-shadow:0 0 12px rgba(53,184,212,0.25), 0 0 4px rgba(53,184,212,0.15); border-color:rgba(53,184,212,0.75); color:rgba(53,184,212,0.85); }
     50%      { box-shadow:0 0 28px rgba(53,184,212,0.65), 0 0 8px rgba(53,184,212,0.3); border-color:rgba(53,184,212,1); color:#35b8d4; }
   }
-  .btn-ghost:hover, .btn-ghost:active { background:#35b8d4; color:var(--surface); font-weight:600; transform:translateY(-1px); }
+  .btn-ghost:hover, .btn-ghost:active { background:#35b8d4; color:#080d09; font-weight:600; transform:translateY(-1px); }
   .btn-ghost::before {
     content:''; position:absolute; inset:-6px; z-index:-1;
     background:#35b8d4; filter:blur(16px); opacity:0;

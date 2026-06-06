@@ -15,12 +15,14 @@ exports.handler = async (event) => {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
-  let email, productName;
+  let email, productName, honeypot;
   try {
-    ({ email, productName } = JSON.parse(event.body));
+    ({ email, productName, honeypot } = JSON.parse(event.body));
   } catch {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid request' }) };
   }
+
+  if (honeypot) return { statusCode: 200, body: JSON.stringify({ success: true }) }; // silent discard
 
   if (!email || !email.includes('@')) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid email' }) };

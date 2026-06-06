@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <title>Profound Naturals — Natural & Botanical</title>
 
 <!-- SEO -->
@@ -1067,9 +1067,9 @@
 
   /* ── RESPONSIVE ── */
   @media(max-width:900px){
-    nav { padding:0 16px; height:60px; }
-    .nav-logo { flex:1 1 0; min-width:0; overflow:hidden; }
-    .nav-logo img { height:38px; width:auto; max-width:calc(100vw - 120px); display:block; }
+    nav { padding:0 16px; height:60px; overflow:hidden; }
+    .nav-logo { flex:1 1 0; min-width:0; max-width:calc(100% - 100px); overflow:hidden; }
+    .nav-logo img { height:36px; width:auto; max-width:100%; display:block; object-fit:contain; }
     .nav-links { display:none; }
     .nav-search-wrap { display:none; }
     .nav-hamburger { display:flex; }

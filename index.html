@@ -886,7 +886,7 @@
   .testimonial-text { font-family:var(--serif); font-size:1.05rem; line-height:1.75; font-style:italic; margin-bottom:20px; color:var(--white); font-weight:300; }
   .testimonial-author { font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; color:var(--green-lt); }
 
-  /* ── TESTIMONIAL SUBMIT DRAWER ── */
+  /* ── TESTIMONIAL SUBMIT ── */
   .testi-submit-wrap { margin-top:48px; }
   .testi-submit-trigger {
     display:flex; align-items:center; justify-content:space-between;
@@ -903,19 +903,34 @@
     50%     { box-shadow:0 0 22px rgba(212,160,23,0.5);  border-color:rgba(212,160,23,0.95); }
   }
   .testi-submit-trigger:hover { background:rgba(212,160,23,0.07); border-color:var(--amber); animation:none; box-shadow:0 0 18px rgba(212,160,23,0.35); }
-  .testi-submit-arrow {
-    font-size:1rem; transition:transform .35s ease; display:inline-block;
+  .testi-submit-trigger span:last-child { font-size:1.1rem; }
+
+  /* TESTIMONIAL MODAL */
+  .testi-modal-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,.78);
+    z-index:1100; display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none; transition:opacity .3s;
+    backdrop-filter:blur(6px);
   }
-  .testi-submit-trigger.open .testi-submit-arrow { transform:rotate(180deg); }
-  .testi-submit-drawer {
-    max-height:0; overflow:hidden;
-    transition:max-height .4s ease, padding .3s ease;
-    border:1px solid rgba(212,160,23,0.3); border-top:none;
-    background:var(--surface);
+  .testi-modal-overlay.open { opacity:1; pointer-events:all; }
+  .testi-modal {
+    background:var(--surface); border:1px solid rgba(212,160,23,0.45);
+    box-shadow:0 0 60px rgba(212,160,23,0.15), 0 0 120px rgba(212,160,23,0.07);
+    width:min(560px, 94vw); padding:40px;
+    display:flex; flex-direction:column; gap:16px;
+    transform:scale(.96); transition:transform .3s;
+    position:relative;
   }
-  .testi-submit-drawer.open { max-height:600px; }
-  .testi-submit-inner { padding:28px; display:flex; flex-direction:column; gap:14px; }
-  .testi-submit-inner p { font-size:.78rem; color:var(--white-dim); line-height:1.6; letter-spacing:.03em; }
+  .testi-modal-overlay.open .testi-modal { transform:scale(1); }
+  .testi-modal-close {
+    position:absolute; top:16px; right:20px;
+    background:none; border:none; color:var(--white-dim);
+    font-size:1.1rem; cursor:pointer; transition:color .2s;
+  }
+  .testi-modal-close:hover { color:var(--amber); }
+  .testi-modal-label { font-size:.65rem; letter-spacing:.26em; text-transform:uppercase; color:var(--amber); display:block; }
+  .testi-modal-title { font-family:var(--serif); font-size:1.8rem; font-weight:300; color:var(--white); line-height:1.2; }
+  .testi-modal-sub { font-size:.78rem; color:var(--white-dim); line-height:1.6; }
   .testi-field {
     background:var(--surface-3); border:1px solid var(--border);
     color:var(--white); padding:11px 14px;
@@ -929,7 +944,7 @@
     color:var(--white); padding:11px 14px;
     font-family:var(--sans); font-size:.82rem; outline:none;
     transition:border-color .2s; width:100%; box-sizing:border-box;
-    resize:vertical; min-height:100px;
+    resize:vertical; min-height:110px;
   }
   .testi-textarea::placeholder { color:rgba(255,255,255,.25); }
   .testi-textarea:focus { border-color:var(--amber); }
@@ -1960,24 +1975,12 @@
     </div>
   </div>
 
-  <!-- SHARE TESTIMONIAL DRAWER -->
+  <!-- SHARE TESTIMONIAL TRIGGER -->
   <div class="testi-submit-wrap">
-    <button class="testi-submit-trigger" id="testiTrigger" onclick="toggleTestiDrawer()">
+    <button type="button" class="testi-submit-trigger" id="testiTrigger" onclick="openTestiModal()">
       <span>Share your experience &mdash; be featured on the website</span>
-      <span class="testi-submit-arrow" id="testiArrow">&#8964;</span>
+      <span>&#43;</span>
     </button>
-    <div class="testi-submit-drawer" id="testiDrawer">
-      <div class="testi-submit-inner">
-        <p>We love hearing from you. Fill in the form below and if your testimonial is selected, we'll feature it right here on the site.</p>
-        <div class="testi-row">
-          <input class="testi-field" id="testiName" type="text" placeholder="Your name">
-          <input class="testi-field" id="testiEmail" type="email" placeholder="Your email address">
-        </div>
-        <textarea class="testi-textarea" id="testiReview" placeholder="Tell us about your experience..."></textarea>
-        <button class="testi-submit-btn" onclick="submitTestimonial()">Submit Testimonial</button>
-        <p class="testi-note">By submitting you agree your testimonial may be published on profoundnaturals.com.au</p>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -2471,11 +2474,14 @@ function handleSearch(query) {
     renderProducts();
 
 // ── TESTIMONIAL SUBMIT ──
-function toggleTestiDrawer() {
-  const trigger = document.getElementById('testiTrigger');
-  const drawer  = document.getElementById('testiDrawer');
-  trigger.classList.toggle('open');
-  drawer.classList.toggle('open');
+function openTestiModal() {
+  document.getElementById('testiModalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeTestiModal(e) {
+  if (e && e.target !== document.getElementById('testiModalOverlay')) return;
+  document.getElementById('testiModalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 async function submitTestimonial() {
@@ -2502,7 +2508,7 @@ async function submitTestimonial() {
       document.getElementById('testiName').value    = '';
       document.getElementById('testiEmail').value   = '';
       document.getElementById('testiReview').value  = '';
-      toggleTestiDrawer();
+      document.getElementById('testiModalOverlay').classList.remove('open'); document.body.style.overflow = '';
     } else {
       showToast('Something went wrong — please try again.');
     }
@@ -3109,5 +3115,22 @@ function closeNefertModalDirect() {
 
 </script>
 </div><!-- #page-wrap -->
+<!-- TESTIMONIAL MODAL -->
+<div class="testi-modal-overlay" id="testiModalOverlay" onclick="closeTestiModal(event)">
+  <div class="testi-modal">
+    <button type="button" class="testi-modal-close" onclick="closeTestiModal()">&times;</button>
+    <span class="testi-modal-label">Community</span>
+    <h2 class="testi-modal-title">Share your<br><em>experience</em></h2>
+    <p class="testi-modal-sub">We love hearing from you. If your testimonial is selected, we'll feature it right here on the site.</p>
+    <div class="testi-row">
+      <input class="testi-field" id="testiName" type="text" placeholder="Your name">
+      <input class="testi-field" id="testiEmail" type="email" placeholder="Your email address">
+    </div>
+    <textarea class="testi-textarea" id="testiReview" placeholder="Tell us about your experience..."></textarea>
+    <button type="button" class="testi-submit-btn" onclick="submitTestimonial()">Submit Testimonial</button>
+    <p class="testi-note">By submitting you agree your testimonial may be published on profoundnaturals.com.au</p>
+  </div>
+</div>
+
 </body>
 </html>

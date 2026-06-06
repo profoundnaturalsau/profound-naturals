@@ -2086,7 +2086,10 @@ let allProductsOrder = [];
 function renderProducts() {
   const grid = document.getElementById('productsGrid');
   allProductsOrder = shuffled(products);
-  const initialCount = window.innerWidth <= 900 ? 4 : 8;
+  const colWidth = 280;
+  const gridWidth = document.getElementById('productsGrid').offsetWidth;
+  const cols = Math.max(1, Math.floor(gridWidth / colWidth));
+  const initialCount = window.innerWidth <= 900 ? 4 : cols;
 
   // Ensure at most 1 Bestseller and 1 Rare in the initial set
   const bestsellers = allProductsOrder.filter(p => p.badge === 'Bestseller');

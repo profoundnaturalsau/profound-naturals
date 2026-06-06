@@ -372,10 +372,10 @@
   }
 
   @keyframes btnGhostGlow {
-    0%,100% { box-shadow:0 0 12px rgba(53,184,212,0.25), 0 0 4px rgba(53,184,212,0.15); border-color:rgba(53,184,212,0.75); color:rgba(53,184,212,0.85); }
-    35%      { box-shadow:0 0 28px rgba(53,184,212,0.65), 0 0 8px rgba(53,184,212,0.3); border-color:rgba(53,184,212,1); color:#35b8d4; }
-    45%,55%  { box-shadow:0 0 32px rgba(220,50,50,0.75), 0 0 12px rgba(220,50,50,0.4); border-color:rgba(220,50,50,1); color:#e83232; }
-    65%      { box-shadow:0 0 28px rgba(53,184,212,0.65), 0 0 8px rgba(53,184,212,0.3); border-color:rgba(53,184,212,1); color:#35b8d4; }
+    0%,100% { box-shadow:0 0 12px rgba(53,184,212,0.25), 0 0 4px rgba(53,184,212,0.15); border-color:rgba(53,184,212,0.75); }
+    35%      { box-shadow:0 0 28px rgba(53,184,212,0.65), 0 0 8px rgba(53,184,212,0.3); border-color:rgba(53,184,212,1); }
+    45%,55%  { box-shadow:0 0 32px rgba(220,50,50,0.75), 0 0 12px rgba(220,50,50,0.4); border-color:rgba(220,50,50,1); }
+    65%      { box-shadow:0 0 28px rgba(53,184,212,0.65), 0 0 8px rgba(53,184,212,0.3); border-color:rgba(53,184,212,1); }
   }
   .btn-ghost:hover, .btn-ghost:active { background:#35b8d4; color:#080d09 !important; font-weight:600; transform:translateY(-1px); animation:none; }
   .btn-ghost::before {
@@ -384,6 +384,29 @@
     transition:opacity .3s;
   }
   .btn-ghost:hover::before, .btn-ghost:active::before { opacity:.45; }
+
+  .btn-amber {
+    background:transparent; color:var(--amber);
+    border:1px solid var(--amber); padding:16px 36px;
+    font-family:var(--sans); font-size:.72rem; font-weight:500;
+    letter-spacing:.22em; text-transform:uppercase;
+    cursor:pointer; transition:all .25s;
+    text-decoration:none; display:inline-flex;
+    align-items:center; justify-content:center; text-indent:.22em;
+    position:relative; z-index:0; min-width:220px;
+    animation:btnAmberGlow 3s ease-in-out infinite; animation-delay:1.2s;
+  }
+  @keyframes btnAmberGlow {
+    0%,100% { box-shadow:0 0 12px rgba(212,160,23,0.25), 0 0 4px rgba(212,160,23,0.15); border-color:rgba(212,160,23,0.6); }
+    50%     { box-shadow:0 0 28px rgba(212,160,23,0.7), 0 0 10px rgba(212,160,23,0.35); border-color:rgba(212,160,23,1); }
+  }
+  .btn-amber:hover, .btn-amber:active { background:var(--amber); color:#1a1000 !important; font-weight:600; transform:translateY(-1px); animation:none; }
+  .btn-amber::before {
+    content:''; position:absolute; inset:-6px; z-index:-1;
+    background:var(--amber); filter:blur(16px); opacity:0;
+    transition:opacity .3s;
+  }
+  .btn-amber:hover::before, .btn-amber:active::before { opacity:.45; }
 
   .hero-visual {
     background: var(--surface-2);
@@ -1068,25 +1091,7 @@
   .modal-qty-btn:hover { background:var(--green); }
   .modal-qty-num { width:40px; text-align:center; font-size:.9rem; font-variant-numeric:tabular-nums; color:var(--white); background:var(--surface-2); height:36px; line-height:36px; }
 
-  /* ── GIFT CARD FLOATING BUTTON ── */
-  .gc-float {
-    position:fixed; left:20px; bottom:80px; z-index:150;
-    display:flex; flex-direction:column; align-items:center; gap:6px;
-  }
-  .gc-float-btn {
-    background:transparent; color:var(--amber);
-    border:1px solid var(--amber); padding:12px 18px;
-    font-family:var(--sans); font-size:.62rem; font-weight:500;
-    letter-spacing:.14em; text-transform:uppercase;
-    cursor:pointer; transition:all .25s; white-space:nowrap;
-    writing-mode:vertical-rl; text-orientation:mixed;
-    animation:gcFloatGlow 4s ease-in-out infinite;
-  }
-  @keyframes gcFloatGlow {
-    0%,100% { box-shadow:0 0 8px rgba(212,160,23,0.2); border-color:rgba(212,160,23,0.5); }
-    50%     { box-shadow:0 0 22px rgba(212,160,23,0.6); border-color:rgba(212,160,23,1); }
-  }
-  .gc-float-btn:hover { background:var(--amber); color:#1a1000; animation:none; }
+  /* ── GIFT CARD FLOATING BUTTON — removed, now inline in hero-ctas ── */
 
   /* ── GIFT CARD SECTION ── */
   .gc-section {
@@ -1100,7 +1105,8 @@
   .gc-title { font-family:var(--serif); font-size:clamp(2rem,3vw,3.2rem); font-weight:300; line-height:1.15; color:var(--white); margin-bottom:14px; }
   .gc-sub { font-size:.85rem; color:var(--white-dim); line-height:1.7; font-weight:300; }
   .gc-form { display:flex; flex-direction:column; gap:14px; }
-  .gc-amounts { display:flex; gap:10px; flex-wrap:wrap; }
+  .gc-amounts-row { display:flex; gap:14px; align-items:flex-start; flex-wrap:wrap; }
+  .gc-amounts { display:flex; gap:8px; flex-wrap:wrap; flex:1; }
   .gc-amount-btn {
     background:transparent; color:var(--amber);
     border:1px solid rgba(212,160,23,.4); padding:10px 22px;
@@ -1110,7 +1116,7 @@
   .gc-amount-btn:hover, .gc-amount-btn.selected {
     background:var(--amber); color:#1a1000; border-color:var(--amber);
   }
-  .gc-custom-wrap { display:flex; align-items:center; gap:0; }
+  .gc-custom-wrap { display:flex; align-items:center; gap:0; width:160px; flex-shrink:0; }
   .gc-currency { background:var(--surface-3); border:1px solid var(--border); border-right:none; color:var(--white-dim); padding:11px 14px; font-family:var(--sans); font-size:.82rem; }
   .gc-custom {
     flex:1; background:var(--surface-3); border:1px solid var(--border);
@@ -1176,8 +1182,9 @@
 
   @media(max-width:900px){
     .gc-section { grid-template-columns:1fr; padding:48px 20px; gap:32px; }
-    .gc-float { display:none; }
     .gc-row { grid-template-columns:1fr; }
+    .gc-amounts-row { flex-direction:column; }
+    .gc-custom-wrap { width:100%; }
   }
 
   /* ── TOAST ── */
@@ -1211,7 +1218,7 @@
     .hero-visual { min-height:320px; }
     .hero-text { padding:40px 24px 32px; align-items:stretch; }
     .hero-ctas { flex-wrap:wrap; gap:12px; justify-content:center; }
-    .btn-primary, .btn-ghost { text-indent:0; letter-spacing:.06em; justify-content:center; font-size:.62rem; padding:14px 20px; white-space:nowrap; min-width:0; width:calc(50% - 6px); box-sizing:border-box; }
+    .btn-primary, .btn-ghost, .btn-amber { text-indent:0; letter-spacing:.06em; justify-content:center; font-size:.62rem; padding:14px 20px; white-space:nowrap; min-width:0; width:calc(50% - 6px); box-sizing:border-box; }
     .products-grid { grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); }
     .payment-methods-row { flex-wrap:wrap; gap:12px; justify-content:center; }
     .payment-pill { padding:12px 16px; gap:8px; }
@@ -1656,6 +1663,7 @@
     <div class="hero-ctas seq-fade" id="heroCtas">
       <a href="#shop" class="btn-primary">Shop the Range</a>
       <a href="https://profoundnaturals.online" target="_blank" class="btn-ghost" id="customScentBtn"><span class="cs-text"></span></a>
+      <a href="#gc-section" class="btn-amber" onclick="document.getElementById('gc-section').scrollIntoView({behavior:'smooth'});return false;">Gift Cards</a>
     </div>
   </div>
   <div class="hero-visual">
@@ -1784,14 +1792,18 @@
       <p class="gc-sub">Give someone the freedom to choose their own botanical ritual. Gift cards are delivered instantly by email and never expire.</p>
     </div>
     <div class="gc-form">
-      <div class="gc-amounts">
-        <button class="gc-amount-btn" onclick="selectGCAmount(25, this)">$25</button>
-        <button class="gc-amount-btn" onclick="selectGCAmount(50, this)">$50</button>
-        <button class="gc-amount-btn" onclick="selectGCAmount(100, this)">$100</button>
-      </div>
-      <div class="gc-custom-wrap">
-        <span class="gc-currency">$</span>
-        <input class="gc-custom" id="gcCustomAmt" type="number" min="25" placeholder="Or enter your own amount (min $25)" oninput="selectGCCustom(this.value)">
+      <div class="gc-amounts-row">
+        <div class="gc-amounts">
+          <button class="gc-amount-btn" onclick="selectGCAmount(25, this)">$25</button>
+          <button class="gc-amount-btn" onclick="selectGCAmount(50, this)">$50</button>
+          <button class="gc-amount-btn" onclick="selectGCAmount(100, this)">$100</button>
+          <button class="gc-amount-btn" onclick="selectGCAmount(150, this)">$150</button>
+          <button class="gc-amount-btn" onclick="selectGCAmount(200, this)">$200</button>
+        </div>
+        <div class="gc-custom-wrap">
+          <span class="gc-currency">$</span>
+          <input class="gc-custom" id="gcCustomAmt" type="number" min="25" placeholder="Custom" oninput="selectGCCustom(this.value)">
+        </div>
       </div>
       <div class="gc-row">
         <input class="gc-input" id="gcSenderName" type="text" placeholder="Your name">
@@ -2061,9 +2073,6 @@
   <button class="inapp-banner-close" onclick="document.getElementById('inappBanner').classList.remove('show')" aria-label="Dismiss">✕</button>
 </div>
 
-<div class="gc-float">
-  <button class="gc-float-btn" onclick="document.getElementById('gc-section').scrollIntoView({behavior:'smooth'})">Gift Cards</button>
-</div>
 
 <div class="toast" id="toast"></div>
 

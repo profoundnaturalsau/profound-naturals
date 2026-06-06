@@ -1,4 +1,3 @@
-js
 const nodemailer = require('nodemailer');
 
 exports.handler = async (event) => {
@@ -19,7 +18,6 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid email' }) };
   }
 
-  // Try .com.au first, fall back to .com
   const hosts = ['smtp.zoho.com.au', 'smtp.zoho.com'];
   let lastErr;
 
@@ -61,7 +59,7 @@ exports.handler = async (event) => {
       return { statusCode: 200, body: JSON.stringify({ success: true }) };
 
     } catch (err) {
-      console.error(`Failed with host ${host}:`, err.message);
+      console.error('Failed with host ' + host + ': ' + err.message);
       lastErr = err;
     }
   }

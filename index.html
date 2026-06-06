@@ -1068,6 +1068,118 @@
   .modal-qty-btn:hover { background:var(--green); }
   .modal-qty-num { width:40px; text-align:center; font-size:.9rem; font-variant-numeric:tabular-nums; color:var(--white); background:var(--surface-2); height:36px; line-height:36px; }
 
+  /* ── GIFT CARD FLOATING BUTTON ── */
+  .gc-float {
+    position:fixed; left:20px; bottom:80px; z-index:150;
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+  }
+  .gc-float-btn {
+    background:transparent; color:var(--amber);
+    border:1px solid var(--amber); padding:12px 18px;
+    font-family:var(--sans); font-size:.62rem; font-weight:500;
+    letter-spacing:.14em; text-transform:uppercase;
+    cursor:pointer; transition:all .25s; white-space:nowrap;
+    writing-mode:vertical-rl; text-orientation:mixed;
+    animation:gcFloatGlow 4s ease-in-out infinite;
+  }
+  @keyframes gcFloatGlow {
+    0%,100% { box-shadow:0 0 8px rgba(212,160,23,0.2); border-color:rgba(212,160,23,0.5); }
+    50%     { box-shadow:0 0 22px rgba(212,160,23,0.6); border-color:rgba(212,160,23,1); }
+  }
+  .gc-float-btn:hover { background:var(--amber); color:#1a1000; animation:none; }
+
+  /* ── GIFT CARD SECTION ── */
+  .gc-section {
+    background:var(--surface);
+    border-top:1px solid rgba(212,160,23,.25);
+    border-bottom:1px solid rgba(212,160,23,.25);
+    padding:64px 48px;
+    display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center;
+  }
+  .gc-label { font-size:.67rem; letter-spacing:.26em; text-transform:uppercase; color:var(--amber); margin-bottom:14px; display:block; }
+  .gc-title { font-family:var(--serif); font-size:clamp(2rem,3vw,3.2rem); font-weight:300; line-height:1.15; color:var(--white); margin-bottom:14px; }
+  .gc-sub { font-size:.85rem; color:var(--white-dim); line-height:1.7; font-weight:300; }
+  .gc-form { display:flex; flex-direction:column; gap:14px; }
+  .gc-amounts { display:flex; gap:10px; flex-wrap:wrap; }
+  .gc-amount-btn {
+    background:transparent; color:var(--amber);
+    border:1px solid rgba(212,160,23,.4); padding:10px 22px;
+    font-family:var(--sans); font-size:.78rem; font-weight:500;
+    letter-spacing:.08em; cursor:pointer; transition:all .2s;
+  }
+  .gc-amount-btn:hover, .gc-amount-btn.selected {
+    background:var(--amber); color:#1a1000; border-color:var(--amber);
+  }
+  .gc-custom-wrap { display:flex; align-items:center; gap:0; }
+  .gc-currency { background:var(--surface-3); border:1px solid var(--border); border-right:none; color:var(--white-dim); padding:11px 14px; font-family:var(--sans); font-size:.82rem; }
+  .gc-custom {
+    flex:1; background:var(--surface-3); border:1px solid var(--border);
+    color:var(--white); padding:11px 14px;
+    font-family:var(--sans); font-size:.82rem; outline:none;
+    transition:border-color .2s;
+  }
+  .gc-custom::placeholder { color:rgba(255,255,255,.25); }
+  .gc-custom:focus { border-color:var(--amber); }
+  .gc-input {
+    background:var(--surface-3); border:1px solid var(--border);
+    color:var(--white); padding:11px 14px;
+    font-family:var(--sans); font-size:.82rem; outline:none;
+    transition:border-color .2s; width:100%;
+  }
+  .gc-input::placeholder { color:rgba(255,255,255,.25); }
+  .gc-input:focus { border-color:var(--amber); }
+  .gc-textarea {
+    background:var(--surface-3); border:1px solid var(--border);
+    color:var(--white); padding:11px 14px;
+    font-family:var(--sans); font-size:.82rem; outline:none;
+    transition:border-color .2s; width:100%; resize:vertical; min-height:80px;
+  }
+  .gc-textarea::placeholder { color:rgba(255,255,255,.25); }
+  .gc-textarea:focus { border-color:var(--amber); }
+  .gc-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .gc-buy-btn {
+    background:var(--amber); color:#1a1000;
+    border:none; padding:16px;
+    font-family:var(--sans); font-size:.72rem; font-weight:600;
+    letter-spacing:.15em; text-transform:uppercase;
+    cursor:pointer; transition:all .25s;
+    animation:gcBuyGlow 4s ease-in-out infinite;
+  }
+  @keyframes gcBuyGlow {
+    0%,100% { box-shadow:0 0 12px rgba(212,160,23,0.3); }
+    50%     { box-shadow:0 0 28px rgba(212,160,23,0.7); }
+  }
+  .gc-buy-btn:hover { background:#e8b830; animation:none; }
+  .gc-buy-btn:disabled { background:var(--surface-3); color:var(--white-dim); animation:none; cursor:default; }
+  .gc-note { font-size:.68rem; color:var(--white-dim); letter-spacing:.04em; text-align:center; }
+
+  /* ── GIFT CARD REDEMPTION IN CART ── */
+  .gc-redeem-wrap { padding:0 0 16px; }
+  .gc-redeem-row { display:flex; gap:0; }
+  .gc-redeem-input {
+    flex:1; background:var(--surface-3); border:1px solid var(--border); border-right:none;
+    color:var(--white); padding:10px 14px;
+    font-family:var(--sans); font-size:.75rem; letter-spacing:.06em;
+    outline:none; text-transform:uppercase; transition:border-color .2s;
+  }
+  .gc-redeem-input::placeholder { color:rgba(255,255,255,.25); text-transform:none; }
+  .gc-redeem-input:focus { border-color:var(--amber); }
+  .gc-redeem-btn {
+    background:var(--surface-2); border:1px solid var(--border);
+    color:var(--amber); padding:10px 16px;
+    font-family:var(--sans); font-size:.65rem; letter-spacing:.1em; text-transform:uppercase;
+    cursor:pointer; transition:all .2s; white-space:nowrap;
+  }
+  .gc-redeem-btn:hover { background:var(--amber); color:#1a1000; }
+  .gc-applied { font-size:.72rem; color:var(--green-lt); margin-top:6px; display:none; }
+  .gc-applied.show { display:block; }
+
+  @media(max-width:900px){
+    .gc-section { grid-template-columns:1fr; padding:48px 20px; gap:32px; }
+    .gc-float { display:none; }
+    .gc-row { grid-template-columns:1fr; }
+  }
+
   /* ── TOAST ── */
   .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--green); color:var(--bg); padding:14px 28px; font-size:.76rem; letter-spacing:.1em; text-transform:uppercase; opacity:0; transition:all .3s; z-index:400; pointer-events:none; box-shadow:0 8px 32px rgba(0,0,0,.5); text-align:center; white-space:nowrap; max-width:90vw; overflow:hidden; text-overflow:ellipsis; }
   .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
@@ -1663,6 +1775,36 @@
   </div>
 </div>
 
+<!-- GIFT CARDS -->
+<div id="gc-section">
+  <div class="gc-section">
+    <div>
+      <span class="gc-label">Give the gift of botanicals</span>
+      <h2 class="gc-title">Profound Naturals<br>Gift Cards</h2>
+      <p class="gc-sub">Give someone the freedom to choose their own botanical ritual. Gift cards are delivered instantly by email and never expire.</p>
+    </div>
+    <div class="gc-form">
+      <div class="gc-amounts">
+        <button class="gc-amount-btn" onclick="selectGCAmount(25, this)">$25</button>
+        <button class="gc-amount-btn" onclick="selectGCAmount(50, this)">$50</button>
+        <button class="gc-amount-btn" onclick="selectGCAmount(100, this)">$100</button>
+      </div>
+      <div class="gc-custom-wrap">
+        <span class="gc-currency">$</span>
+        <input class="gc-custom" id="gcCustomAmt" type="number" min="25" placeholder="Or enter your own amount (min $25)" oninput="selectGCCustom(this.value)">
+      </div>
+      <div class="gc-row">
+        <input class="gc-input" id="gcSenderName" type="text" placeholder="Your name">
+        <input class="gc-input" id="gcRecipientName" type="text" placeholder="Recipient name">
+      </div>
+      <input class="gc-input" id="gcRecipientEmail" type="email" placeholder="Recipient email address">
+      <textarea class="gc-textarea" id="gcMessage" placeholder="Personal message (optional)"></textarea>
+      <button class="gc-buy-btn" id="gcBuyBtn" onclick="buyGiftCard()" disabled>Select an amount to continue</button>
+      <p class="gc-note">Delivered instantly by email · Never expires · Redeemable at checkout</p>
+    </div>
+  </div>
+</div>
+
 <!-- PAYMENT -->
 <div class="payment-section">
   <span class="payment-label">Flexible &amp; Secure Checkout Options</span>
@@ -1776,6 +1918,7 @@
       <ul>
         <li><a href="#" onclick="event.preventDefault(); openPolicyModal('returns')">Shipping &amp; Returns</a></li>
         <li><a href="#" onclick="event.preventDefault(); openPolicyModal('returns')">FAQ</a></li>
+        <li><a href="#gc-section">Gift Cards</a></li>
         <li><a href="#contact">Contact Us</a></li>
         <li><a href="#" onclick="event.preventDefault(); openPolicyModal('returns')">Afterpay FAQ</a></li>
         <li><a href="#" onclick="event.preventDefault(); openPolicyModal('returns')">Privacy Policy</a></li>
@@ -1839,6 +1982,13 @@
     </div>
   </div>
   <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="gc-redeem-wrap">
+      <div class="gc-redeem-row">
+        <input class="gc-redeem-input" id="gcCodeInput" type="text" placeholder="Gift card code" maxlength="11">
+        <button class="gc-redeem-btn" onclick="applyGiftCard()">Apply</button>
+      </div>
+      <div class="gc-applied" id="gcApplied"></div>
+    </div>
     <div class="cart-subtotal">
       <span class="cart-subtotal-label">Subtotal</span>
       <span class="cart-subtotal-amount" id="cartTotal">$0.00</span>
@@ -1909,6 +2059,10 @@
   <span class="inapp-banner-text">For the best experience — and secure checkout — <strong>open in your browser</strong></span>
   <button class="inapp-banner-btn" onclick="openInBrowser()">Open</button>
   <button class="inapp-banner-close" onclick="document.getElementById('inappBanner').classList.remove('show')" aria-label="Dismiss">✕</button>
+</div>
+
+<div class="gc-float">
+  <button class="gc-float-btn" onclick="document.getElementById('gc-section').scrollIntoView({behavior:'smooth'})">Gift Cards</button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -2203,6 +2357,129 @@ function handleSearch(query) {
   if (!q) {
     banner.classList.remove('show');
     renderProducts();
+
+// ── GIFT CARD ──
+let gcAmount = 0;
+let gcDiscount = 0;
+let gcAppliedCode = '';
+
+function selectGCAmount(val, btn) {
+  gcAmount = val;
+  document.querySelectorAll('.gc-amount-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('gcCustomAmt').value = '';
+  updateGCBtn();
+}
+
+function selectGCCustom(val) {
+  document.querySelectorAll('.gc-amount-btn').forEach(b => b.classList.remove('selected'));
+  gcAmount = parseFloat(val) || 0;
+  updateGCBtn();
+}
+
+function updateGCBtn() {
+  const btn = document.getElementById('gcBuyBtn');
+  if (gcAmount >= 25) {
+    btn.disabled = false;
+    btn.textContent = 'Buy $' + gcAmount.toFixed(2) + ' Gift Card';
+  } else {
+    btn.disabled = true;
+    btn.textContent = gcAmount > 0 ? 'Minimum gift card value is $25' : 'Select an amount to continue';
+  }
+}
+
+async function buyGiftCard() {
+  const senderName    = document.getElementById('gcSenderName').value.trim();
+  const recipientName = document.getElementById('gcRecipientName').value.trim();
+  const recipientEmail= document.getElementById('gcRecipientEmail').value.trim();
+  const message       = document.getElementById('gcMessage').value.trim();
+
+  if (!senderName)     { showToast('Please enter your name'); return; }
+  if (!recipientName)  { showToast('Please enter the recipient name'); return; }
+  if (!recipientEmail || !recipientEmail.includes('@')) { showToast('Please enter a valid recipient email'); return; }
+  if (gcAmount < 25)   { showToast('Minimum gift card value is $25'); return; }
+
+  const btn = document.getElementById('gcBuyBtn');
+  btn.disabled = true;
+  btn.textContent = 'Connecting to checkout...';
+
+  try {
+    const res = await fetch('/.netlify/functions/giftcard', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        amount: Math.round(gcAmount * 100),
+        recipientEmail,
+        recipientName,
+        senderName,
+        message,
+      }),
+    });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      throw new Error(data.error || 'Checkout failed');
+    }
+  } catch (err) {
+    showToast('Could not start checkout - please try again.');
+    btn.disabled = false;
+    updateGCBtn();
+  }
+}
+
+// Handle gift card success redirect
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('gc_success') === '1') {
+    const amount       = parseInt(params.get('amount')) || 0;
+    const recipient    = params.get('recipient') || '';
+    const recipientName= params.get('recipientName') || '';
+    const sender       = params.get('sender') || '';
+    const msg          = params.get('msg') || '';
+    if (recipient && amount) {
+      fetch('/.netlify/functions/giftcard', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'send', amount, recipientEmail: recipient, recipientName, senderName: sender, message: msg }),
+      }).then(() => {
+        showToast('Gift card sent to ' + recipient + '!');
+        window.history.replaceState({}, '', '/');
+      });
+    }
+  }
+  if (params.get('gc_cancelled') === '1') {
+    showToast('Gift card purchase cancelled.');
+    window.history.replaceState({}, '', '/');
+  }
+})();
+
+// ── GIFT CARD REDEMPTION ──
+const VALID_CODES = {};
+
+function applyGiftCard() {
+  const code = document.getElementById('gcCodeInput').value.trim().toUpperCase();
+  const appliedEl = document.getElementById('gcApplied');
+
+  if (!code) { showToast('Please enter a gift card code'); return; }
+
+  // Basic format check PN-XXXXXXXX
+  if (!/^PN-[A-F0-9]{8}$/.test(code)) {
+    showToast('Invalid gift card code');
+    appliedEl.classList.remove('show');
+    return;
+  }
+
+  // For now prompt manual verification — in future this hits an API
+  const cartTotal = cart.reduce((s, c) => s + c.price * c.qty, 0);
+  if (cartTotal === 0) { showToast('Add items to your bag first'); return; }
+
+  // Store applied code — honoured manually for now
+  gcAppliedCode = code;
+  appliedEl.textContent = 'Gift card ' + code + ' applied - discount will be confirmed at checkout';
+  appliedEl.classList.add('show');
+  showToast('Gift card applied');
+}
 
 
     document.getElementById('showMoreWrap').classList.remove('hidden');

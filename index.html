@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
-<title>Profound Naturals — Artisanal Alchemy</title>
+<title>Profound Naturals - Artisanal Alchemy</title>
 
 <!-- SEO -->
 <meta name="description" content="Small-batch botanical perfumes, natural soaps and pure essential oils handcrafted in Australia. Free from synthetics. Cruelty-free. Ships Australia-wide.">
@@ -14,7 +14,7 @@
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://profoundnaturals.com.au">
-<meta property="og:title" content="Profound Naturals — Artisanal Alchemy">
+<meta property="og:title" content="Profound Naturals - Artisanal Alchemy">
 <meta property="og:description" content="Handcrafted botanical perfumes, natural soaps and pure essential oils. Small-batch, Australian made, free from synthetics.">
 <meta property="og:image" content="https://profoundnaturals.com.au/images/pn-square.jpg">
 <meta property="og:image:width" content="1560">
@@ -24,7 +24,7 @@
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Profound Naturals — Artisanal Alchemy">
+<meta name="twitter:title" content="Profound Naturals - Artisanal Alchemy">
 <meta name="twitter:description" content="Handcrafted botanical perfumes, natural soaps and pure essential oils. Small-batch, Australian made, free from synthetics.">
 <meta name="twitter:image" content="https://profoundnaturals.com.au/images/pn-square.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -356,9 +356,26 @@
     position:relative; z-index:0; min-width:220px;
     animation:btnGhostGlow 3s ease-in-out infinite; animation-delay:.6s;
   }
+  /* CUSTOM SCENT TEXT PULSE */
+  .cs-text {
+    position: relative;
+  }
+  .cs-text::before {
+    content: 'Custom Scent';
+    animation: csTextSwap 3s ease-in-out infinite;
+    animation-delay: 0.6s;
+  }
+  @keyframes csTextSwap {
+    0%, 40%   { content: 'Custom Scent'; }
+    45%, 55%  { content: 'Coming Soon';  }
+    60%, 100% { content: 'Custom Scent'; }
+  }
+
   @keyframes btnGhostGlow {
     0%,100% { box-shadow:0 0 12px rgba(53,184,212,0.25), 0 0 4px rgba(53,184,212,0.15); border-color:rgba(53,184,212,0.75); color:rgba(53,184,212,0.85); }
-    50%      { box-shadow:0 0 28px rgba(53,184,212,0.65), 0 0 8px rgba(53,184,212,0.3); border-color:rgba(53,184,212,1); color:#35b8d4; }
+    35%      { box-shadow:0 0 28px rgba(53,184,212,0.65), 0 0 8px rgba(53,184,212,0.3); border-color:rgba(53,184,212,1); color:#35b8d4; }
+    45%,55%  { box-shadow:0 0 32px rgba(220,50,50,0.75), 0 0 12px rgba(220,50,50,0.4); border-color:rgba(220,50,50,1); color:#e83232; }
+    65%      { box-shadow:0 0 28px rgba(53,184,212,0.65), 0 0 8px rgba(53,184,212,0.3); border-color:rgba(53,184,212,1); color:#35b8d4; }
   }
   .btn-ghost:hover, .btn-ghost:active { background:#35b8d4; color:#080d09 !important; font-weight:600; transform:translateY(-1px); animation:none; }
   .btn-ghost::before {
@@ -1524,7 +1541,7 @@
     <p class="hero-sub seq-fade" id="heroSub">Small-batch botanical wellness products, lovingly crafted from ethically sourced plants, herbs, and pure essential oils.<br>Always cruelty-free, never tested on animals.</p>
     <div class="hero-ctas seq-fade" id="heroCtas">
       <a href="#shop" class="btn-primary">Shop the Range</a>
-      <a href="https://profoundnaturals.online" target="_blank" class="btn-ghost">Custom Scent</a>
+      <a href="https://profoundnaturals.online" target="_blank" class="btn-ghost" id="customScentBtn"><span class="cs-text"></span></a>
     </div>
   </div>
   <div class="hero-visual">
@@ -2180,6 +2197,8 @@ function handleSearch(query) {
   if (!q) {
     banner.classList.remove('show');
     renderProducts();
+
+
     document.getElementById('showMoreWrap').classList.remove('hidden');
     return;
   }

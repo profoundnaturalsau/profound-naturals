@@ -1208,7 +1208,7 @@
     background:var(--amber); color:#080d09; border-color:var(--amber);
     animation:none; box-shadow:0 0 16px rgba(212,160,23,0.45);
   }
-  .gc-custom-wrap { display:flex; align-items:stretch; gap:0; width:140px; flex-shrink:0; min-width:0; box-sizing:border-box; }
+  .gc-custom-wrap { display:flex; align-items:stretch; gap:0; flex:1; min-width:120px; box-sizing:border-box; }
   .gc-currency { background:var(--surface-3); border:1px solid rgba(212,160,23,0.5); border-right:none; color:var(--amber); padding:10px 12px; font-family:var(--sans); font-size:.82rem; flex-shrink:0; display:flex; align-items:center; }
   .gc-custom {
     width:0; flex:1; min-width:0; background:var(--surface-3); border:1px solid rgba(212,160,23,0.5);
@@ -1899,7 +1899,7 @@
         </div>
         <div class="gc-custom-wrap">
           <span class="gc-currency">$</span>
-          <input class="gc-custom" id="gcCustomAmt" type="number" min="25" placeholder="Custom" oninput="selectGCCustom(this.value)">
+          <input class="gc-custom" id="gcCustomAmt" type="number" min="25" placeholder="Custom" oninput="selectGCCustom(this.value)" onchange="selectGCCustom(this.value)" onkeyup="selectGCCustom(this.value)">
         </div>
       </div>
       <div class="gc-row">
@@ -2531,14 +2531,30 @@ let gcAppliedCode = '';
 
 function selectGCAmount(val, btn) {
   gcAmount = val;
-  document.querySelectorAll('.gc-amount-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('.gc-amount-btn').forEach(b => {
+    b.classList.remove('selected');
+    b.style.background = '';
+    b.style.color = '';
+    b.style.borderColor = '';
+    b.style.boxShadow = '';
+  });
   btn.classList.add('selected');
+  btn.style.background = 'var(--amber)';
+  btn.style.color = '#080d09';
+  btn.style.borderColor = 'var(--amber)';
+  btn.style.boxShadow = '0 0 16px rgba(212,160,23,0.45)';
   document.getElementById('gcCustomAmt').value = '';
   updateGCBtn();
 }
 
 function selectGCCustom(val) {
-  document.querySelectorAll('.gc-amount-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('.gc-amount-btn').forEach(b => {
+    b.classList.remove('selected');
+    b.style.background = '';
+    b.style.color = '';
+    b.style.borderColor = '';
+    b.style.boxShadow = '';
+  });
   gcAmount = parseFloat(val) || 0;
   updateGCBtn();
 }
@@ -2560,10 +2576,10 @@ async function buyGiftCard() {
   const recipientEmail= document.getElementById('gcRecipientEmail').value.trim();
   const message       = document.getElementById('gcMessage').value.trim();
 
-  if (!senderName)     { showToast('Please enter your name'); return; }
-  if (!recipientName)  { showToast('Please enter the recipient name'); return; }
-  if (!recipientEmail || !recipientEmail.includes('@')) { showToast('Please enter a valid recipient email'); return; }
-  if (gcAmount < 25)   { showToast('Minimum gift card value is $25'); return; }
+  if (gcAmount < 25)        { showToast('Please select or enter a gift card amount'); return; }
+  if (!senderName)          { showToast('Please enter your name'); return; }
+  if (!recipientName)       { showToast('Please enter the recipient\'s name'); return; }
+  if (!recipientEmail || !recipientEmail.includes('@')) { showToast('Please enter a valid recipient email address'); return; }
 
   const btn = document.getElementById('gcBuyBtn');
   btn.disabled = true;

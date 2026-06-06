@@ -564,6 +564,8 @@
     0%,100% { filter:drop-shadow(0 0 5px rgba(124,92,191,0.65)) drop-shadow(0 0 12px rgba(124,92,191,0.3)); }
     50%     { filter:drop-shadow(0 0 7px rgba(124,92,191,0.85)) drop-shadow(0 0 18px rgba(124,92,191,0.5)); }
   }
+  .product-badge.out-of-stock[data-label="sold"]::before   { content: 'Sold Out'; }
+  .product-badge.out-of-stock[data-label="notify"]::before { content: 'Notify Me'; }
   .product-badge.out-of-stock {
     background:rgba(192,57,43,.45); color:#ffb3ad;
     box-shadow:0 0 14px rgba(192,57,43,.25);
@@ -2072,7 +2074,7 @@ function productCardHTML(p, i) {
             <span class="afterpay-note">${p.inStock === false ? 'Currently unavailable' : `or 4 × $${(p.price/4).toFixed(2)} with Afterpay`}</span>
           </div>
           ${p.inStock === false
-            ? `<span class="product-badge out-of-stock" style="position:relative;top:auto;left:auto;" onclick="event.stopPropagation(); openNotifyModal(${p.id})">Sold<br>Out</span>`
+            ? `<span class="product-badge out-of-stock" data-label="sold" style="position:relative;top:auto;left:auto;" onclick="event.stopPropagation(); openNotifyModal(${p.id})"></span>`
             : `<button class="add-to-cart" onclick="event.stopPropagation(); ${p.variants ? 'openModal('+p.id+')' : 'addToCart('+p.id+')'}">Add</button>`}
         </div>
       </div>
@@ -2084,14 +2086,14 @@ let allProductsOrder = [];
 function renderProducts() {
   const grid = document.getElementById('productsGrid');
   allProductsOrder = shuffled(products);
-  const initialCount = window.innerWidth <= 900 ? 4 : 5;
+  const initialCount = window.innerWidth <= 900 ? 4 : 8;
 
   // Ensure at most 1 Bestseller and 1 Rare in the initial set
   const bestsellers = allProductsOrder.filter(p => p.badge === 'Bestseller');
   const rares       = allProductsOrder.filter(p => p.badge === 'Rare');
   const unbadged    = allProductsOrder.filter(p => !p.badge);
-  const oneBest     = bestsellers.slice(0, 1);
-  const oneRare     = rares.slice(0, 1);
+  const oneBest     = bestsellers.slice(0, 2);
+  const oneRare     = rares.slice(0, 2);
   const badged      = [...oneBest, ...oneRare];
   const fillCount   = initialCount - badged.length;
   const initial     = shuffled([...badged, ...unbadged.slice(0, fillCount)]);
@@ -2563,13 +2565,12 @@ renderProducts();
 // ── OUT OF STOCK BADGE TEXT FLIP ──
 function cycleOutOfStockBadges() {
   document.querySelectorAll('.product-badge.out-of-stock').forEach(el => {
-    // Phase 1: roll forward out
     el.classList.remove('oos-roll-in');
     el.classList.add('oos-roll-out');
     setTimeout(() => {
-      // Swap text at the hidden midpoint
-      el.textContent = el.textContent.includes('Notify') ? 'Sold Out' : 'Notify Me';
-      // Phase 2: roll in from behind
+      // Toggle data-label only — never touch textContent or innerHTML (kills onclick)
+      const current = el.dataset.label || 'sold';
+      el.dataset.label = current === 'sold' ? 'notify' : 'sold';
       el.classList.remove('oos-roll-out');
       el.classList.add('oos-roll-in');
     }, 220);

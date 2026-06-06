@@ -49,7 +49,7 @@
   }
 
   *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-  html { scroll-behavior:smooth; }
+  html { scroll-behavior:smooth; overflow-x:hidden; max-width:100vw; }
 
   /* Scrollbar styling — Chrome, Edge, Safari */
   ::-webkit-scrollbar { width:6px; height:6px; }
@@ -73,6 +73,7 @@
     background: var(--bg);
     color: var(--white);
     overflow-x: hidden;
+    max-width: 100vw;
   }
 
   body.modal-open {
@@ -954,8 +955,28 @@
   .modal-category { font-size:.64rem; letter-spacing:.2em; text-transform:uppercase; color:var(--green-lt); margin-bottom:10px; }
   .modal-name { font-family:var(--serif); font-size:1.8rem; font-weight:400; margin-bottom:16px; line-height:1.2; color:var(--white); }
   .modal-desc { font-size:.85rem; color:var(--white-dim); line-height:1.8; margin-bottom:24px; font-weight:300; }
-  .modal-ingredients { font-size:.62rem; color:var(--white-dim); line-height:1.7; margin-bottom:28px; padding:16px; background:var(--green-pale); border-left:2px solid var(--green); opacity:.75; }
-  .modal-ingredients strong { display:block; font-size:.58rem; letter-spacing:.12em; text-transform:uppercase; color:var(--green-lt); margin-bottom:6px; font-weight:500; }
+  .modal-ing-toggle {
+    display:flex; align-items:center; justify-content:space-between;
+    width:100%; background:none; border:none; border-top:1px solid var(--border-sub);
+    padding:10px 0; cursor:pointer; margin-bottom:0;
+    font-family:var(--sans); font-size:.68rem; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--green-lt); transition:color .2s;
+  }
+  .modal-ing-toggle:hover { color:var(--green); }
+  .modal-ing-arrow { transition:transform .25s; display:inline-block; font-size:.8rem; }
+  .modal-ing-toggle.open .modal-ing-arrow { transform:rotate(180deg); }
+  .modal-ingredients {
+    font-size:.62rem; color:var(--white-dim); line-height:1.7;
+    margin-bottom:0; padding:0 0 0 0;
+    background:none; border-left:none; opacity:.7;
+    max-height:0; overflow:hidden;
+    transition:max-height .35s ease, padding .35s ease, margin .35s ease;
+  }
+  .modal-ingredients.open {
+    max-height:300px; padding:10px 14px 16px;
+    background:var(--green-pale); border-left:2px solid var(--green);
+    margin-bottom:16px;
+  }
 
   /* ── POLICY MODAL ── */
   .policy-overlay {
@@ -1047,8 +1068,8 @@
   /* ── RESPONSIVE ── */
   @media(max-width:900px){
     nav { padding:0 16px; height:60px; }
-    .nav-logo { flex:0 1 auto; overflow:hidden; }
-    .nav-logo img { height:38px; width:auto; max-width:170px; }
+    .nav-logo { flex:1 1 0; min-width:0; overflow:hidden; }
+    .nav-logo img { height:38px; width:auto; max-width:calc(100vw - 120px); display:block; }
     .nav-links { display:none; }
     .nav-search-wrap { display:none; }
     .nav-hamburger { display:flex; }
@@ -1146,7 +1167,8 @@
     .modal-category { font-size:.58rem; margin-bottom:4px; }
     .modal-name { font-size:1.3rem; margin-bottom:8px; }
     .modal-desc { font-size:.78rem; line-height:1.6; margin-bottom:10px; }
-    .modal-ingredients { font-size:.68rem; line-height:1.6; padding:10px 12px; margin-bottom:10px; }
+    .modal-ing-toggle { font-size:.62rem; padding:8px 0; }
+    .modal-ingredients.open { max-height:400px; padding:8px 10px 12px; }
     .modal-price { font-size:1.4rem; margin-bottom:2px; }
     .modal-afterpay { font-size:.65rem; margin-bottom:10px; }
     .modal-variants { margin:8px 0 2px; }
@@ -1815,8 +1837,11 @@
       <p class="modal-category" id="modalCategory"></p>
       <h2 class="modal-name" id="modalName"></h2>
       <p class="modal-desc" id="modalDesc"></p>
-      <div class="modal-ingredients">
-        <strong>Key Ingredients</strong>
+      <button class="modal-ing-toggle" id="modalIngToggle" onclick="toggleModalIngredients()">
+        <span>Ingredients</span>
+        <span class="modal-ing-arrow">▾</span>
+      </button>
+      <div class="modal-ingredients" id="modalIngredientsWrap">
         <span id="modalIngredients"></span>
       </div>
       <div id="modalVariants" class="modal-variants" style="display:none">
@@ -2141,7 +2166,12 @@ function clearSearch() {
   handleSearch('');
 }
 
-// ── POLICY MODALS ──
+function toggleModalIngredients() {
+  const wrap = document.getElementById('modalIngredientsWrap');
+  const btn = document.getElementById('modalIngToggle');
+  wrap.classList.toggle('open');
+  btn.classList.toggle('open');
+}
 function openPolicyModal(type) {
   const overlay = document.getElementById(type + 'Overlay');
   if (!overlay) return;
@@ -2231,6 +2261,9 @@ function openModal(id) {
   const p = products.find(x => x.id === id);
   selectedVariant = null;
   document.getElementById('modalQty').textContent = '1';
+  // Reset ingredients toggle
+  document.getElementById('modalIngredientsWrap').classList.remove('open');
+  document.getElementById('modalIngToggle').classList.remove('open');
   const modalImgEl = document.getElementById('modalImg');
   modalImgEl.style.background = p.bg;
   modalImgEl.className = 'modal-img';

@@ -338,7 +338,7 @@
     0%,100% { box-shadow:0 0 12px rgba(184,232,50,0.25), 0 0 4px rgba(184,232,50,0.15); border-color:rgba(184,232,50,0.75); }
     50%      { box-shadow:0 0 28px rgba(184,232,50,0.65), 0 0 8px rgba(184,232,50,0.3); border-color:rgba(184,232,50,1); }
   }
-  .btn-primary:hover, .btn-primary:active { background:#b8e832; color:#080d09; font-weight:600; transform:translateY(-1px); }
+  .btn-primary:hover, .btn-primary:active { background:#b8e832; color:#080d09; font-weight:600; transform:translateY(-1px); -webkit-font-smoothing:auto; font-smooth:auto; }
   .btn-primary::before {
     content:''; position:absolute; inset:-6px; z-index:-1;
     background:#b8e832; filter:blur(16px); opacity:0;
@@ -349,7 +349,7 @@
   .btn-ghost {
     background:transparent; color:#35b8d4;
     border:1px solid rgba(53,184,212,0.7); padding:16px 36px;
-    font-family:var(--sans); font-size:.72rem; font-weight:700;
+    font-family:var(--sans); font-size:.72rem; font-weight:500;
     letter-spacing:.22em; text-transform:uppercase;
     cursor:pointer; transition:background .2s, color .2s, border-color .2s, box-shadow .2s, transform .2s;
     text-decoration:none; display:inline-flex;
@@ -363,9 +363,10 @@
     50%     { box-shadow:0 0 26px rgba(53,184,212,0.6), 0 0 8px rgba(53,184,212,0.25); border-color:rgba(53,184,212,1); }
   }
   .btn-ghost:hover, .btn-ghost:active {
-    background:#35b8d4; color:#080d09 !important; font-weight:700;
+    background:#35b8d4; color:#080d09 !important; font-weight:600;
     transform:translateY(-1px); animation:none;
     box-shadow:0 0 24px rgba(53,184,212,0.5); border-color:#35b8d4;
+    -webkit-font-smoothing:auto; font-smooth:auto;
   }
   .btn-ghost::before {
     content:''; position:absolute; inset:-6px; z-index:-1;
@@ -393,6 +394,7 @@
     background:var(--amber); color:#080d09 !important; font-weight:600;
     transform:translateY(-1px); animation:none;
     box-shadow:0 0 24px rgba(212,160,23,0.5); border-color:var(--amber);
+    -webkit-font-smoothing:auto; font-smooth:auto;
   }
   .btn-amber::before {
     content:''; position:absolute; inset:-6px; z-index:-1;
@@ -475,13 +477,24 @@
     background:var(--bg);
     border-top:1px solid var(--border-sub);
     border-bottom:1px solid var(--border-sub);
-    display:flex; justify-content:center; align-items:center; gap:60px;
-    padding:20px 48px; flex-wrap:wrap;
+    display:flex; justify-content:space-evenly; align-items:center;
+    padding:32px 48px; flex-wrap:nowrap;
     text-align:center;
   }
-  .trust-item { display:flex; align-items:center; justify-content:center; gap:10px; font-size:.69rem; letter-spacing:.14em; text-transform:uppercase; color:var(--green-lt); }
-  .trust-item.trust-shipping { width:100%; justify-content:center; padding-top:4px; border-top:1px solid var(--border-sub); margin-top:4px; }
-  .trust-icon { font-size:1rem; }
+  .trust-item { display:flex; align-items:center; justify-content:center; gap:14px; font-size:.8rem; letter-spacing:.18em; text-transform:uppercase; color:var(--green-lt); white-space:nowrap; flex:1; }
+  .trust-item.trust-shipping { display:none; }
+  .trust-icon { font-size:1.5rem; }
+
+  /* ── SHIPPING BAR ── */
+  .shipping-bar {
+    background:var(--surface);
+    border-top:1px solid var(--border-sub);
+    border-bottom:1px solid var(--border-sub);
+    text-align:center; padding:20px 48px;
+    font-family:var(--sans); font-size:.78rem;
+    letter-spacing:.18em; text-transform:uppercase;
+    color:var(--green-lt); width:100%;
+  }
 
   /* ── SECTION HEADERS ── */
   .section-header { text-align:center; padding:56px 48px 52px; }
@@ -872,6 +885,65 @@
   .testimonial-stars { color:var(--green-lt); font-size:.8rem; margin-bottom:16px; }
   .testimonial-text { font-family:var(--serif); font-size:1.05rem; line-height:1.75; font-style:italic; margin-bottom:20px; color:var(--white); font-weight:300; }
   .testimonial-author { font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; color:var(--green-lt); }
+
+  /* ── TESTIMONIAL SUBMIT DRAWER ── */
+  .testi-submit-wrap { margin-top:48px; }
+  .testi-submit-trigger {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 28px; cursor:pointer;
+    background:transparent; width:100%;
+    border:1px solid rgba(212,160,23,0.55);
+    font-family:var(--sans); font-size:.75rem; font-weight:500;
+    letter-spacing:.2em; text-transform:uppercase; color:var(--amber);
+    transition:background .2s, border-color .2s, box-shadow .2s;
+    animation:testiTriggerGlow 3s ease-in-out infinite;
+  }
+  @keyframes testiTriggerGlow {
+    0%,100% { box-shadow:0 0 10px rgba(212,160,23,0.15); border-color:rgba(212,160,23,0.45); }
+    50%     { box-shadow:0 0 22px rgba(212,160,23,0.5);  border-color:rgba(212,160,23,0.95); }
+  }
+  .testi-submit-trigger:hover { background:rgba(212,160,23,0.07); border-color:var(--amber); animation:none; box-shadow:0 0 18px rgba(212,160,23,0.35); }
+  .testi-submit-arrow {
+    font-size:1rem; transition:transform .35s ease; display:inline-block;
+  }
+  .testi-submit-trigger.open .testi-submit-arrow { transform:rotate(180deg); }
+  .testi-submit-drawer {
+    max-height:0; overflow:hidden;
+    transition:max-height .4s ease, padding .3s ease;
+    border:1px solid rgba(212,160,23,0.3); border-top:none;
+    background:var(--surface);
+  }
+  .testi-submit-drawer.open { max-height:600px; }
+  .testi-submit-inner { padding:28px; display:flex; flex-direction:column; gap:14px; }
+  .testi-submit-inner p { font-size:.78rem; color:var(--white-dim); line-height:1.6; letter-spacing:.03em; }
+  .testi-field {
+    background:var(--surface-3); border:1px solid var(--border);
+    color:var(--white); padding:11px 14px;
+    font-family:var(--sans); font-size:.82rem; outline:none;
+    transition:border-color .2s; width:100%; box-sizing:border-box;
+  }
+  .testi-field::placeholder { color:rgba(255,255,255,.25); }
+  .testi-field:focus { border-color:var(--amber); }
+  .testi-textarea {
+    background:var(--surface-3); border:1px solid var(--border);
+    color:var(--white); padding:11px 14px;
+    font-family:var(--sans); font-size:.82rem; outline:none;
+    transition:border-color .2s; width:100%; box-sizing:border-box;
+    resize:vertical; min-height:100px;
+  }
+  .testi-textarea::placeholder { color:rgba(255,255,255,.25); }
+  .testi-textarea:focus { border-color:var(--amber); }
+  .testi-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .testi-submit-btn {
+    background:transparent; color:var(--amber);
+    border:1px solid rgba(212,160,23,0.6); padding:14px;
+    font-family:var(--sans); font-size:.72rem; font-weight:500;
+    letter-spacing:.18em; text-transform:uppercase; cursor:pointer;
+    transition:background .2s, color .2s, border-color .2s, box-shadow .2s;
+    width:100%;
+  }
+  .testi-submit-btn:hover { background:var(--amber); color:#080d09; border-color:var(--amber); box-shadow:0 0 18px rgba(212,160,23,0.4); }
+  .testi-note { font-size:.66rem; color:var(--white-dim); text-align:center; letter-spacing:.04em; }
 
   /* ── NEWSLETTER ── */
   .newsletter {
@@ -1291,8 +1363,9 @@
     .footer-grid { grid-template-columns:1fr 1fr; }
     .footer-bottom { flex-direction:column; gap:14px; text-align:center; }
     .footer-payments { flex-wrap:wrap; justify-content:center; }
-    .trust-strip { gap:20px; padding:16px 20px; }
-    .trust-item.trust-shipping { margin-top:2px; padding-top:6px; }
+    .trust-strip { flex-wrap:wrap; justify-content:center; gap:16px; padding:20px 16px; }
+    .trust-item { flex:none; white-space:nowrap; font-size:.65rem; letter-spacing:.1em; }
+    .trust-item.trust-shipping { display:flex; width:100%; justify-content:center; margin-top:4px; padding-top:10px; font-size:.62rem; letter-spacing:.08em; border-top:1px solid var(--border-sub); white-space:normal; text-align:center; }
     .section-header { padding:60px 20px 32px; }
     .modal { grid-template-columns:1fr; }
     .modal-img { min-height:200px; }
@@ -1886,6 +1959,26 @@
       <span class="testimonial-author">- James K, Perth</span>
     </div>
   </div>
+
+  <!-- SHARE TESTIMONIAL DRAWER -->
+  <div class="testi-submit-wrap">
+    <button class="testi-submit-trigger" id="testiTrigger" onclick="toggleTestiDrawer()">
+      <span>Share your experience &mdash; be featured on the website</span>
+      <span class="testi-submit-arrow" id="testiArrow">&#8964;</span>
+    </button>
+    <div class="testi-submit-drawer" id="testiDrawer">
+      <div class="testi-submit-inner">
+        <p>We love hearing from you. Fill in the form below and if your testimonial is selected, we'll feature it right here on the site.</p>
+        <div class="testi-row">
+          <input class="testi-field" id="testiName" type="text" placeholder="Your name">
+          <input class="testi-field" id="testiEmail" type="email" placeholder="Your email address">
+        </div>
+        <textarea class="testi-textarea" id="testiReview" placeholder="Tell us about your experience..."></textarea>
+        <button class="testi-submit-btn" onclick="submitTestimonial()">Submit Testimonial</button>
+        <p class="testi-note">By submitting you agree your testimonial may be published on profoundnaturals.com.au</p>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- NEWSLETTER -->
@@ -1901,6 +1994,11 @@
       <button onclick="subscribeNewsletter(this)">Subscribe</button>
     </div>
   </div>
+</div>
+
+<!-- SHIPPING BAR -->
+<div class="shipping-bar">
+  Free Shipping On Orders Over $85 &nbsp;&nbsp;·&nbsp;&nbsp; Free Express Shipping On Orders Over $200
 </div>
 
 <!-- FOOTER -->
@@ -2371,6 +2469,50 @@ function handleSearch(query) {
   if (!q) {
     banner.classList.remove('show');
     renderProducts();
+
+// ── TESTIMONIAL SUBMIT ──
+function toggleTestiDrawer() {
+  const trigger = document.getElementById('testiTrigger');
+  const drawer  = document.getElementById('testiDrawer');
+  trigger.classList.toggle('open');
+  drawer.classList.toggle('open');
+}
+
+async function submitTestimonial() {
+  const name    = document.getElementById('testiName').value.trim();
+  const email   = document.getElementById('testiEmail').value.trim();
+  const review  = document.getElementById('testiReview').value.trim();
+  const btn     = document.querySelector('.testi-submit-btn');
+
+  if (!name)   { showToast('Please enter your name'); return; }
+  if (!email)  { showToast('Please enter your email address'); return; }
+  if (!review) { showToast('Please write your testimonial'); return; }
+
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/.netlify/functions/testimonial', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, review })
+    });
+    if (res.ok) {
+      showToast('Thank you! We\'ll be in touch if your testimonial is featured.');
+      document.getElementById('testiName').value    = '';
+      document.getElementById('testiEmail').value   = '';
+      document.getElementById('testiReview').value  = '';
+      toggleTestiDrawer();
+    } else {
+      showToast('Something went wrong — please try again.');
+    }
+  } catch {
+    showToast('Something went wrong — please try again.');
+  }
+
+  btn.textContent = 'Submit Testimonial';
+  btn.disabled = false;
+}
 
 // ── GIFT CARD ──
 let gcAmount = 0;

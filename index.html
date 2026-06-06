@@ -1891,11 +1891,11 @@
     <div class="gc-form">
       <div class="gc-amounts-row">
         <div class="gc-amounts">
-          <button class="gc-amount-btn" onclick="selectGCAmount(25, this)">$25</button>
-          <button class="gc-amount-btn" onclick="selectGCAmount(50, this)">$50</button>
-          <button class="gc-amount-btn" onclick="selectGCAmount(100, this)">$100</button>
-          <button class="gc-amount-btn" onclick="selectGCAmount(150, this)">$150</button>
-          <button class="gc-amount-btn" onclick="selectGCAmount(200, this)">$200</button>
+          <button type="button" class="gc-amount-btn" onclick="selectGCAmount(25, this)">$25</button>
+          <button type="button" class="gc-amount-btn" onclick="selectGCAmount(50, this)">$50</button>
+          <button type="button" class="gc-amount-btn" onclick="selectGCAmount(100, this)">$100</button>
+          <button type="button" class="gc-amount-btn" onclick="selectGCAmount(150, this)">$150</button>
+          <button type="button" class="gc-amount-btn" onclick="selectGCAmount(200, this)">$200</button>
         </div>
         <div class="gc-custom-wrap">
           <span class="gc-currency">$</span>
@@ -1908,7 +1908,7 @@
       </div>
       <input class="gc-input" id="gcRecipientEmail" type="email" placeholder="Recipient email address">
       <textarea class="gc-textarea" id="gcMessage" placeholder="Personal message (optional)"></textarea>
-      <button class="gc-buy-btn" id="gcBuyBtn" onclick="buyGiftCard()" disabled>Select an amount to continue</button>
+      <button type="button" class="gc-buy-btn" id="gcBuyBtn" onclick="buyGiftCard()" disabled>Select an amount to continue</button>
       <p class="gc-note">Delivered instantly by email · Never expires · Redeemable at checkout</p>
     </div>
   </div>

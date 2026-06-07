@@ -1282,6 +1282,7 @@
     cursor:pointer; transition:all .2s; white-space:nowrap;
   }
   .gc-redeem-btn:hover { background:var(--amber); color:#080d09; }
+  .gc-redeem-note { font-size:.65rem; color:rgba(230,236,231,0.4); line-height:1.5; margin-top:8px; letter-spacing:.02em; }
   .gc-applied { font-size:.72rem; color:var(--green-lt); margin-top:6px; display:none; }
   .gc-applied.show { display:block; }
 
@@ -2116,10 +2117,11 @@
   <div class="cart-footer" id="cartFooter" style="display:none">
     <div class="gc-redeem-wrap">
       <div class="gc-redeem-row">
-        <input class="gc-redeem-input" id="gcCodeInput" type="text" placeholder="Gift card code" maxlength="11">
+        <input class="gc-redeem-input" id="gcCodeInput" type="text" placeholder="Gift card code" maxlength="14">
         <button class="gc-redeem-btn" onclick="applyGiftCard()">Apply</button>
       </div>
       <div class="gc-applied" id="gcApplied"></div>
+      <p class="gc-redeem-note">Gift cards cannot be combined with other discount codes. Applying a gift card will remove any other promotion from your order.</p>
     </div>
     <div class="cart-subtotal">
       <span class="cart-subtotal-label">Subtotal</span>
@@ -2449,7 +2451,10 @@ function updateCartUI() {
         <button class="remove-item" onclick="removeFromCart('${item.cartKey}')">✕</button>
       </div>`).join('');
     footer.style.display = 'block';
-    document.getElementById('cartTotal').textContent = `$${total.toFixed(2)}`;
+    const discounted = Math.max(0, total - gcDiscount);
+  document.getElementById('cartTotal').textContent = gcDiscount > 0
+    ? `$${discounted.toFixed(2)} (gift card -$${gcDiscount.toFixed(2)})`
+    : `$${total.toFixed(2)}`;
     document.getElementById('afterpayLine').textContent = `or 4 × $${(total/4).toFixed(2)} with Afterpay`;
   }
 }
@@ -2652,16 +2657,17 @@ async function buyGiftCard() {
 (function() {
   const params = new URLSearchParams(window.location.search);
   if (params.get('gc_success') === '1') {
-    const amount       = parseInt(params.get('amount')) || 0;
-    const recipient    = params.get('recipient') || '';
-    const recipientName= params.get('recipientName') || '';
-    const sender       = params.get('sender') || '';
-    const msg          = params.get('msg') || '';
-    if (recipient && amount) {
+    const amount        = parseInt(params.get('amount')) || 0;
+    const recipient     = params.get('recipient') || '';
+    const recipientName = params.get('recipientName') || '';
+    const sender        = params.get('sender') || '';
+    const msg           = params.get('msg') || '';
+    const code          = params.get('code') || '';
+    if (recipient && amount && code) {
       fetch('/.netlify/functions/giftcard', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'send', amount, recipientEmail: recipient, recipientName, senderName: sender, message: msg }),
+        body: JSON.stringify({ action: 'send', amount, recipientEmail: recipient, recipientName, senderName: sender, message: msg, code }),
       }).then(() => {
         showToast('Gift card sent to ' + recipient + '!');
         window.history.replaceState({}, '', '/');
@@ -2675,30 +2681,51 @@ async function buyGiftCard() {
 })();
 
 // ── GIFT CARD REDEMPTION ──
-const VALID_CODES = {};
-
-function applyGiftCard() {
+async function applyGiftCard() {
   const code = document.getElementById('gcCodeInput').value.trim().toUpperCase();
   const appliedEl = document.getElementById('gcApplied');
+  const applyBtn  = document.querySelector('.gc-redeem-btn');
 
   if (!code) { showToast('Please enter a gift card code'); return; }
 
-  // Basic format check PN-XXXXXXXX
-  if (!/^PN-[A-F0-9]{8}$/.test(code)) {
-    showToast('Invalid gift card code');
+  // Format check — PN-XXXX-XXXX
+  if (!/^PN-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code)) {
+    showToast('Invalid gift card code format');
     appliedEl.classList.remove('show');
     return;
   }
 
-  // For now prompt manual verification — in future this hits an API
   const cartTotal = cart.reduce((s, c) => s + c.price * c.qty, 0);
   if (cartTotal === 0) { showToast('Add items to your bag first'); return; }
 
-  // Store applied code — honoured manually for now
-  gcAppliedCode = code;
-  appliedEl.textContent = 'Gift card ' + code + ' applied - discount will be confirmed at checkout';
-  appliedEl.classList.add('show');
-  showToast('Gift card applied');
+  applyBtn.textContent = 'Checking...';
+  applyBtn.disabled = true;
+
+  try {
+    const res  = await fetch('/.netlify/functions/validate-giftcard', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code }),
+    });
+    const data = await res.json();
+
+    if (data.valid) {
+      gcAppliedCode    = code;
+      gcDiscount       = data.amount_off / 100;
+      appliedEl.textContent = 'Gift card ' + code + ' applied — $' + gcDiscount.toFixed(2) + ' off your order';
+      appliedEl.classList.add('show');
+      showToast('Gift card applied — $' + gcDiscount.toFixed(2) + ' off');
+      updateCartUI();
+    } else {
+      showToast(data.error || 'Gift card code not valid');
+      appliedEl.classList.remove('show');
+    }
+  } catch {
+    showToast('Could not validate code — please try again');
+  }
+
+  applyBtn.textContent = 'Apply';
+  applyBtn.disabled = false;
 }
 
 
@@ -2993,7 +3020,7 @@ async function checkout() {
     const res = await fetch('/.netlify/functions/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ items }),
+      body: JSON.stringify({ items, couponCode: gcAppliedCode || null }),
     });
     const data = await res.json();
     if (data.url) {

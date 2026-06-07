@@ -1295,8 +1295,9 @@
   }
 
   /* ── TOAST ── */
-  .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--green); color:var(--bg); padding:14px 28px; font-size:.76rem; letter-spacing:.1em; text-transform:uppercase; opacity:0; transition:all .3s; z-index:400; pointer-events:none; box-shadow:0 8px 32px rgba(0,0,0,.5); text-align:center; white-space:nowrap; max-width:90vw; overflow:hidden; text-overflow:ellipsis; }
+  .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--green); color:var(--bg); padding:14px 28px; font-size:.76rem; letter-spacing:.1em; text-transform:uppercase; opacity:0; transition:all .3s; z-index:1300; pointer-events:none; box-shadow:0 8px 32px rgba(0,0,0,.5); text-align:center; white-space:nowrap; max-width:90vw; overflow:hidden; text-overflow:ellipsis; }
   .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+  .toast.error { background:#a8281a; color:#fce8e5; box-shadow:0 8px 32px rgba(168,40,26,0.45); }
 
   .nav-hamburger {
     display:none; flex-direction:column; justify-content:center; gap:5px;
@@ -2529,9 +2530,9 @@ async function submitTestimonial() {
   const review  = document.getElementById('testiReview').value.trim();
   const btn     = document.querySelector('.testi-submit-btn');
 
-  if (!name)   { showToast('Please enter your name'); return; }
-  if (!email)  { showToast('Please enter your email address'); return; }
-  if (!review) { showToast('Please write your testimonial'); return; }
+  if (!name)   { showToast('Please enter your name', 'error'); return; }
+  if (!email)  { showToast('Please enter your email address', 'error'); return; }
+  if (!review) { showToast('Please write your testimonial', 'error'); return; }
 
   btn.textContent = 'Sending...';
   btn.disabled = true;
@@ -2549,10 +2550,10 @@ async function submitTestimonial() {
       document.getElementById('testiReview').value  = '';
       document.getElementById('testiModalOverlay').classList.remove('open'); document.body.style.overflow = '';
     } else {
-      showToast('Something went wrong — please try again.');
+      showToast('Something went wrong — please try again.', 'error');
     }
   } catch {
-    showToast('Something went wrong — please try again.');
+    showToast('Something went wrong — please try again.', 'error');
   }
 
   btn.textContent = 'Submit Testimonial';
@@ -2619,10 +2620,10 @@ async function buyGiftCard() {
   const recipientEmail= document.getElementById('gcRecipientEmail').value.trim();
   const message       = document.getElementById('gcMessage').value.trim();
 
-  if (gcAmount < 25)        { showToast('Please select or enter a gift card amount'); return; }
-  if (!senderName)          { showToast('Please enter your name'); return; }
-  if (!recipientName)       { showToast('Please enter the recipient\'s name'); return; }
-  if (!recipientEmail || !recipientEmail.includes('@')) { showToast('Please enter a valid recipient email address'); return; }
+  if (gcAmount < 25)        { showToast('Please select or enter a gift card amount', 'error'); return; }
+  if (!senderName)          { showToast('Please enter your name', 'error'); return; }
+  if (!recipientName)       { showToast('Please enter the recipient\'s name', 'error'); return; }
+  if (!recipientEmail || !recipientEmail.includes('@')) { showToast('Please enter a valid recipient email address', 'error'); return; }
 
   const btn = document.getElementById('gcBuyBtn');
   btn.disabled = true;
@@ -2647,7 +2648,7 @@ async function buyGiftCard() {
       throw new Error(data.error || 'Checkout failed');
     }
   } catch (err) {
-    showToast('Could not start checkout - please try again.');
+    showToast('Could not start checkout - please try again.', 'error');
     btn.disabled = false;
     updateGCBtn();
   }
@@ -2675,7 +2676,7 @@ async function buyGiftCard() {
     }
   }
   if (params.get('gc_cancelled') === '1') {
-    showToast('Gift card purchase cancelled.');
+    showToast('Gift card purchase cancelled.', 'error');
     window.history.replaceState({}, '', '/');
   }
 })();
@@ -2686,17 +2687,17 @@ async function applyGiftCard() {
   const appliedEl = document.getElementById('gcApplied');
   const applyBtn  = document.querySelector('.gc-redeem-btn');
 
-  if (!code) { showToast('Please enter a gift card code'); return; }
+  if (!code) { showToast('Please enter a gift card code', 'error'); return; }
 
   // Format check — PN-XXXX-XXXX
   if (!/^PN-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code)) {
-    showToast('Invalid gift card code format');
+    showToast('Invalid gift card code format', 'error');
     appliedEl.classList.remove('show');
     return;
   }
 
   const cartTotal = cart.reduce((s, c) => s + c.price * c.qty, 0);
-  if (cartTotal === 0) { showToast('Add items to your bag first'); return; }
+  if (cartTotal === 0) { showToast('Add items to your bag first', 'error'); return; }
 
   applyBtn.textContent = 'Checking...';
   applyBtn.disabled = true;
@@ -2717,11 +2718,11 @@ async function applyGiftCard() {
       showToast('Gift card applied — $' + gcDiscount.toFixed(2) + ' off');
       updateCartUI();
     } else {
-      showToast(data.error || 'Gift card code not valid');
+      showToast(data.error || 'Gift card code not valid', 'error');
       appliedEl.classList.remove('show');
     }
   } catch {
-    showToast('Could not validate code — please try again');
+    showToast('Could not validate code — please try again', 'error');
   }
 
   applyBtn.textContent = 'Apply';
@@ -3000,10 +3001,13 @@ function closeBadgeModalDirect() {
   }
 }
 
-function showToast(msg) {
+function showToast(msg, type) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  t.textContent = msg;
+  t.classList.remove('error');
+  if (type === 'error') t.classList.add('error');
+  t.classList.add('show');
+  setTimeout(() => { t.classList.remove('show', 'error'); }, 2500);
 }
 
 async function checkout() {
@@ -3029,7 +3033,7 @@ async function checkout() {
       throw new Error(data.error || 'Checkout failed');
     }
   } catch (err) {
-    showToast('Checkout unavailable — please try again.');
+    showToast('Checkout unavailable — please try again.', 'error');
     console.error('Checkout error:', err);
   }
 }

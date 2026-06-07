@@ -2486,6 +2486,26 @@ function handleSearch(query) {
   if (!q) {
     banner.classList.remove('show');
     renderProducts();
+    document.getElementById('showMoreWrap').classList.remove('hidden');
+    return;
+  }
+  const nameMatches     = products.filter(p => p.name.toLowerCase().includes(q));
+  const categoryMatches = products.filter(p => !p.name.toLowerCase().includes(q) && p.category.toLowerCase().includes(q));
+  const badgeMatches    = products.filter(p => !p.name.toLowerCase().includes(q) && !p.category.toLowerCase().includes(q) && p.badge && p.badge.toLowerCase().includes(q));
+  const descMatches     = products.filter(p => !p.name.toLowerCase().includes(q) && !p.category.toLowerCase().includes(q) && !(p.badge && p.badge.toLowerCase().includes(q)) && p.desc.toLowerCase().includes(q));
+  const results = [...nameMatches, ...categoryMatches, ...badgeMatches, ...descMatches];
+  const grid = document.getElementById('productsGrid');
+  document.getElementById('showMoreWrap').classList.add('hidden');
+  document.getElementById('shop').scrollIntoView({ behavior:'smooth', block:'start' });
+  if (results.length === 0) {
+    grid.innerHTML = `<div style="grid-column:1/-1;padding:60px;text-align:center;color:var(--white-dim);font-size:.85rem;letter-spacing:.1em;">No products found for "<em style="color:var(--green-lt)">${query}</em>"</div>`;
+    document.getElementById('searchBannerText').textContent = `No results for "${query}"`;
+  } else {
+    grid.innerHTML = results.map((p, i) => productCardHTML(p, i)).join('');
+    document.getElementById('searchBannerText').textContent = `${results.length} result${results.length > 1 ? 's' : ''} for "${query}"`;
+  }
+  banner.classList.add('show');
+}
 
 // ── TESTIMONIAL SUBMIT ──
 function openTestiModal() {
@@ -2682,28 +2702,7 @@ function applyGiftCard() {
 }
 
 
-    document.getElementById('showMoreWrap').classList.remove('hidden');
-    return;
-  }
-  // Rank: name match first, then category, then badge, then description
-  const nameMatches     = products.filter(p => p.name.toLowerCase().includes(q));
-  const categoryMatches = products.filter(p => !p.name.toLowerCase().includes(q) && p.category.toLowerCase().includes(q));
-  const badgeMatches    = products.filter(p => !p.name.toLowerCase().includes(q) && !p.category.toLowerCase().includes(q) && p.badge && p.badge.toLowerCase().includes(q));
-  const descMatches     = products.filter(p => !p.name.toLowerCase().includes(q) && !p.category.toLowerCase().includes(q) && !(p.badge && p.badge.toLowerCase().includes(q)) && p.desc.toLowerCase().includes(q));
-  const results = [...nameMatches, ...categoryMatches, ...badgeMatches, ...descMatches];
 
-  const grid = document.getElementById('productsGrid');
-  document.getElementById('showMoreWrap').classList.add('hidden');
-  document.getElementById('shop').scrollIntoView({ behavior:'smooth', block:'start' });
-  if (results.length === 0) {
-    grid.innerHTML = `<div style="grid-column:1/-1;padding:60px;text-align:center;color:var(--white-dim);font-size:.85rem;letter-spacing:.1em;">No products found for "<em style="color:var(--green-lt)">${query}</em>"</div>`;
-    document.getElementById('searchBannerText').textContent = `No results for "${query}"`;
-  } else {
-    grid.innerHTML = results.map((p, i) => productCardHTML(p, i)).join('');
-    document.getElementById('searchBannerText').textContent = `${results.length} result${results.length > 1 ? 's' : ''} for "${query}"`;
-  }
-  banner.classList.add('show');
-}
 
 function clearSearch() {
   document.getElementById('navSearch').value = '';

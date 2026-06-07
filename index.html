@@ -1228,6 +1228,16 @@
     transition:border-color .2s; width:100%;
   }
   .gc-input::placeholder { color:rgba(255,255,255,.25); }
+  .gc-input:-webkit-autofill,
+  .gc-input:-webkit-autofill:hover,
+  .gc-input:-webkit-autofill:focus,
+  .gc-textarea:-webkit-autofill,
+  .gc-custom:-webkit-autofill {
+    -webkit-box-shadow:0 0 0 1000px var(--surface-3) inset !important;
+    -webkit-text-fill-color:var(--white) !important;
+    caret-color:var(--white);
+    transition:background-color 5000s ease-in-out 0s;
+  }
   .gc-input:focus { border-color:var(--amber); }
   .gc-textarea {
     background:var(--surface-3); border:1px solid var(--border);
@@ -2562,11 +2572,19 @@ function selectGCCustom(val) {
 function updateGCBtn() {
   const btn = document.getElementById('gcBuyBtn');
   if (gcAmount >= 25) {
-    btn.disabled = false;
     btn.textContent = 'Buy $' + gcAmount.toFixed(2) + ' Gift Card';
+    btn.removeAttribute('disabled');
+    btn.style.background = 'var(--amber)';
+    btn.style.color = '#080d09';
+    btn.style.cursor = 'pointer';
+    btn.style.opacity = '1';
   } else {
-    btn.disabled = true;
     btn.textContent = gcAmount > 0 ? 'Minimum gift card value is $25' : 'Select an amount to continue';
+    btn.setAttribute('disabled', 'disabled');
+    btn.style.background = '';
+    btn.style.color = '';
+    btn.style.cursor = '';
+    btn.style.opacity = '';
   }
 }
 

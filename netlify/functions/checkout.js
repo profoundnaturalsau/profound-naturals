@@ -17,6 +17,11 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: 'No items provided' };
   }
 
+  // Calculate subtotal to determine free shipping thresholds
+  const subtotal = items.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  const standardFree = subtotal >= 85;
+  const expressFree  = subtotal >= 180;
+
   // Build line items for Stripe
   const lineItems = items.map(item => ({
     price_data: {
@@ -42,8 +47,8 @@ exports.handler = async (event) => {
       {
         shipping_rate_data: {
           type: 'fixed_amount',
-          fixed_amount: { amount: 0, currency: 'aud' },
-          display_name: 'Standard Shipping',
+          fixed_amount: { amount: standardFree ? 0 : 895, currency: 'aud' },
+          display_name: standardFree ? 'Standard Shipping — Free' : 'Standard Shipping — $8.95',
           delivery_estimate: {
             minimum: { unit: 'business_day', value: 3 },
             maximum: { unit: 'business_day', value: 7 },
@@ -53,8 +58,8 @@ exports.handler = async (event) => {
       {
         shipping_rate_data: {
           type: 'fixed_amount',
-          fixed_amount: { amount: 1500, currency: 'aud' },
-          display_name: 'Express Shipping',
+          fixed_amount: { amount: expressFree ? 0 : 1395, currency: 'aud' },
+          display_name: expressFree ? 'Express Shipping — Free' : 'Express Shipping — $13.95',
           delivery_estimate: {
             minimum: { unit: 'business_day', value: 1 },
             maximum: { unit: 'business_day', value: 3 },

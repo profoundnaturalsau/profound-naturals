@@ -109,14 +109,14 @@
     background: rgba(8,13,9,0.93);
     border-bottom:1px solid var(--border-sub);
     display:flex; align-items:center; justify-content:space-between;
-    padding:0 48px; height:76px;
+    padding:0 48px 0 10px; height:76px;
     backdrop-filter:blur(20px);
   }
   .nav-logo {
     display:flex; align-items:center; text-decoration:none;
-    margin-left:-40px;
+    margin-left:0;
   }
-  .nav-logo img { height:61px; width:auto; display:block; }
+  .nav-logo img { height:52px; width:auto; display:block; }
 
   .nav-links { display:flex; gap:28px; list-style:none; }
   .nav-links a {
@@ -1314,9 +1314,9 @@
 
   /* ── RESPONSIVE ── */
   @media(max-width:900px){
-    nav { padding:0 16px; height:60px; overflow:hidden; }
+    nav { padding:0 16px 0 8px; height:60px; overflow:hidden; }
     .nav-logo { flex:1 1 0; min-width:0; max-width:calc(100% - 100px); overflow:hidden; margin-left:0; }
-    .nav-logo img { height:36px; width:auto; max-width:100%; display:block; object-fit:contain; }
+    .nav-logo img { height:31px; width:auto; max-width:100%; display:block; object-fit:contain; }
     .nav-links { display:none; }
     .nav-search-wrap { display:none; }
     .nav-hamburger { display:flex; }

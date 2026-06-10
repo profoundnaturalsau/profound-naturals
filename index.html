@@ -451,6 +451,7 @@
   @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
 
   .hero-product-icon { font-size:4rem; margin-bottom:10px; display:block; transition:opacity .35s; flex-shrink:0; width:80px; height:80px; overflow:hidden; }
+  .hero-product-icon img { width:100%; height:100%; object-fit:contain; filter:brightness(.82) saturate(.9); }
   .hero-product-category { transition:opacity .35s; font-family:var(--sans); font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:var(--green-lt); margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; flex-shrink:0; }
   .hero-card-fade { opacity:0 !important; }
   .hero-arrow {
@@ -932,10 +933,11 @@
   .testi-modal-overlay.open .testi-modal { transform:scale(1); }
   .testi-modal-close {
     position:absolute; top:16px; right:20px;
-    background:none; border:none; color:var(--white-dim);
-    font-size:1.1rem; cursor:pointer; transition:color .2s;
+    background:none; border:none; color:rgba(255,80,80,.6);
+    font-size:1.1rem; cursor:pointer; transition:color .2s, text-shadow .2s;
+    text-shadow:0 0 8px rgba(255,80,80,.3);
   }
-  .testi-modal-close:hover { color:var(--amber); }
+  .testi-modal-close:hover { color:rgba(255,80,80,1); text-shadow:0 0 16px rgba(255,80,80,.8); }
   .testi-modal-label { font-size:.65rem; letter-spacing:.26em; text-transform:uppercase; color:var(--amber); display:block; }
   .testi-modal-title { font-family:var(--serif); font-size:1.8rem; font-weight:300; color:var(--white); line-height:1.2; }
   .testi-modal-sub { font-size:.78rem; color:var(--white-dim); line-height:1.6; }
@@ -1083,7 +1085,8 @@
   }
   .modal-img { display:flex; align-items:center; justify-content:center; font-size:8rem; min-height:300px; position:relative; filter:saturate(.7) brightness(.8); overflow:hidden; }
   .modal-content { padding:48px 36px; display:flex; flex-direction:column; background:var(--surface-2); }
-  .modal-close { position:absolute; top:14px; right:14px; background:rgba(8,13,9,.7); border:1px solid var(--border); width:32px; height:32px; cursor:pointer; font-size:.9rem; display:flex; align-items:center; justify-content:center; color:var(--white); }
+  .modal-close { position:absolute; top:14px; right:14px; background:none; border:none; width:32px; height:32px; cursor:pointer; font-size:1.1rem; display:flex; align-items:center; justify-content:center; color:rgba(255,80,80,.6); z-index:10; transition:color .2s, text-shadow .2s; text-shadow:0 0 8px rgba(255,80,80,.3); }
+  .modal-close:hover { color:rgba(255,80,80,1); text-shadow:0 0 16px rgba(255,80,80,.8); }
   .modal-category { font-size:.64rem; letter-spacing:.2em; text-transform:uppercase; color:var(--green-lt); margin-bottom:10px; }
   .modal-name { font-family:var(--serif); font-size:1.8rem; font-weight:400; margin-bottom:16px; line-height:1.2; color:var(--white); }
   .modal-desc { font-size:.85rem; color:var(--white-dim); line-height:1.8; margin-bottom:24px; font-weight:300; }
@@ -1142,9 +1145,10 @@
   }
   .policy-modal-close {
     background:none; border:none; font-size:1.2rem;
-    cursor:pointer; color:var(--white-dim); transition:color .2s;
+    cursor:pointer; color:rgba(255,80,80,.6); transition:color .2s, text-shadow .2s;
+    text-shadow:0 0 8px rgba(255,80,80,.3);
   }
-  .policy-modal-close:hover { color:var(--white); }
+  .policy-modal-close:hover { color:rgba(255,80,80,1); text-shadow:0 0 16px rgba(255,80,80,.8); }
   .policy-modal-body {
     padding:28px 32px; overflow-y:auto;
     font-family:var(--sans); font-size:.85rem;
@@ -1431,8 +1435,8 @@
     .modal-name { font-size:1.3rem; margin-bottom:8px; }
     .modal-desc { font-size:.78rem; line-height:1.6; margin-bottom:10px; }
     .modal-desc.clamped { display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical; overflow:hidden; }
-    .modal-desc-toggle { font-size:.68rem; color:var(--green-lt); letter-spacing:.1em; text-transform:uppercase; background:none; border:none; padding:0 0 8px; cursor:pointer; display:none; }
-    .modal-desc-toggle.visible { display:block; }
+    .modal-desc-toggle { font-size:.68rem; color:var(--green-lt); letter-spacing:.1em; text-transform:uppercase; background:none; border:none; border-bottom:1px solid rgba(140,196,15,.3); padding:0 0 4px; cursor:pointer; display:none; margin-bottom:8px; }
+    .modal-desc-toggle.visible { display:inline-block; }
     .modal-ing-toggle { font-size:.62rem; padding:8px 0; }
     .modal-ingredients.open { max-height:400px; padding:8px 10px 12px; }
     .modal-price { font-size:1.4rem; margin-bottom:2px; }
@@ -1554,9 +1558,10 @@
   .badge-modal-title span.rare { background:#d4a017; color:#080d09; }
   .badge-modal-close {
     background:none; border:none; font-size:1.2rem;
-    cursor:pointer; color:var(--white-dim); transition:color .2s;
+    cursor:pointer; color:rgba(255,80,80,.6); transition:color .2s, text-shadow .2s;
+    text-shadow:0 0 8px rgba(255,80,80,.3);
   }
-  .badge-modal-close:hover { color:var(--white); }
+  .badge-modal-close:hover { color:rgba(255,80,80,1); text-shadow:0 0 16px rgba(255,80,80,.8); }
   .badge-modal-grid {
     display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr));
     gap:2px; overflow-y:auto; padding:2px;
@@ -1607,9 +1612,10 @@
   }
   .nefertem-modal-close {
     background:none; border:none; font-size:1.2rem;
-    cursor:pointer; color:rgba(212,160,23,.5); transition:color .2s;
+    cursor:pointer; color:rgba(255,80,80,.6); transition:color .2s, text-shadow .2s;
+    text-shadow:0 0 8px rgba(255,80,80,.3);
   }
-  .nefertem-modal-close:hover { color:#d4a017; }
+  .nefertem-modal-close:hover { color:rgba(255,80,80,1); text-shadow:0 0 16px rgba(255,80,80,.8); }
   .nefertem-modal-grid {
     display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr));
     gap:2px; overflow-y:auto; padding:2px;
@@ -1692,9 +1698,10 @@
   }
   .collection-modal-close {
     background:none; border:none; font-size:1.2rem;
-    cursor:pointer; color:rgba(140,196,15,.45); transition:color .2s;
+    cursor:pointer; color:rgba(255,80,80,.6); transition:color .2s, text-shadow .2s;
+    text-shadow:0 0 8px rgba(255,80,80,.3);
   }
-  .collection-modal-close:hover { color:var(--green-lt); }
+  .collection-modal-close:hover { color:rgba(255,80,80,1); text-shadow:0 0 16px rgba(255,80,80,.8); }
   .collection-modal-grid {
     display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr));
     gap:2px; overflow-y:auto; padding:2px;
@@ -2155,6 +2162,7 @@
 <!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
   <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModalDirect()">✕</button>
     <div class="modal-img" id="modalImg">
   <div class="img-lightbox" id="imgLightbox" onclick="closeLightbox()"><img id="lightboxImg" src="" alt=""></div>
       <button class="modal-close" onclick="closeModalDirect()">✕</button>
@@ -2300,12 +2308,12 @@ const products = [
   // ── Jewellery
   { id:11, name:"Aroma Necklaces", category:"Jewellery", emoji:"📿", bg:"#1e1c14", price:18.00, size:null, badge:"Bestseller", desc:"A hand-crafted diffuser necklace with a lava stone pendant - add a drop of your favourite essential oil and carry your scent all day.", ingredients:"Lava Stone, Essential Oil Compatible, Adjustable Chain, Hypoallergenic", variants:["Gold","Silver","Rose Gold"] },
   // ── Essential Oils
-  { id:12, name:"Virginian Cedarwood",    category:"100% Pure Essential Oil", emoji:"🌲", bg:"#1a1a0e", price:14.95, size:"10ml", badge:null, image:"images/products/virginian-cedarwood.png", desc:"A warm, woody essential oil steam-distilled from Virginian cedarwood - grounding and calming with a soft, dry timber scent.", ingredients:"Cedrus Virginiana (100% Pure Essential Oil)" },
+  { id:12, name:"Virginian Cedarwood",    category:"100% Pure Essential Oil", emoji:"🌲", bg:"#1a1a0e", price:14.95, size:"10ml", badge:null, image:"images/products/virginian-cedarwood-eo.png", desc:"A warm, woody essential oil steam-distilled from Virginian cedarwood - grounding and calming with a soft, dry timber scent.", ingredients:"Cedrus Virginiana (100% Pure Essential Oil)" },
   { id:13, name:"Himalayan Cedarwood",    category:"100% Pure Essential Oil", emoji:"🏔️", bg:"#141c1a", price:9.95,  size:"10ml", badge:null, desc:"A rich, balsamic cedarwood steam-distilled from the Himalayan region - deeper and more resinous than Virginian cedarwood, with a warm, woody sweetness.", ingredients:"Cedrus Deodara (100% Pure Essential Oil)" },
   { id:14, name:"Lavandin Grosso",        category:"100% Pure Essential Oil", emoji:"💜", bg:"#1a1428", price:11.95, size:"10ml", badge:null, image:"images/products/lavandin-grosso-eo.png", desc:"A robust lavender hybrid with a deeper, more intense scent than true lavender - perfect for diffusing and relaxation blends.", ingredients:"Lavandula x Intermedia (100% Pure Essential Oil)" },
   { id:15, name:"Aussie Mint",            category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1e14", price:11.95, size:"10ml", badge:null, image:"images/products/aussie-mint-eo.png", desc:"A bright, invigorating mint oil sourced from Australian-grown plants - crisp, cooling and energising with a clean fresh finish.", ingredients:"Mentha Piperita (100% Pure Essential Oil)" },
   { id:16, name:"Jasmine",               category:"100% Pure Absolute Oil",  emoji:"🌸", bg:"#2a1a20", price:59.95, size:"10ml", badge:"Rare", inStock:false, image:"images/products/jasmine-ab.png", desc:"One of nature's most prized florals - a rich, heady jasmine absolute with an intoxicating sweetness that lingers beautifully on the skin.", ingredients:"Jasminum Grandiflorum (100% Pure Absolute)" },
-  { id:17, name:"Bergamot",              category:"100% Pure Essential Oil", emoji:"🍋", bg:"#1a200e", price:16.95, size:"10ml", badge:null, image:"images/products/bergamot.png", desc:"A bright, citrusy-floral oil cold-pressed from Italian bergamot rind - uplifting, balancing and a classic base note in fine perfumery.", ingredients:"Citrus Bergamia (100% Pure Essential Oil)" },
+  { id:17, name:"Bergamot",              category:"100% Pure Essential Oil", emoji:"🍋", bg:"#1a200e", price:16.95, size:"10ml", badge:null, image:"images/products/bergamot-eo.png", desc:"A bright, citrusy-floral oil cold-pressed from Italian bergamot rind - uplifting, balancing and a classic base note in fine perfumery.", ingredients:"Citrus Bergamia (100% Pure Essential Oil)" },
   { id:18, name:"Eucalyptus Blue Gum",   category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1c16", price:9.95,  size:"10ml", badge:"Bestseller", auNative:true, image:"images/products/euca-bluegum.png", desc:"The classic Australian eucalyptus - sharp, camphorous and powerfully clarifying. Ideal for diffusing and respiratory support blends.", ingredients:"Eucalyptus Globulus (100% Pure Essential Oil)" },
   { id:19, name:"Eucalyptus Radiata",    category:"100% Pure Essential Oil", emoji:"🌿", bg:"#101e18", price:11.95, size:"10ml", badge:null, desc:"A softer, more refined eucalyptus with a lighter, crisper aroma than Blue Gum - gentle enough for everyday use and skin blends.", ingredients:"Eucalyptus Radiata (100% Pure Essential Oil)" },
   { id:20, name:"Eucalyptus Kochii",     category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1a12", price:11.95, size:"10ml", badge:null, auNative:true, image:"images/products/euca-kochii-eo.png", desc:"A rare Western Australian eucalyptus with an exceptionally high cineole content - clean, medicinal and beautifully pure.", ingredients:"Eucalyptus Kochii (100% Pure Essential Oil)" },
@@ -2316,7 +2324,7 @@ const products = [
   { id:56, name:"Honeysuckle", category:"100% Pure Absolute", emoji:"🌼", bg:"#1e1808", price:37.95, size:"10ml", badge:"Rare", image:"images/products/honeysuckle-ab.png", desc:"Sweet, honeyed and luminously floral - honeysuckle absolute captures the living warmth of the flower at its peak bloom. Rich and slightly green with a soft, nectar-like depth that lingers beautifully on skin. Organic, hexane-free extraction.", ingredients:"Lonicera japonica (Honeysuckle Absolute, Organic Hexane-Free Extraction)" },
   { id:57, name:"Lemon", category:"100% Pure Essential Oil", emoji:"🍋", bg:"#1a1c06", price:11.95, size:"10ml", badge:null, image:"images/products/lemon-eo.png", desc:"Bright, clean and unmistakably fresh. Cold-pressed from the peel of Citrus limon — sharp, zesty and instantly uplifting with a sparkling, slightly floral character that makes it one of the most versatile top notes in natural perfumery. Blends beautifully with florals, woods, and other citrus oils alike.", ingredients:"Citrus limon (Cold-Pressed Peel, 100% Pure Essential Oil)" },
   { id:58, name:"Cinnamon Bark", category:"100% Pure Essential Oil", emoji:"🟤", bg:"#1e1008", price:13.95, size:"10ml", badge:null, image:"images/products/cinnamon-bark-eo.png", desc:"Warm, spiced and sweetly enveloping. Steam-distilled from the bark of Cinnamomum zeylanicum — deeply rich and aromatic with an immediate intensity that anchors and elevates any blend. A natural fixative used in compliant concentrations for leave-on formulations.", ingredients:"Cinnamomum zeylanicum (100% Pure Essential Oil, Steam-Distilled)" },
-  { id:59, name:"Black Spruce", category:"100% Pure Essential Oil", emoji:"🌲", bg:"#0e1810", price:13.95, size:"10ml", badge:null, image:"images/products/black-spruce.png", desc:"Clean, crisp and deeply forested. Steam-distilled from the needles of Picea mariana — an instantly recognisable forest freshness with a resinous, slightly sweet depth. Grounding and invigorating in equal measure, it opens beautifully in both solo wear and complex botanical blends.", ingredients:"Picea mariana (100% Pure Essential Oil, Steam-Distilled)" },
+  { id:59, name:"Black Spruce", category:"100% Pure Essential Oil", emoji:"🌲", bg:"#0e1810", price:13.95, size:"10ml", badge:null, image:"images/products/black-spruce-eo.png", desc:"Clean, crisp and deeply forested. Steam-distilled from the needles of Picea mariana — an instantly recognisable forest freshness with a resinous, slightly sweet depth. Grounding and invigorating in equal measure, it opens beautifully in both solo wear and complex botanical blends.", ingredients:"Picea mariana (100% Pure Essential Oil, Steam-Distilled)" },
   { id:60, name:"Blue Cypress", category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0a1a1e", price:28.95, size:"10ml", badge:"Rare", auNative:true, desc:"Ancient, smoky and deeply grounding. Steam-distilled from the heartwood of Callitris intratropica — an extraordinary Australian native found only in the tropical woodlands of the Northern Territory. Rich, blue-toned and unmistakably earthy with a warm, resinous depth unlike any other cypress in the world. One of the most sought-after Australian native botanicals in perfumery. 🌿 Australian Native.", ingredients:"Callitris intratropica (100% Pure Essential Oil, Steam-Distilled)" },
   { id:61, name:"Boronia Absolute", category:"100% Pure Absolute", emoji:"🌿", bg:"#1a1018", price:89.95, size:"10ml", badge:"Rare", auNative:true, image:"images/products/boronia-ab.png", desc:"One of the rarest and most prized botanicals in natural perfumery. Solvent-extracted from the flowers of Boronia megastigma — a small flowering shrub native to the southwestern tip of Western Australia. Extraordinarily complex — rich, earthy and deeply floral with fresh fruity-sweet and tea-like facets, soft cinnamon and tobacco nuances, and a warm woody-sweet undertone that lingers beautifully on skin. Frequently adulterated elsewhere — ours is genuine. 🌿 Australian Native.", ingredients:"Boronia megastigma (Absolute, Organic Hexane-Free Extraction)" },
   { id:55, name:"Galbanum",              category:"100% Pure Essential Oil", emoji:"🟢", bg:"#1a2010", price:16.95, size:"10ml", badge:"Rare", image:"images/products/galbanum-eo.png", desc:"One of the oldest aromatic ingredients known to humanity - galbanum was burned as sacred incense in ancient Egypt and mentioned in the Old Testament. Steam-distilled from the gum resin of Ferula galbaniflua, it opens with a sharply green, almost electric freshness before settling into a deep, resinous, woody earthiness that is completely unlike anything else. Rare, potent and unforgettable - a single drop transforms any accord.", ingredients:"Ferula galbaniflua (100% Pure Essential Oil, Steam-Distilled)" },
@@ -2359,7 +2367,7 @@ const products = [
   { id:65, name:"Cade", category:"100% Pure Essential Oil", emoji:"🪵", bg:"#181008", price:18.95, size:"10ml", badge:"Rare", image:"images/products/cade-eo.png", desc:"Smoky, tarry and intensely leathery — cade is one of the most arresting base notes in natural perfumery. Dry-distilled from the wood and twigs of Juniperus oxycedrus, it carries a dark, phenolic smokiness with burnt wood, tobacco and leather facets and a subtle sweet undertone. Used sparingly, it adds extraordinary depth and an almost primal character to woody, leather and fougère compositions.", ingredients:"Juniperus oxycedrus (100% Pure Essential Oil, Dry-Distilled)" },
   { id:66, name:"Aussie Mint", category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1c10", price:13.95, size:"10ml", badge:null, auNative:true, image:"images/products/aussie-mint-eo.png", desc:"Clean, crisp and invigoratingly fresh with a bright, green mintiness that is distinctly softer and more herbal than peppermint. Steam-distilled from native Australian mint species, it carries a cool, clean openness with subtle earthy undertones that ground its freshness. A versatile top note that lifts and clarifies without overpowering. 🌿 Australian Native.", ingredients:"Mentha australis (100% Pure Essential Oil, Steam-Distilled)" },
   { id:67, name:"Lavandin Grosso", category:"100% Pure Essential Oil", emoji:"💜", bg:"#141020", price:12.95, size:"10ml", badge:null, image:"images/products/lavandin-grosso-eo.png", desc:"Bold, bright and deeply herbal with a clean, camphoraceous edge that sets it apart from true lavender. Lavandin Grosso is a naturally occurring hybrid of Lavandula angustifolia and Lavandula latifolia — larger in yield and more powerful in character than its parent species. Its scent opens with a sharp, fresh lavender clarity before softening to a warm, slightly woody herbaceous depth. A workhorse of natural perfumery and one of the most satisfying lavender materials available.", ingredients:"Lavandula x intermedia 'Grosso' (100% Pure Essential Oil, Steam-Distilled)" },
-  { id:68, name:"Virginian Cedarwood", category:"100% Pure Essential Oil", emoji:"🪵", bg:"#14100a", price:13.95, size:"10ml", badge:null, image:"images/products/virginian-cedarwood.png", desc:"Dry, pencil-shaving cedarwood with a clean, almost transparent woody warmth. Steam-distilled from Juniperus virginiana - lighter and crisper than Atlas cedarwood with a subtle sweetness and excellent tenacity. A grounding base note that adds structure without heaviness.", ingredients:"Juniperus virginiana (100% Pure Essential Oil, Steam-Distilled)" },
+  { id:68, name:"Virginian Cedarwood", category:"100% Pure Essential Oil", emoji:"🪵", bg:"#14100a", price:13.95, size:"10ml", badge:null, image:"images/products/virginian-cedarwood-eo.png", desc:"Dry, pencil-shaving cedarwood with a clean, almost transparent woody warmth. Steam-distilled from Juniperus virginiana - lighter and crisper than Atlas cedarwood with a subtle sweetness and excellent tenacity. A grounding base note that adds structure without heaviness.", ingredients:"Juniperus virginiana (100% Pure Essential Oil, Steam-Distilled)" },
   { id:69, name:"Mandarin", category:"100% Pure Essential Oil", emoji:"🍊", bg:"#1e1008", price:12.95, size:"10ml", badge:null, image:"images/products/mandarin-eo.png", desc:"Sweet, soft and warmly citrusy - cold-pressed mandarin is the gentlest and most rounded of the citrus top notes. Rich with a slightly floral, almost honeyed depth that sets it apart from orange or lime. Uplifting and approachable. Note - phototoxic when applied to skin exposed to direct sunlight. A patch test is recommended.", ingredients:"Citrus reticulata (100% Pure Essential Oil, Cold-Pressed)" },
   { id:70, name:"Oakmoss", category:"100% Pure Essential Oil", emoji:"🌿", bg:"#101a0c", price:38.95, size:"10ml", badge:"Rare", image:"images/products/oakmoss-eo.png", desc:"Dark, earthy and unmistakably wild - oakmoss is one of the most iconic base notes in classical perfumery. Steam-distilled from Evernia prunastri, it carries a deep, forest-floor earthiness with mossy, woody and slightly marine facets that ground and anchor any accord. Used in compliant concentrations - IFRA regulated for leave-on applications.", ingredients:"Evernia prunastri (100% Pure Essential Oil, Steam-Distilled)" },
   { id:71, name:"Myrrh", category:"100% Pure Essential Oil", emoji:"🟤", bg:"#1a1008", price:34.95, size:"10ml", badge:"Rare", image:"images/products/myrrh-eo.png", desc:"Ancient, smoky and deeply resinous - myrrh has been prized for thousands of years as a sacred aromatic, medicine and perfumery ingredient. Steam-distilled from the oleo-resin of Commiphora myrrha, it carries a warm, bittersweet earthiness with smoky, slightly medicinal facets and a rich, balsamic depth that evolves beautifully on skin. One of the great base notes of natural perfumery.", ingredients:"Commiphora myrrha (100% Pure Essential Oil, Steam-Distilled)" },
@@ -2877,7 +2885,7 @@ function openModal(id) {
   const badgeHTML = p.badge
     ? `<span class="product-badge ${p.badge === 'Rare' ? 'rare' : 'bestseller'}" style="position:absolute;top:14px;left:14px;z-index:3;">${p.badge === 'Bestseller' ? 'Best-Seller' : p.badge}</span>`
     : '';
-  modalImgEl.innerHTML = `${imgHTML}${badgeHTML}<button class="modal-close" onclick="closeModalDirect()">✕</button>`;
+  modalImgEl.innerHTML = `${imgHTML}${badgeHTML}`;
   document.getElementById('modalName').innerHTML = d(p.name);
   document.getElementById('modalDesc').innerHTML = d(p.desc);
   // Mobile desc clamp
@@ -2885,17 +2893,16 @@ function openModal(id) {
   const toggleEl = document.getElementById('modalDescToggle');
   toggleEl.textContent = 'See more';
   toggleEl.classList.remove('visible');
+  descEl.classList.remove('clamped');
   if (window.innerWidth <= 900) {
+    descEl.style.visibility = 'hidden';
     descEl.classList.add('clamped');
     requestAnimationFrame(() => {
-      if (descEl.scrollHeight > descEl.clientHeight + 2) {
-        toggleEl.classList.add('visible');
-      } else {
-        descEl.classList.remove('clamped');
-      }
+      const overflows = descEl.scrollHeight > descEl.clientHeight + 2;
+      if (!overflows) descEl.classList.remove('clamped');
+      else toggleEl.classList.add('visible');
+      descEl.style.visibility = '';
     });
-  } else {
-    descEl.classList.remove('clamped');
   }
   document.getElementById('modalIngredients').textContent = p.ingredients;
   document.getElementById('modalPrice').textContent = `$${p.price.toFixed(2)}${p.size ? '  -  ' + p.size : ''}`;
@@ -2940,6 +2947,8 @@ function openModal(id) {
     const overlay = document.getElementById('modalOverlay');
     const modal = overlay.querySelector('.modal');
     overlay.classList.add('open');
+    overlay.dataset.justOpened = '1';
+    setTimeout(() => { delete overlay.dataset.justOpened; }, 350);
     document.body.classList.add('modal-open');
     modal.classList.remove('modal-badge-rare','modal-badge-bestseller');
     if (p.badge === 'Rare') modal.classList.add('modal-badge-rare');
@@ -2947,7 +2956,11 @@ function openModal(id) {
   });
 }
 
-function closeModal(e) { if (e.target === document.getElementById('modalOverlay')) closeModalDirect(); }
+function closeModal(e) {
+  const overlay = document.getElementById('modalOverlay');
+  if (overlay.dataset.justOpened) return;
+  if (e.target === overlay) closeModalDirect();
+}
 function toggleModalDesc() {
   const descEl = document.getElementById('modalDesc');
   const toggleEl = document.getElementById('modalDescToggle');
@@ -3168,7 +3181,15 @@ function renderHero(p) {
     ? '<img src="' + p.image + '" alt="' + d(p.name) + '" style="width:100%;height:100%;object-fit:contain;object-position:center;display:block;">'
     : p.emoji;
   var catLabel = p.category === 'Jewellery' ? '' : p.category;
-  document.getElementById('heroCategory').textContent = catLabel;
+  const catEl = document.getElementById('heroCategory');
+  catEl.textContent = catLabel;
+  if (window.innerWidth <= 900 && catLabel === '100% Pure Essential Oil') {
+    catEl.style.fontSize = '.52rem';
+    catEl.style.letterSpacing = '.14em';
+  } else {
+    catEl.style.fontSize = '';
+    catEl.style.letterSpacing = '';
+  }
   document.getElementById('heroName').innerHTML    = d(p.name) + (p.size ? ' <span style="font-size:.65em;opacity:.6;font-family:var(--sans);font-variant-numeric:tabular-nums">· ' + p.size + '</span>' : '');
   document.getElementById('heroPrice').textContent = '$' + p.price.toFixed(2);
   const badgeEl = document.getElementById('heroBadge');

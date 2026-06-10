@@ -257,7 +257,7 @@
     line-height:1.1;
     opacity:0;
     transform:translateY(14px);
-    transition:opacity .4s ease, transform .4s ease;
+    transition:opacity 1.4s ease, transform 1.2s ease;
     cursor:default;
   }
   .hero-welcome.visible {
@@ -275,15 +275,15 @@
     transition:opacity .35s; font-family:var(--sans); font-size:.78rem; letter-spacing:.2em; text-transform:uppercase; color:var(--green-lt); margin-bottom:8px;
   }
   .hl-part {
-    opacity:0; transform:translateY(10px);
+    opacity:0; transform:translateY(6px);
     display:inline-block;
-    transition:opacity .5s ease, transform .5s ease;
+    transition:opacity 1.2s ease, transform 1.2s ease;
   }
   .hl-part.visible { opacity:1; transform:translateY(0); }
 
   .seq-fade {
-    opacity:0; transform:translateY(18px);
-    transition:opacity .7s ease, transform .7s ease;
+    opacity:0; transform:translateY(10px);
+    transition:opacity 1.4s ease, transform 1.2s ease;
   }
   .seq-fade.visible { opacity:1; transform:translateY(0); }
 
@@ -478,13 +478,13 @@
     border-top:1px solid var(--border-sub);
     border-bottom:1px solid var(--border-sub);
     display:flex; justify-content:space-evenly; align-items:center;
-    padding:32px 48px; flex-wrap:nowrap;
+    padding:44px 48px; flex-wrap:nowrap;
     text-align:center;
   }
-  .trust-item { display:flex; align-items:center; justify-content:center; gap:14px; font-size:.8rem; letter-spacing:.18em; text-transform:uppercase; color:var(--green-lt); white-space:nowrap; flex:1; }
+  .trust-item { display:flex; align-items:center; justify-content:center; gap:18px; font-size:1rem; letter-spacing:.18em; text-transform:uppercase; color:var(--green-lt); white-space:nowrap; flex:1; }
   .trust-item.trust-shipping { display:none; }
   .trust-icon { display:inline-flex; align-items:center; }
-  .trust-icon img { width:28px; height:28px; object-fit:contain; display:block; }
+  .trust-icon img { width:40px; height:40px; object-fit:contain; display:block; }
 
   /* ── SHIPPING BAR ── */
   .shipping-bar {
@@ -999,7 +999,7 @@
   }
   .footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:48px; margin-bottom:48px; }
   .footer-brand-name { margin-bottom:14px; }
-  .footer-brand-name img { height:120px; width:auto; display:block; }
+  .footer-brand-name img { height:400px; width:auto; display:block; }
   .footer-tagline { font-size:.8rem; color:var(--white-dim); line-height:1.7; font-weight:300; max-width:240px; }
   .footer-col h4 { font-size:.64rem; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.35); margin-bottom:20px; font-weight:400; }
   .footer-col ul { list-style:none; }
@@ -1862,7 +1862,7 @@
   <div class="collections-grid">
 
     <div class="collection-card">
-      <div class="collection-visual" style="background:#000000; padding:0; overflow:hidden;"><img src="images/Nefertem_God_with_Blue_Lotus.png" alt="Nefertem" style="width:100%; height:100%; object-fit:cover; object-position:center top; display:block; opacity:.92;"></div>
+      <div class="collection-visual" style="background:#000000; padding:0; overflow:hidden;"><img src="images/collections/nefertem.png" alt="Nefertem" style="width:100%; height:100%; object-fit:cover; object-position:center top; display:block; opacity:.92;"></div>
       <div class="collection-content">
         <span class="featured-label amber">Collection</span>
         <h2 class="featured-title amber">Nefertem<br>Botanicals</h2>
@@ -2005,8 +2005,8 @@
 <!-- NEWSLETTER -->
 <div class="newsletter">
   <div>
-    <h2 class="newsletter-title">Join the <em>botanical</em> circle</h2>
-    <p class="newsletter-sub">Seasonal stories, new arrivals, and 10% off your first order when you subscribe.</p>
+    <h2 class="newsletter-title">Join the<br><em>Profound Naturals</em> community</h2>
+    <p class="newsletter-sub">Seasonal stories, new arrivals, rare botanical finds — and 10% off your first order. No noise, just nature.</p>
   </div>
   <div>
     <div class="newsletter-form">
@@ -2476,16 +2476,16 @@ function updateCartUI() {
 }
 
 const heroSeq = [
-  [200,   () => { const w = document.querySelector('.hero-welcome'); if(w) w.classList.add('visible'); }],
+  [0,    () => { const w = document.querySelector('.hero-welcome'); if(w) w.classList.add('visible'); }],
   [600,   () => { document.getElementById('hl1').classList.add('visible'); }],
-  [800,   () => { document.getElementById('hl2').classList.add('visible'); }],
-  [1000,  () => { document.getElementById('hl3').classList.add('visible'); }],
-  [1200,  () => { document.getElementById('hl4').classList.add('visible'); }],
-  [1400,  () => { document.getElementById('hl5').classList.add('visible'); }],
-  [1900,  () => { document.getElementById('heroTitle').classList.add('visible'); }],
-  [2400,  () => { document.getElementById('heroSub').classList.add('visible'); }],
+  [900,   () => { document.getElementById('hl2').classList.add('visible'); }],
+  [1100,  () => { document.getElementById('hl3').classList.add('visible'); }],
+  [1400,  () => { document.getElementById('hl4').classList.add('visible'); }],
+  [1600,  () => { document.getElementById('hl5').classList.add('visible'); }],
+  [2200,  () => { document.getElementById('heroTitle').classList.add('visible'); }],
+  [2800,  () => { document.getElementById('heroSub').classList.add('visible'); }],
   [2700,  () => { document.getElementById('heroCurtain').classList.add('swept'); }],
-  [2900,  () => { document.getElementById('heroCtas').classList.add('visible'); }],
+  [3300,  () => { document.getElementById('heroCtas').classList.add('visible'); }],
 ];
 heroSeq.forEach(([delay, fn]) => setTimeout(fn, delay));
 

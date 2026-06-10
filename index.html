@@ -560,9 +560,10 @@
     width:100%; aspect-ratio:1;
     display:flex; align-items:center; justify-content:center;
     font-size:5rem; position:relative; overflow:hidden;
+    filter:brightness(.82) saturate(.9);
     transition:filter .3s;
   }
-  .product-card:hover .product-img { filter:none; }
+  .product-card:hover .product-img { filter:brightness(1) saturate(1); }
   .product-img::after {
     content:''; position:absolute; inset:0;
     background:linear-gradient(180deg, transparent 60%, rgba(8,13,9,.6) 100%);

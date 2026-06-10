@@ -1320,7 +1320,7 @@
     .nav-links { display:none; }
     .nav-search-wrap { display:none; }
     .nav-hamburger { display:flex; }
-    .announcement { font-size:.58rem; letter-spacing:.08em; padding:10px 16px; }
+    .announcement { font-size:.52rem; letter-spacing:.06em; padding:8px 12px; }
     .hero { grid-template-columns:1fr; }
     .hero-visual { min-height:320px; }
     .hero-text { padding:40px 24px 32px; align-items:stretch; }
@@ -1394,9 +1394,9 @@
     .footer-bottom { flex-direction:column; gap:14px; text-align:center; }
     .footer-payments { flex-wrap:wrap; justify-content:center; }
     .trust-strip { flex-wrap:wrap; justify-content:center; gap:16px; padding:20px 16px; }
-    .trust-item.trust-shipping { font-size:.6rem; letter-spacing:.08em; white-space:normal; text-align:center; }
+
     .trust-item { flex:none; white-space:nowrap; font-size:.65rem; letter-spacing:.1em; }
-    .trust-item.trust-shipping { display:flex; width:100%; justify-content:center; margin-top:4px; padding-top:10px; font-size:.62rem; letter-spacing:.08em; border-top:1px solid var(--border-sub); white-space:normal; text-align:center; }
+    .trust-item.trust-shipping { display:flex; width:100%; justify-content:center; margin-top:4px; padding-top:10px; font-size:.52rem; letter-spacing:.06em; border-top:1px solid var(--border-sub); white-space:normal; text-align:center; line-height:1.5; }
     .section-header { padding:60px 20px 32px; }
     .modal { grid-template-columns:1fr; }
     .modal-img { min-height:200px; }
@@ -1702,7 +1702,7 @@
 <body>
 <div id="page-wrap" style="overflow-x:hidden;width:100%;max-width:100vw;position:relative;">
 
-<div class="announcement">Free Shipping On Orders Over $85 + Free Express Shipping On Orders Over $180</div>
+<div class="announcement">Free Shipping On Orders Over $85 &nbsp;·&nbsp; Free Express Shipping On Orders Over $180</div>
 
 <nav>
   <a href="#" class="nav-logo"><img src="/images/logo-wide.png" alt="Profound Naturals"></a>
@@ -2344,6 +2344,8 @@ const products = [
   { id:65, name:"Cade", category:"100% Pure Essential Oil", emoji:"🪵", bg:"#181008", price:18.95, size:"10ml", badge:"Rare", desc:"Smoky, tarry and intensely leathery — cade is one of the most arresting base notes in natural perfumery. Dry-distilled from the wood and twigs of Juniperus oxycedrus, it carries a dark, phenolic smokiness with burnt wood, tobacco and leather facets and a subtle sweet undertone. Used sparingly, it adds extraordinary depth and an almost primal character to woody, leather and fougère compositions.", ingredients:"Juniperus oxycedrus (100% Pure Essential Oil, Dry-Distilled)" },
   { id:66, name:"Aussie Mint", category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1c10", price:13.95, size:"10ml", badge:null, desc:"Clean, crisp and invigoratingly fresh with a bright, green mintiness that is distinctly softer and more herbal than peppermint. Steam-distilled from native Australian mint species, it carries a cool, clean openness with subtle earthy undertones that ground its freshness. A versatile top note that lifts and clarifies without overpowering. 🌿 Australian Native.", ingredients:"Mentha australis (100% Pure Essential Oil, Steam-Distilled)" },
   { id:67, name:"Lavandin Grosso", category:"100% Pure Essential Oil", emoji:"💜", bg:"#141020", price:12.95, size:"10ml", badge:null, desc:"Bold, bright and deeply herbal with a clean, camphoraceous edge that sets it apart from true lavender. Lavandin Grosso is a naturally occurring hybrid of Lavandula angustifolia and Lavandula latifolia — larger in yield and more powerful in character than its parent species. Its scent opens with a sharp, fresh lavender clarity before softening to a warm, slightly woody herbaceous depth. A workhorse of natural perfumery and one of the most satisfying lavender materials available.", ingredients:"Lavandula x intermedia 'Grosso' (100% Pure Essential Oil, Steam-Distilled)" },
+  { id:68, name:"Virginian Cedarwood", category:"100% Pure Essential Oil", emoji:"🪵", bg:"#14100a", price:13.95, size:"10ml", badge:null, desc:"Dry, pencil-shaving cedarwood with a clean, almost transparent woody warmth. Steam-distilled from Juniperus virginiana - lighter and crisper than Atlas cedarwood with a subtle sweetness and excellent tenacity. A grounding base note that adds structure without heaviness.", ingredients:"Juniperus virginiana (100% Pure Essential Oil, Steam-Distilled)" },
+  { id:69, name:"Mandarin", category:"100% Pure Essential Oil", emoji:"🍊", bg:"#1e1008", price:12.95, size:"10ml", badge:null, desc:"Sweet, soft and warmly citrusy - cold-pressed mandarin is the gentlest and most rounded of the citrus top notes. Rich with a slightly floral, almost honeyed depth that sets it apart from orange or lime. Uplifting and approachable. Note - phototoxic when applied to skin exposed to direct sunlight. A patch test is recommended.", ingredients:"Citrus reticulata (100% Pure Essential Oil, Cold-Pressed)" },
 ];
 
 let cart = [];

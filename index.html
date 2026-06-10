@@ -483,7 +483,8 @@
   }
   .trust-item { display:flex; align-items:center; justify-content:center; gap:14px; font-size:.8rem; letter-spacing:.18em; text-transform:uppercase; color:var(--green-lt); white-space:nowrap; flex:1; }
   .trust-item.trust-shipping { display:none; }
-  .trust-icon { font-size:1.5rem; }
+  .trust-icon { display:inline-flex; align-items:center; }
+  .trust-icon img { width:28px; height:28px; object-fit:contain; display:block; }
 
   /* ── SHIPPING BAR ── */
   .shipping-bar {
@@ -692,7 +693,8 @@
     display:grid; grid-template-columns:repeat(4,1fr); gap:2px;
   }
   .value-card { background:var(--surface-2); padding:48px 40px; text-align:center; }
-  .value-icon { font-size:2.4rem; margin-bottom:20px; display:block; }
+  .value-icon { margin-bottom:20px; display:block; }
+  .value-icon img { width:52px; height:52px; object-fit:contain; display:block; margin:0 auto; }
   .value-title { font-family:var(--serif); font-size:1.4rem; font-weight:400; margin-bottom:12px; color:var(--white); }
   .value-desc { font-size:.82rem; color:var(--white-dim); line-height:1.75; font-weight:300; }
 
@@ -1806,9 +1808,9 @@
 
 <!-- TRUST -->
 <div class="trust-strip" id="trustStrip">
-  <div class="trust-item"><span class="trust-icon">🌱</span> No Added Synthetics</div>
-  <div class="trust-item"><span class="trust-icon">🐰</span> Completely Cruelty-Free</div>
-  <div class="trust-item"><span class="trust-icon">♻️</span> Sustainable Packaging</div>
+  <div class="trust-item"><span class="trust-icon"><img src="images/icons/clean-formulas.png" alt="No Added Synthetics"></span> No Added Synthetics</div>
+  <div class="trust-item"><span class="trust-icon"><img src="images/icons/cruelty-free.png" alt="Completely Cruelty-Free"></span> Completely Cruelty-Free</div>
+  <div class="trust-item"><span class="trust-icon"><img src="images/icons/sustainable-packaging.png" alt="Sustainable Packaging"></span> Sustainable Packaging</div>
   <div class="trust-item trust-shipping">Free Shipping On Orders Over $85 &nbsp;·&nbsp; Free Express Shipping On Orders Over $180</div>
 </div>
 
@@ -1830,22 +1832,22 @@
 <!-- VALUES -->
 <div class="values">
   <div class="value-card">
-    <span class="value-icon">🌾</span>
+    <span class="value-icon"><img src="images/icons/ethically-sourced.png" alt="Ethically Sourced"></span>
     <h3 class="value-title">Ethically Sourced</h3>
     <p class="value-desc">Every ingredient is carefully sourced from farms that respect the land, the plants, the animals and the people who tend them.</p>
   </div>
   <div class="value-card">
-    <span class="value-icon">⚗️</span>
+    <span class="value-icon"><img src="images/icons/small-batch-crafted.png" alt="Small-Batch Crafted"></span>
     <h3 class="value-title">Small-Batch Crafted</h3>
     <p class="value-desc">Made in small batches to preserve potency and ensure each product meets our highest standards.</p>
   </div>
   <div class="value-card">
-    <span class="value-icon">🦘</span>
+    <span class="value-icon"><img src="images/icons/australian-made.png" alt="Australian Made"></span>
     <h3 class="value-title">Australian Made</h3>
     <p class="value-desc">Proudly made in Australia, supporting local growers and artisans while keeping our footprint close to home.</p>
   </div>
   <div class="value-card">
-    <span class="value-icon">💚</span>
+    <span class="value-icon"><img src="images/icons/clean-formulas.png" alt="Clean Formulas"></span>
     <h3 class="value-title">Clean Formulas</h3>
     <p class="value-desc">No synthetic fragrances, parabens, or harmful fillers. Just plants, herbs, and the wisdom of nature.</p>
   </div>
@@ -2111,7 +2113,7 @@
   </div>
   <div class="cart-items" id="cartItems">
     <div class="cart-empty">
-      <span class="cart-empty-icon">🌿</span>
+      <span class="cart-empty-icon"><img src="images/icons/shop-bag.png" alt="Empty cart" style="width:48px;height:48px;object-fit:contain;opacity:0.5;"></span>
       <p class="cart-empty-text">Your bag is empty</p>
     </div>
   </div>

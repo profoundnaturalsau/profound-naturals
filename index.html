@@ -844,6 +844,10 @@
   }
   .pay-detail { font-size:.68rem; color:var(--white-dim); letter-spacing:.04em; }
   .payment-info { margin-top:22px; font-size:.72rem; letter-spacing:.05em; color:#b8e832; animation:payInfoGlow 3s ease-in-out infinite; }
+  @media(min-width:901px) {
+    .payment-label { font-size:1rem; letter-spacing:.26em; }
+    .payment-info { font-size:1rem; letter-spacing:.08em; }
+  }
   @keyframes payInfoGlow {
     0%,100% { text-shadow:0 0 8px rgba(184,232,50,0.3); color:rgba(184,232,50,0.8); }
     50%      { text-shadow:0 0 18px rgba(184,232,50,0.8), 0 0 32px rgba(184,232,50,0.4); color:rgba(184,232,50,1); }

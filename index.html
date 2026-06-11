@@ -427,7 +427,7 @@
     position:relative; z-index:2;
     background:rgba(15,22,16,0.9);
     border:1px solid var(--hero-card-color, rgba(140,196,15,.4));
-    padding:36px 40px; text-align:center; width:300px; height:320px;
+    padding:36px 40px; text-align:center; width:340px; height:400px;
     display:flex; flex-direction:column; align-items:center; justify-content:center;
     backdrop-filter:blur(12px);
     animation:float 4s ease-in-out infinite;
@@ -450,7 +450,7 @@
   }
   @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
 
-  .hero-product-icon { font-size:4rem; margin-bottom:10px; display:block; transition:opacity .35s; flex-shrink:0; width:80px; height:80px; overflow:hidden; }
+  .hero-product-icon { font-size:4rem; margin-bottom:14px; display:block; transition:opacity .35s; flex-shrink:0; width:130px; height:130px; overflow:hidden; }
   .hero-product-icon img { width:100%; height:100%; object-fit:contain; filter:brightness(.82) saturate(.9); color:transparent; }
   .hero-product-category { transition:opacity .35s; font-family:var(--sans); font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:var(--green-lt); margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; flex-shrink:0; }
   .hero-card-fade { opacity:0 !important; }
@@ -698,6 +698,89 @@
   .au-native-badge { display:inline-flex; align-items:center; gap:5px; background:rgba(140,196,15,.12); border:1px solid rgba(140,196,15,.3); border-radius:20px; padding:3px 8px 3px 5px; font-size:.58rem; letter-spacing:.12em; text-transform:uppercase; color:var(--green-lt); margin-bottom:6px; white-space:nowrap; cursor:pointer; }
   .au-native-badge:hover { background:rgba(140,196,15,.2); }
 
+  .baltic-amber-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,.82);
+    z-index:1000; display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none; transition:opacity .3s;
+    backdrop-filter:blur(10px);
+  }
+  .baltic-amber-overlay.open { opacity:1; pointer-events:all; }
+  .baltic-amber-modal {
+    background:linear-gradient(160deg, #1a0e00 0%, #080d09 50%, #100800 100%);
+    border:1px solid rgba(212,160,23,.5);
+    box-shadow:0 32px 100px rgba(0,0,0,.85), 0 0 40px rgba(212,160,23,.25), 0 0 80px rgba(212,160,23,.12);
+    animation:balticAmberGlow 4s ease-in-out infinite;
+    width:min(680px, 94vw); max-height:88vh; overflow-y:auto;
+    display:flex; flex-direction:column; position:relative;
+    transform:scale(.95); transition:transform .3s;
+  }
+  .baltic-amber-overlay.open .baltic-amber-modal { transform:scale(1); }
+  @keyframes balticAmberGlow {
+    0%,100% { box-shadow:0 32px 100px rgba(0,0,0,.85), 0 0 30px rgba(212,160,23,.2), 0 0 60px rgba(212,160,23,.08); border-color:rgba(212,160,23,.4); }
+    50%      { box-shadow:0 32px 100px rgba(0,0,0,.85), 0 0 60px rgba(212,160,23,.45), 0 0 120px rgba(212,160,23,.2); border-color:rgba(212,160,23,.8); }
+  }
+  .baltic-amber-header {
+    padding:28px 32px 20px;
+    border-bottom:1px solid rgba(212,160,23,.25);
+    background:linear-gradient(90deg, rgba(212,160,23,.1) 0%, transparent 100%);
+    display:flex; align-items:center; justify-content:space-between;
+    position:sticky; top:0; z-index:2; backdrop-filter:blur(8px);
+  }
+  .baltic-amber-title { font-family:var(--serif); font-size:1.8rem; font-weight:300; color:var(--amber); margin:0; text-shadow:0 0 20px rgba(212,160,23,.4); }
+  .baltic-amber-close {
+    background:none; border:none; font-size:1.2rem; cursor:pointer;
+    color:rgba(255,80,80,.6); transition:color .2s, text-shadow .2s;
+    text-shadow:0 0 8px rgba(255,80,80,.3); flex-shrink:0;
+  }
+  .baltic-amber-close:hover { color:rgba(255,80,80,1); text-shadow:0 0 16px rgba(255,80,80,.8); }
+  .baltic-amber-body { padding:24px 32px 36px; }
+  .baltic-amber-lead { font-size:.95rem; color:var(--white); line-height:1.8; font-weight:300; margin-bottom:20px; }
+  .baltic-amber-divider { width:60px; height:1px; background:linear-gradient(90deg, var(--amber), transparent); margin:20px 0; opacity:.6; }
+  .baltic-amber-section-title { font-family:var(--serif); font-size:1.1rem; font-weight:400; color:var(--amber); margin:20px 0 8px; text-shadow:0 0 12px rgba(212,160,23,.3); }
+  .baltic-amber-body p { font-size:.86rem; color:var(--white-dim); line-height:1.85; font-weight:300; margin-bottom:12px; }
+  .baltic-amber-body strong { color:var(--white); font-weight:400; }
+    position:fixed; inset:0; background:rgba(0,0,0,.82);
+    z-index:1000; display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none; transition:opacity .3s;
+    backdrop-filter:blur(10px);
+  }
+  .why-natural-overlay.open { opacity:1; pointer-events:all; }
+  .why-natural-modal {
+    background:linear-gradient(160deg, #100c00 0%, #080d09 50%, #0a0800 100%);
+    border:1px solid rgba(212,160,23,.4);
+    box-shadow:0 32px 100px rgba(0,0,0,.85), 0 0 40px rgba(212,160,23,.2), 0 0 80px rgba(212,160,23,.1);
+    animation:whyNaturalGlow 4s ease-in-out infinite;
+    width:min(680px, 94vw); max-height:88vh; overflow-y:auto;
+    display:flex; flex-direction:column; position:relative;
+    transform:scale(.95); transition:transform .3s;
+  }
+  .why-natural-overlay.open .why-natural-modal { transform:scale(1); }
+  @keyframes whyNaturalGlow {
+    0%,100% { box-shadow:0 32px 100px rgba(0,0,0,.85), 0 0 30px rgba(212,160,23,.15), 0 0 60px rgba(212,160,23,.07); }
+    50%      { box-shadow:0 32px 100px rgba(0,0,0,.85), 0 0 50px rgba(212,160,23,.35), 0 0 100px rgba(212,160,23,.15); }
+  }
+  .why-natural-header {
+    padding:28px 32px 20px;
+    border-bottom:1px solid rgba(212,160,23,.2);
+    background:linear-gradient(90deg, rgba(212,160,23,.06) 0%, transparent 100%);
+    display:flex; align-items:center; justify-content:space-between;
+    position:sticky; top:0; z-index:2; backdrop-filter:blur(8px);
+  }
+  .why-natural-title { font-family:var(--serif); font-size:1.8rem; font-weight:300; color:var(--white); margin:0; }
+  .why-natural-title em { color:var(--amber); font-style:italic; }
+  .why-natural-close {
+    background:none; border:none; font-size:1.2rem; cursor:pointer;
+    color:rgba(255,80,80,.6); transition:color .2s, text-shadow .2s;
+    text-shadow:0 0 8px rgba(255,80,80,.3); flex-shrink:0;
+  }
+  .why-natural-close:hover { color:rgba(255,80,80,1); text-shadow:0 0 16px rgba(255,80,80,.8); }
+  .why-natural-body { padding:24px 32px 36px; }
+  .why-natural-lead { font-size:.95rem; color:var(--white); line-height:1.8; font-weight:300; margin-bottom:20px; }
+  .why-natural-divider { width:60px; height:1px; background:linear-gradient(90deg, var(--amber), transparent); margin:20px 0; opacity:.6; }
+  .why-natural-section-title { font-family:var(--serif); font-size:1.1rem; font-weight:400; color:var(--amber); margin:20px 0 8px; }
+  .why-natural-body p { font-size:.86rem; color:var(--white-dim); line-height:1.85; font-weight:300; margin-bottom:12px; }
+  .why-natural-body strong { color:var(--white); font-weight:400; }
+
   .au-native-overlay {
     position:fixed; inset:0; background:rgba(0,0,0,.78);
     z-index:1000; display:flex; align-items:center; justify-content:center;
@@ -708,10 +791,15 @@
   .au-native-modal {
     background:linear-gradient(160deg, #0a1a0a 0%, #080d09 60%, #1a1400 100%);
     border:1px solid rgba(140,196,15,.4);
-    box-shadow:0 32px 100px rgba(0,0,0,.8), 0 0 60px rgba(140,196,15,.12), 0 0 120px rgba(212,160,23,.06);
+    box-shadow:0 32px 100px rgba(0,0,0,.8), 0 0 40px rgba(212,160,23,.25), 0 0 80px rgba(212,160,23,.12), 0 0 120px rgba(212,160,23,.06);
+    animation:auNativeGlow 4s ease-in-out infinite;
     width:min(600px, 94vw); max-height:88vh; overflow-y:auto;
     display:flex; flex-direction:column; position:relative;
     transform:scale(.95); transition:transform .3s;
+  }
+  @keyframes auNativeGlow {
+    0%,100% { box-shadow:0 32px 100px rgba(0,0,0,.8), 0 0 30px rgba(212,160,23,.2), 0 0 60px rgba(212,160,23,.08); }
+    50%      { box-shadow:0 32px 100px rgba(0,0,0,.8), 0 0 50px rgba(212,160,23,.4), 0 0 100px rgba(212,160,23,.18); }
   }
   .au-native-overlay.open .au-native-modal { transform:scale(1); }
   .au-native-modal-header {
@@ -1101,8 +1189,8 @@
   /* ── MODAL ── */
   .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:1000; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .3s; backdrop-filter:blur(8px); isolation:isolate; will-change:opacity; }
   .modal-overlay.open { opacity:1; pointer-events:all; }
-  .modal { background:var(--surface); width:680px; max-width:94vw; max-height:90vh; overflow-y:auto; display:grid; grid-template-columns:1fr 1fr; transform:scale(.95) translateZ(0); transition:transform .3s, border-color .3s, box-shadow .3s; border:1px solid var(--border); will-change:transform; }
-  .modal-overlay.open .modal { transform:scale(1) translateZ(0); }
+  .modal { background:var(--surface); width:680px; max-width:94vw; max-height:90vh; overflow-y:auto; display:grid; grid-template-columns:1fr 1fr; transform:scale(.95) translateZ(0); opacity:0; transition:transform .3s, opacity .25s, border-color .3s, box-shadow .3s; border:1px solid var(--border); will-change:transform, opacity; position:relative; }
+  .modal-overlay.open .modal { transform:scale(1) translateZ(0); opacity:1; }
   .modal.modal-badge-rare {
     border-color:rgba(212,160,23,.7);
     box-shadow:0 32px 100px rgba(0,0,0,.7), 0 0 40px rgba(212,160,23,.3), 0 0 80px rgba(212,160,23,.12);
@@ -1121,7 +1209,7 @@
     0%,100% { border-color:rgba(124,92,191,.4); box-shadow:0 32px 100px rgba(0,0,0,.7), 0 0 24px rgba(124,92,191,.2); }
     50%     { border-color:rgba(124,92,191,.9); box-shadow:0 32px 100px rgba(0,0,0,.7), 0 0 50px rgba(124,92,191,.45), 0 0 90px rgba(124,92,191,.15); }
   }
-  .modal-img { display:flex; align-items:center; justify-content:center; font-size:8rem; min-height:300px; position:relative; filter:saturate(.7) brightness(.8); overflow:hidden; }
+  .modal-img { display:flex; align-items:center; justify-content:center; font-size:8rem; min-height:300px; position:relative; overflow:hidden; }
   .modal-content { padding:48px 36px; display:flex; flex-direction:column; background:var(--surface-2); }
   .modal-close { position:absolute; top:14px; right:14px; background:none; border:none; width:32px; height:32px; cursor:pointer; font-size:1.1rem; display:flex; align-items:center; justify-content:center; color:rgba(255,80,80,.6); z-index:10; transition:color .2s, text-shadow .2s; text-shadow:0 0 8px rgba(255,80,80,.3); }
   .modal-close:hover { color:rgba(255,80,80,1); text-shadow:0 0 16px rgba(255,80,80,.8); }
@@ -1802,6 +1890,7 @@
     <li><a href="#about" onclick="toggleMobileMenu()">About</a></li>
     <li><a href="#journal" onclick="toggleMobileMenu()">Journal</a></li>
     <li><a href="#contact" onclick="toggleMobileMenu()">Contact</a></li>
+    <li><a href="#" onclick="event.preventDefault(); toggleMobileMenu(); setTimeout(openWhyNaturalModal, 300)">Why Natural?</a></li>
   </ul>
   <div class="mobile-search-wrap">
     <input class="mobile-search" id="mobileSearch" type="text" placeholder="Search products…"
@@ -1838,17 +1927,17 @@
     <div class="hero-curtain" id="heroCurtain"></div>
     <svg class="botanical-svg" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
       <!-- Outer diamond -->
-      <polygon points="200,20 380,200 200,380 20,200" stroke="#4d9966" stroke-width="1.5" fill="none"/>
+      <polygon points="200,10 390,200 200,390 10,200" stroke="#4d9966" stroke-width="1.5" fill="none"/>
       <!-- Inner diamond -->
-      <polygon points="200,70 330,200 200,330 70,200" stroke="#4d9966" stroke-width="0.8" fill="none"/>
+      <polygon points="200,60 340,200 200,340 60,200" stroke="#4d9966" stroke-width="0.8" fill="none"/>
       <!-- Cross lines -->
-      <line x1="200" y1="20" x2="200" y2="380" stroke="#4d9966" stroke-width="0.4"/>
-      <line x1="20" y1="200" x2="380" y2="200" stroke="#4d9966" stroke-width="0.4"/>
+      <line x1="200" y1="10" x2="200" y2="390" stroke="#4d9966" stroke-width="0.4"/>
+      <line x1="10" y1="200" x2="390" y2="200" stroke="#4d9966" stroke-width="0.4"/>
       <!-- Corner accents -->
-      <circle cx="200" cy="20"  r="3" stroke="#4d9966" stroke-width="1" fill="none"/>
-      <circle cx="380" cy="200" r="3" stroke="#4d9966" stroke-width="1" fill="none"/>
-      <circle cx="200" cy="380" r="3" stroke="#4d9966" stroke-width="1" fill="none"/>
-      <circle cx="20"  cy="200" r="3" stroke="#4d9966" stroke-width="1" fill="none"/>
+      <circle cx="200" cy="10"  r="3" stroke="#4d9966" stroke-width="1" fill="none"/>
+      <circle cx="390" cy="200" r="3" stroke="#4d9966" stroke-width="1" fill="none"/>
+      <circle cx="200" cy="390" r="3" stroke="#4d9966" stroke-width="1" fill="none"/>
+      <circle cx="10"  cy="200" r="3" stroke="#4d9966" stroke-width="1" fill="none"/>
     </svg>
     <div class="hero-product-card" id="heroCard" onclick="heroCardClick()">
       <button class="hero-arrow hero-arrow-left" onclick="event.stopPropagation(); cycleHero(-1)">&#8249;</button>
@@ -2099,11 +2188,11 @@
     <div class="footer-col">
       <h4>Info</h4>
       <ul>
-        <li><a href="#">Founder's Story</a></li>
+        <li><a href="#" onclick="event.preventDefault(); openWhyNaturalModal()">Why Natural?</a></li>
         <li><a href="#">Ingredients</a></li>
         <li><a href="#">Sustainability</a></li>
         <li><a href="#">Journal</a></li>
-        <li><a href="#">Stockists</a></li>
+        <li><a href="#" onclick="event.preventDefault(); openBalticAmberModal()">Baltic Amber</a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -2202,10 +2291,9 @@
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
   <div class="modal" id="modal">
     <button class="modal-close" onclick="closeModalDirect()">✕</button>
-    <div class="modal-img" id="modalImg">
-  <div class="img-lightbox" id="imgLightbox" onclick="closeLightbox()"><img id="lightboxImg" src="" alt=""></div>
-      <button class="modal-close" onclick="closeModalDirect()">✕</button>
-    </div>
+    <div class="modal-img" id="modalImg"></div>
+    <div class="img-lightbox" id="imgLightbox" onclick="closeLightbox()"><img id="lightboxImg" src="" alt=""></div>
+    <button class="modal-close" onclick="closeModalDirect()">✕</button>
     <div class="modal-content">
       <p class="modal-category" id="modalCategory"></p>
       <h2 class="modal-name" id="modalName"></h2>
@@ -2304,6 +2392,56 @@
 </div>
 
 <!-- BADGE COLLECTION MODAL -->
+<div class="baltic-amber-overlay" id="balticAmberOverlay" onclick="closeBalticAmberModal(event)">
+  <div class="baltic-amber-modal">
+    <div class="baltic-amber-header">
+      <h2 class="baltic-amber-title">Baltic Amber</h2>
+      <button class="baltic-amber-close" onclick="closeBalticAmberModalDirect()">✕</button>
+    </div>
+    <div class="baltic-amber-body">
+      <p class="baltic-amber-lead">Baltic Amber essential oil is one of the world's most extraordinary aromatics - distilled not from living plant material, but from ancient fossilised tree sap. A gemstone in aromatic form.</p>
+      <div class="baltic-amber-divider"></div>
+      <h3 class="baltic-amber-section-title">What It Is</h3>
+      <p>Unlike every other essential oil, Baltic Amber is steam-distilled directly from the amber gemstone - fossilised resin from ancient coniferous forests, millions of years in the making. The result is a warm, resinous, deeply complex oil with an earthy sweetness and a character that exists nowhere else in nature.</p>
+      <div class="baltic-amber-divider"></div>
+      <h3 class="baltic-amber-section-title">Ancient Civilisations</h3>
+      <p>Ancient Greeks and Egyptians called it the "sun stone," prizing it for its golden light and therapeutic warmth. It was used in healing remedies for rheumatism, fever and digestive conditions, and burned as sacred incense in temples and burial rites.</p>
+      <h3 class="baltic-amber-section-title">Medieval Medicine</h3>
+      <p>During the Middle Ages, amber was used to treat respiratory conditions including asthma. In times of plague, people burned amber resin and carried it as a talisman - believed to purify the air and protect against disease.</p>
+      <h3 class="baltic-amber-section-title">The Amber Road</h3>
+      <p>From as early as 8000 BC, Baltic Amber was one of the most valuable traded commodities on Earth - carried along the famous Amber Road connecting the Baltic Sea to the Mediterranean, exchanged weight-for-weight with gold and precious metals.</p>
+      <h3 class="baltic-amber-section-title">Traditional Chinese Medicine</h3>
+      <p>Known as <em>Hu Po</em>, Baltic Amber has been used in Chinese medicine for centuries to calm the mind, ease anxiety and support the nervous system. It is considered a grounding, settling material - anchoring restless energy and promoting clarity.</p>
+    </div>
+  </div>
+</div>
+
+<div class="why-natural-overlay" id="whyNaturalOverlay" onclick="closeWhyNaturalModal(event)">
+  <div class="why-natural-modal">
+    <div class="why-natural-header">
+      <h2 class="why-natural-title">Why <em>Natural?</em></h2>
+      <button class="why-natural-close" onclick="closeWhyNaturalModalDirect()">✕</button>
+    </div>
+    <div class="why-natural-body">
+      <p class="why-natural-lead">The research on synthetic fragrance ingredients and human hormones is ongoing - but the concerns are real enough to take seriously.</p>
+      <div class="why-natural-divider"></div>
+      <h3 class="why-natural-section-title">Endocrine Disruptors</h3>
+      <p>The primary concern with synthetic fragrances is endocrine disruption - chemicals that can mimic, block, or interfere with the body's hormones. This can happen in three ways: by binding to hormone receptors and triggering inappropriate responses, by blocking natural hormones from functioning, or by altering how hormones are produced, transported, metabolised and eliminated.</p>
+      <h3 class="why-natural-section-title">The Chemical Classes of Concern</h3>
+      <p><strong>Phthalates</strong> are used as solvents and fixatives to make synthetic scents last longer. Some, particularly diethyl phthalate (DEP), are linked to reproductive health issues and potential hormonal disruption.</p>
+      <p><strong>Synthetic musks</strong> such as galaxolide and tonalide have been detected in human tissue and the environment, and have shown potential for hormonal activity in laboratory studies.</p>
+      <p><strong>Other synthetic compounds</strong> - synthetic fragrances can contain hundreds of chemicals, and the potential hormonal effects of many remain poorly understood.</p>
+      <h3 class="why-natural-section-title">Potential Impacts</h3>
+      <p>Depending on the chemical, dose, duration and individual sensitivity, endocrine disruptors have been linked to: reproductive health issues, thyroid dysfunction, metabolic disruption, and neurological development concerns in offspring.</p>
+      <h3 class="why-natural-section-title">The Transparency Problem</h3>
+      <p>In Australia, companies are not required to disclose individual ingredients under the term "fragrance." This lack of transparency makes it impossible for consumers to know exactly what they are being exposed to.</p>
+      <div class="why-natural-divider"></div>
+      <h3 class="why-natural-section-title">Why Natural Perfumes Are Different</h3>
+      <p>Natural perfumes use essential oils, absolutes, and natural isolates derived from plants. While these can contain complex compounds, the focus is on naturally occurring substances - free from the synthetic chemicals most commonly linked to endocrine disruption. For those concerned about hormonal health, it is a cleaner and more transparent alternative.</p>
+    </div>
+  </div>
+</div>
+
 <div class="au-native-overlay" id="auNativeOverlay" onclick="closeAuNativeModal(event)">
   <div class="au-native-modal">
     <div class="au-native-modal-header">
@@ -2425,6 +2563,7 @@ const products = [
   { id:69, name:"Mandarin", category:"100% Pure Essential Oil", emoji:"🍊", bg:"#1e1008", price:12.95, size:"10ml", badge:null, image:"images/products/mandarin-eo.png", desc:"Sweet, soft and warmly citrusy - cold-pressed mandarin is the gentlest and most rounded of the citrus top notes. Rich with a slightly floral, almost honeyed depth that sets it apart from orange or lime. Uplifting and approachable. Note - phototoxic when applied to skin exposed to direct sunlight. A patch test is recommended.", ingredients:"Citrus reticulata (100% Pure Essential Oil, Cold-Pressed)" },
   { id:70, name:"Oakmoss", category:"100% Pure Essential Oil", emoji:"🌿", bg:"#101a0c", price:38.95, size:"10ml", badge:"Rare", image:"images/products/oakmoss-eo.png", desc:"Dark, earthy and unmistakably wild - oakmoss is one of the most iconic base notes in classical perfumery. Steam-distilled from Evernia prunastri, it carries a deep, forest-floor earthiness with mossy, woody and slightly marine facets that ground and anchor any accord. Used in compliant concentrations - IFRA regulated for leave-on applications.", ingredients:"Evernia prunastri (100% Pure Essential Oil, Steam-Distilled)" },
   { id:71, name:"Myrrh", category:"100% Pure Essential Oil", emoji:"🟤", bg:"#1a1008", price:34.95, size:"10ml", badge:"Rare", image:"images/products/myrrh-eo.png", desc:"Ancient, smoky and deeply resinous - myrrh has been prized for thousands of years as a sacred aromatic, medicine and perfumery ingredient. Steam-distilled from the oleo-resin of Commiphora myrrha, it carries a warm, bittersweet earthiness with smoky, slightly medicinal facets and a rich, balsamic depth that evolves beautifully on skin. One of the great base notes of natural perfumery.", ingredients:"Commiphora myrrha (100% Pure Essential Oil, Steam-Distilled)" },
+  { id:72, name:"Rosalina", category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1a10", price:16.00, size:"10ml", badge:null, auNative:true, image:"images/products/rosalina-eo.png", desc:"Soft, floral and gently medicinal - rosalina is a lesser-known Australian native with a character that sits beautifully between lavender and tea tree. Steam-distilled from the leaves of Melaleuca ericifolia, it carries a sweet, slightly camphorous freshness with a calm, rounded warmth. A versatile mid note that blends effortlessly across floral, herbal and woody accords.", ingredients:"Melaleuca ericifolia (100% Pure Essential Oil, Steam-Distilled)" },
 ];
 
 let cart = [];
@@ -2925,6 +3064,7 @@ function selectVariant(btn, variant) {
 function openModal(id) {
   const p = products.find(x => x.id === id);
   selectedVariant = null;
+
   document.getElementById('modalQty').textContent = '1';
   // Reset ingredients toggle
   document.getElementById('modalIngredientsWrap').classList.remove('open');
@@ -3021,6 +3161,26 @@ function toggleModalDesc() {
     descEl.classList.add('clamped');
     toggleEl.textContent = 'See more';
   }
+}
+
+function openBalticAmberModal() {
+  document.getElementById('balticAmberOverlay').classList.add('open');
+  document.body.classList.add('modal-open');
+}
+function closeBalticAmberModal(e) { if (e.target === document.getElementById('balticAmberOverlay')) closeBalticAmberModalDirect(); }
+function closeBalticAmberModalDirect() {
+  document.getElementById('balticAmberOverlay').classList.remove('open');
+  document.body.classList.remove('modal-open');
+}
+
+function openWhyNaturalModal() {
+  document.getElementById('whyNaturalOverlay').classList.add('open');
+  document.body.classList.add('modal-open');
+}
+function closeWhyNaturalModal(e) { if (e.target === document.getElementById('whyNaturalOverlay')) closeWhyNaturalModalDirect(); }
+function closeWhyNaturalModalDirect() {
+  document.getElementById('whyNaturalOverlay').classList.remove('open');
+  document.body.classList.remove('modal-open');
 }
 
 function openAuNativeModal() {
@@ -3287,9 +3447,18 @@ function cycleHero(dir) {
   setTimeout(function() {
     heroIndex = (heroIndex + dir + featuredProducts.length) % featuredProducts.length;
     renderHero(featuredProducts[heroIndex]);
+    preloadHeroImage(heroIndex);
     fadeEls.forEach(el => el.classList.remove('hero-card-fade'));
     startHeroTimer();
   }, 350);
+}
+
+function preloadHeroImage(index) {
+  const next = featuredProducts[(index + 1) % featuredProducts.length];
+  if (next && next.image) {
+    const img = new Image();
+    img.src = next.image;
+  }
 }
 
 function startHeroTimer() {
@@ -3298,6 +3467,7 @@ function startHeroTimer() {
 
 if (featuredProducts.length) {
   renderHero(featuredProducts[0]);
+  preloadHeroImage(0);
   startHeroTimer();
 }
 

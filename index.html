@@ -628,9 +628,9 @@
     position:fixed; inset:0; background:rgba(0,0,0,.78);
     z-index:1100; display:flex; align-items:center; justify-content:center;
     opacity:0; pointer-events:none; transition:opacity .3s;
-    backdrop-filter:blur(10px); isolation:isolate;
+    isolation:isolate;
   }
-  .notify-overlay.open { opacity:1; pointer-events:all; }
+  .notify-overlay.open { opacity:1; pointer-events:all; backdrop-filter:blur(10px); }
   .notify-modal {
     background:var(--surface); border:1px solid var(--border);
     width:min(440px, 92vw); padding:40px 36px;
@@ -702,9 +702,8 @@
     position:fixed; inset:0; background:rgba(0,0,0,.82);
     z-index:1000; display:flex; align-items:center; justify-content:center;
     opacity:0; pointer-events:none; transition:opacity .3s;
-    backdrop-filter:blur(10px);
   }
-  .baltic-amber-overlay.open { opacity:1; pointer-events:all; }
+  .baltic-amber-overlay.open { opacity:1; pointer-events:all; backdrop-filter:blur(10px); }
   .baltic-amber-modal {
     background:linear-gradient(160deg, #1a0e00 0%, #080d09 50%, #100800 100%);
     border:1px solid rgba(212,160,23,.5);
@@ -743,9 +742,8 @@
     position:fixed; inset:0; background:rgba(0,0,0,.82);
     z-index:1000; display:flex; align-items:center; justify-content:center;
     opacity:0; pointer-events:none; transition:opacity .3s;
-    backdrop-filter:blur(10px);
   }
-  .why-natural-overlay.open { opacity:1; pointer-events:all; }
+  .why-natural-overlay.open { opacity:1; pointer-events:all; backdrop-filter:blur(10px); }
   .why-natural-modal {
     background:linear-gradient(160deg, #100c00 0%, #080d09 50%, #0a0800 100%);
     border:1px solid rgba(212,160,23,.4);
@@ -786,9 +784,9 @@
     position:fixed; inset:0; background:rgba(0,0,0,.78);
     z-index:1000; display:flex; align-items:center; justify-content:center;
     opacity:0; pointer-events:none; transition:opacity .3s;
-    backdrop-filter:blur(10px); isolation:isolate;
+    isolation:isolate;
   }
-  .au-native-overlay.open { opacity:1; pointer-events:all; }
+  .au-native-overlay.open { opacity:1; pointer-events:all; backdrop-filter:blur(10px); }
   .au-native-modal {
     background:linear-gradient(160deg, #0a1a0a 0%, #080d09 60%, #1a1400 100%);
     border:1px solid rgba(140,196,15,.4);
@@ -1046,9 +1044,9 @@
     position:fixed; inset:0; background:rgba(0,0,0,.78);
     z-index:1100; display:flex; align-items:center; justify-content:center;
     opacity:0; pointer-events:none; transition:opacity .3s;
-    backdrop-filter:blur(6px);
+    
   }
-  .testi-modal-overlay.open { opacity:1; pointer-events:all; }
+  .testi-modal-overlay.open { opacity:1; pointer-events:all; backdrop-filter:blur(6px); }
   .testi-modal {
     background:var(--surface); border:1px solid rgba(212,160,23,0.45);
     box-shadow:0 0 60px rgba(212,160,23,0.15), 0 0 120px rgba(212,160,23,0.07);
@@ -1147,8 +1145,8 @@
   .footer-payments { display:flex; gap:12px; font-size:.64rem; letter-spacing:.1em; color:rgba(255,255,255,.2); }
 
   /* ── CART DRAWER ── */
-  .cart-overlay { position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:200; opacity:0; pointer-events:none; transition:opacity .3s; backdrop-filter:blur(6px); }
-  .cart-overlay.open { opacity:1; pointer-events:all; }
+  .cart-overlay { position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:200; opacity:0; pointer-events:none; transition:opacity .3s; }
+  .cart-overlay.open { opacity:1; pointer-events:all; backdrop-filter:blur(6px); }
   .cart-drawer {
     position:fixed; top:0; right:0; bottom:0; width:420px;
     background:var(--surface); z-index:300;
@@ -1188,8 +1186,8 @@
   .payment-icon-tag { font-size:.58rem; border:1px solid var(--border); padding:4px 8px; letter-spacing:.08em; color:var(--white-dim); }
 
   /* ── MODAL ── */
-  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:1000; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .3s; backdrop-filter:blur(8px); isolation:isolate; }
-  .modal-overlay.open { opacity:1; pointer-events:all; }
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:1000; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .3s; isolation:isolate; }
+  .modal-overlay.open { opacity:1; pointer-events:all; backdrop-filter:blur(8px); }
   .modal { background:var(--surface); width:680px; max-width:94vw; max-height:90vh; overflow-y:auto; display:grid; grid-template-columns:1fr 1fr; transform:scale(.95) translateZ(0); opacity:0; transition:transform .3s, opacity .25s, border-color .3s, box-shadow .3s; border:1px solid var(--border); position:relative; }
   .modal-overlay.open .modal { transform:scale(1) translateZ(0); opacity:1; }
   .modal.modal-badge-rare {
@@ -1245,9 +1243,9 @@
     position:fixed; inset:0; background:rgba(0,0,0,.82);
     z-index:1000; display:flex; align-items:center; justify-content:center;
     opacity:0; pointer-events:none; transition:opacity .3s;
-    backdrop-filter:blur(10px);
+    
   }
-  .policy-overlay.open { opacity:1; pointer-events:all; }
+  .policy-overlay.open { opacity:1; pointer-events:all; backdrop-filter:blur(10px); }
   .policy-modal {
     background:var(--surface); border:1px solid var(--border);
     width:min(720px, 94vw); max-height:88vh;
@@ -1582,9 +1580,9 @@
   .mobile-menu-overlay {
     position:fixed; inset:0; background:rgba(0,0,0,.6);
     z-index:105; opacity:0; pointer-events:none;
-    transition:opacity .35s; backdrop-filter:blur(6px);
+    transition:opacity .35s; 
   }
-  .mobile-menu-overlay.open { opacity:1; pointer-events:all; }
+  .mobile-menu-overlay.open { opacity:1; pointer-events:all; backdrop-filter:blur(6px); }
 
   .mobile-menu {
     position:fixed; top:0; left:0; bottom:0; width:320px;
@@ -1660,9 +1658,9 @@
     position:fixed; inset:0; background:rgba(0,0,0,.78);
     z-index:1000; display:flex; align-items:center; justify-content:center;
     opacity:0; pointer-events:none; transition:opacity .3s;
-    backdrop-filter:blur(10px); isolation:isolate;
+    isolation:isolate;
   }
-  .badge-modal-overlay.open { opacity:1; pointer-events:all; }
+  .badge-modal-overlay.open { opacity:1; pointer-events:all; backdrop-filter:blur(10px); }
   .badge-modal {
     background:var(--surface); border:1px solid var(--border);
     width:min(860px, 94vw); max-height:88vh;
@@ -1714,9 +1712,9 @@
     position:fixed; inset:0; background:rgba(0,0,0,.82);
     z-index:1000; display:flex; align-items:center; justify-content:center;
     opacity:0; pointer-events:none; transition:opacity .3s;
-    backdrop-filter:blur(10px); isolation:isolate;
+    isolation:isolate;
   }
-  .nefertem-overlay.open { opacity:1; pointer-events:all; }
+  .nefertem-overlay.open { opacity:1; pointer-events:all; backdrop-filter:blur(10px); }
   .nefertem-modal {
     background:#110e07; border:1px solid rgba(212,160,23,.4);
     width:min(860px, 94vw); max-height:88vh;
@@ -1794,9 +1792,9 @@
     position:fixed; inset:0; background:rgba(0,0,0,.82);
     z-index:1000; display:flex; align-items:center; justify-content:center;
     opacity:0; pointer-events:none; transition:opacity .3s;
-    backdrop-filter:blur(10px); isolation:isolate;
+    isolation:isolate;
   }
-  .collection-modal-overlay.open { opacity:1; pointer-events:all; }
+  .collection-modal-overlay.open { opacity:1; pointer-events:all; backdrop-filter:blur(10px); }
   .collection-modal {
     background:var(--surface); border:1px solid rgba(140,196,15,.4);
     width:min(860px, 94vw); max-height:88vh;

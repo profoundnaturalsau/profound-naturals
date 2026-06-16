@@ -79,8 +79,9 @@
   }
 
   body.modal-open {
+    position: fixed;
+    width: 100%;
     overflow: hidden;
-    height: 100vh;
   }
 
   /* grain */
@@ -572,6 +573,14 @@
   }
 
   /* ── PRODUCT IMAGE with real image support ── */
+  .product-img img[src*="pr-nfr.svg"],
+  .product-img img[src*="pr-nfrt.svg"] {
+    animation: iconAmberGlow 3.5s ease-in-out infinite;
+  }
+  @keyframes iconAmberGlow {
+    0%,100% { filter: drop-shadow(0 0 4px rgba(212,160,23,0.45)) drop-shadow(0 0 10px rgba(212,160,23,0.25)); }
+    50%     { filter: drop-shadow(0 0 8px rgba(212,160,23,0.8)) drop-shadow(0 0 20px rgba(212,160,23,0.45)); }
+  }
   .product-img img {
     width:100%; height:100%;
     object-fit:contain;
@@ -581,7 +590,7 @@
     color:transparent;
   }
   @media(min-width:901px) {
-    .product-img img { width:90%; height:90%; inset:0; margin:auto; }
+    .product-img img { width:70%; height:70%; inset:0; margin:auto; }
   }
   .product-badge {
     position:absolute; top:14px; left:14px;
@@ -1456,6 +1465,7 @@
   /* ── RESPONSIVE ── */
   @media(max-width:900px){
     nav { padding:0 16px 0 8px; height:60px; overflow:hidden; }
+    .footer-brand-name img { height:140px; max-width:100%; }
     .nav-logo { flex:1 1 0; min-width:0; max-width:calc(100% - 100px); overflow:hidden; margin-left:0; }
     .nav-logo img { height:31px; width:auto; max-width:100%; display:block; object-fit:contain; }
     .nav-links { display:none; }
@@ -1541,6 +1551,9 @@
     .trust-icon { width:24px; display:flex; justify-content:center; flex-shrink:0; }
     .trust-icon img { width:24px; height:24px; }
     .trust-item.trust-shipping { display:flex; width:100%; justify-content:center; margin-top:4px; padding-top:10px; font-size:.52rem; letter-spacing:.06em; border-top:1px solid var(--border-sub); white-space:normal; text-align:center; line-height:1.5; }
+    .shipping-bar { padding:14px 20px; font-size:.62rem; letter-spacing:.12em; line-height:1.7; }
+    .shipping-bar .ship-sep { display:none; }
+    .shipping-bar .ship-line { display:block; }
     .section-header { padding:60px 20px 32px; }
     .modal { grid-template-columns:1fr; }
     .modal-img { min-height:200px; }
@@ -1608,7 +1621,7 @@
   .mobile-menu-logo {
     display:flex; align-items:center; text-decoration:none;
   }
-  .mobile-menu-logo img { height:44px; width:auto; max-width:220px; display:block; }
+  .mobile-menu-logo img { height:44px; width:auto; display:block; }
   .mobile-menu-close {
     background:none; border:none; font-size:1.2rem;
     cursor:pointer; color:var(--white-dim); transition:color .2s;
@@ -2168,7 +2181,7 @@
 
 <!-- SHIPPING BAR -->
 <div class="shipping-bar">
-  Free Shipping On Orders Over $85 &nbsp;&nbsp;·&nbsp;&nbsp; Free Express Shipping On Orders Over $180
+  <span class="ship-line">Free Shipping On Orders Over $85</span><span class="ship-sep">&nbsp;&nbsp;·&nbsp;&nbsp;</span><span class="ship-line">Free Express Shipping On Orders Over $180</span>
 </div>
 
 <!-- FOOTER -->
@@ -2471,6 +2484,23 @@
 </div>
 
 <script>
+let _savedScrollY = 0;
+let _modalLockCount = 0;
+function lockBodyScroll() {
+  _modalLockCount++;
+  if (_modalLockCount > 1) return; // already locked by an underlying modal
+  _savedScrollY = window.scrollY || window.pageYOffset || 0;
+  document.body.style.top = `-${_savedScrollY}px`;
+  document.body.classList.add('modal-open');
+}
+function unlockBodyScroll() {
+  if (_modalLockCount === 0) return;
+  _modalLockCount--;
+  if (_modalLockCount > 0) return; // a modal is still open underneath
+  document.body.classList.remove('modal-open');
+  document.body.style.top = '';
+  window.scrollTo(0, _savedScrollY);
+}
 
 const DASH = '<span style="font-size:.5em;vertical-align:middle;margin:0 .2em">-</span>';
 function d(str) { return str ? str.replace(/-/g, DASH) : str; }
@@ -2492,8 +2522,8 @@ const products = [
   { id:2,  name:"Velvet Forest",    category:"Botanical Perfume", emoji:"🌲", bg:"#0e1f12", price:79.80,  size:"50ml", badge:null,        desc:"Mediterranean cypress opens with a cool, green freshness before Australian native blue cypress deepens the accord with smoke and ancient earth. Baltic amber brings a warm, honeyed resin to the heart while creamy amyris sandalwood softens the base. Ambrette lingers as a velvety, pear-kissed musk - making Velvet Forest as close to living woodland as a bottle can hold.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Organic Baltic Amber (Pinus succinifera), Organic Cypress (Cupressus sempervirens), Organic Blue Cypress Oil (Callitris intratropica), Organic Sandalwood (Amyris balsamifera), Organic Ambrette Oil (Abelmoschus moschatus)" },
   { id:3,  name:"Jazz Lounge",      category:"Botanical Perfume", emoji:"🎷", bg:"#1a1020", price:88.88,  size:"50ml", badge:"Bestseller", desc:"A brooding, resinous accord where galbanum opens with wild green sharpness before davana weaves through the heart, bringing a boozy, fruity warmth with an animalic edge. Australian native blue cypress adds smoke and ancient wood, while labdanum and amber draw it to a dark, leathery close. Bold, sensual and completely unforgettable.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Davana, Blue Cypress (Australian Native - Callitris intratropica), Galbanum, Labdanum, Amber" },
   { id:4,  name:"Floral Fantasy",   category:"Botanical Perfume", emoji:"💐", bg:"#2a1828", price:98.00,  size:"50ml", badge:null,        desc:"A lush bouquet of living botanicals - neroli, ylang ylang and tuberose dancing over a soft musky base.", ingredients:"Neroli Absolute, Ylang Ylang, Tuberose, Rose Otto, White Musk" },
-  { id:5,  name:"Pr-nfr",           category:"Botanical Perfume", emoji:"𓂀", bg:"#1c1a10", price:99.95,  size:"50ml", badge:null,        desc:"Inspired by the sacred embalming rooms of ancient Egypt, Pr-Nfr opens with an instant, clean forest freshness of black spruce before myrrh weaves a smoky, ceremonial earthiness into the heart - the same sacred resin used in ancient ritual and preservation. Warm Baltic amber and rich vanilla oleoresin settle into the base, drawing it to a deeply resinous, honeyed close. Simple in composition, profound in character - Pr-Nfr is a timeless, skin-warming fragrance that settles beautifully and lasts.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Organic Baltic Amber (Pinus succinifera), Organic Vanilla Oleoresin (Vanilla planifolia), Organic Myrrh EO, Organic Black Spruce Oil (Picea mariana)" },
-  { id:6,  name:"Pr-nfrt",          category:"Botanical Perfume", emoji:"𓁿", bg:"#20101a", price:118.76, size:"50ml", badge:"Bestseller", desc:"Floral Amber - a radiant, feminine bloom of rose, jasmine and lotus over a warm amber and sandalwood base. Named for beauty itself.", ingredients:"Rose Absolute, Jasmine Sambac, Blue Lotus, Amber Accord, Sandalwood" },
+  { id:5,  name:"Pr-nfr",           category:"Botanical Perfume", emoji:"𓂀", bg:"#1c1a10", price:99.95,  size:"50ml", badge:null, image:"images/icons/pr-nfr.svg", desc:"Inspired by the sacred embalming rooms of ancient Egypt, Pr-Nfr opens with an instant, clean forest freshness of black spruce before myrrh weaves a smoky, ceremonial earthiness into the heart - the same sacred resin used in ancient ritual and preservation. Warm Baltic amber and rich vanilla oleoresin settle into the base, drawing it to a deeply resinous, honeyed close. Simple in composition, profound in character - Pr-Nfr is a timeless, skin-warming fragrance that settles beautifully and lasts.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Organic Baltic Amber (Pinus succinifera), Organic Vanilla Oleoresin (Vanilla planifolia), Organic Myrrh EO, Organic Black Spruce Oil (Picea mariana)" },
+  { id:6,  name:"Pr-nfrt",          category:"Botanical Perfume", emoji:"𓁿", bg:"#20101a", price:118.76, size:"50ml", badge:"Bestseller", image:"images/icons/pr-nfrt.svg", desc:"A radiant floral amber and the feminine counterpart to Pr-nfr. Rose and jasmine bloom over a heart of blue lotus, while davana lends a soft, fruity warmth that turns uniquely with the skin. A base of amber and sandalwood grounds the bouquet in golden, lingering warmth. Named for beauty itself - luminous, sensual and quietly profound.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Rose Absolute, Jasmine Sambac, Blue Lotus, Davana, Amber Accord, Sandalwood" },
   // ── Natural Soaps
   { id:7,  name:"Hemp Soap - Lavender",         category:"Natural Soap", emoji:"💜", bg:"#1a1428", price:9.00,  size:null, badge:null, desc:"A gentle, conditioning soap bar crafted on a rich base of extra virgin olive oil, coconut oil and hemp seed oil. Lavandin Grosso - a bold, intense variety of lavender known for its lasting clean scent - fills every lather with a fresh, herbaceous calm. Sweet almond oil and castor oil add a creamy, skin-loving richness that soothes as it cleanses. Simple, pure and deeply satisfying.", ingredients:"Olive Oil (Grade A Extra Virgin), Sustainable Palm Oil, Coconut Oil, Safflower Oil, Glycerine (Vegetable Origin), Hemp Seed Oil (Unrefined), Purified Water, Sodium Hydroxide (Saponifying Agent), Sorbitol, Propylene Glycol (Vegetable Glycerine Derived), Sorbitan Oleate (Emulsifier), Oat Protein, Ricinus communis (Castor Oil), Prunus Amygdalus Dulcis (Organic Sweet Almond Oil), Lavandula Hybrida B (Lavandin Grosso) Essential Oil" },
   { id:8,  name:"Hemp Soap - Eucalyptus",       category:"Natural Soap", emoji:"🌿", bg:"#101e14", price:9.00,  size:null, badge:null, desc:"A deeply cleansing botanical soap bar built on a nourishing base of extra virgin olive oil, coconut oil and hemp seed oil. Two varieties of eucalyptus - the sharp, clarifying Kochii and the softer, more rounded Radiata - create a full-spectrum eucalyptus experience that awakens the senses and leaves skin feeling clean and refreshed. Enriched with apricot kernel oil, oat protein and Abyssinian oil for a gentle, conditioning lather that never strips.", ingredients:"Olive Oil (Grade A Extra Virgin), Sustainable Palm Oil, Coconut Oil, Safflower Oil, Glycerine (Vegetable Origin), Hemp Seed Oil (Unrefined), Purified Water, Sodium Hydroxide (Saponifying Agent), Sorbitol, Propylene Glycol (Vegetable Glycerine Derived), Sorbitan Oleate (Emulsifier), Oat Protein, Crambe Abyssinica (Abyssinian Oil Refined), Prunus Armeniaca (Apricot Kernel Oil), Eucalyptus Kochii EO, Eucalyptus Radiata EO" },
@@ -2983,7 +3013,7 @@ function openPolicyModal(type) {
   if (!overlay) return;
   requestAnimationFrame(() => {
     overlay.classList.add('open');
-    document.body.classList.add('modal-open');
+    lockBodyScroll();
   });
 }
 
@@ -2995,9 +3025,7 @@ function closePolicyModal(e, type) {
 function closePolicyModalDirect(type) {
   const overlay = document.getElementById(type + 'Overlay');
   if (overlay) overlay.classList.remove('open');
-  if (!document.querySelector('.modal-overlay.open, .notify-overlay.open, .badge-modal-overlay.open, .collection-modal-overlay.open, .nefertem-overlay.open, .policy-overlay.open')) {
-    document.body.classList.remove('modal-open');
-  }
+  unlockBodyScroll();
 }
 const collectionConfig = {
   fragrance: {
@@ -3024,7 +3052,7 @@ function openCollectionModal(type) {
     </div>`).join('');
   requestAnimationFrame(() => {
     document.getElementById(cfg.overlayId).classList.add('open');
-    document.body.classList.add('modal-open');
+    lockBodyScroll();
   });
 }
 
@@ -3036,15 +3064,18 @@ function closeCollectionModal(e, type) {
 function closeCollectionModalDirect(type) {
   const cfg = collectionConfig[type];
   document.getElementById(cfg.overlayId).classList.remove('open');
-  if (!document.querySelector('.modal-overlay.open, .notify-overlay.open, .badge-modal-overlay.open, .nefertem-overlay.open')) {
-    document.body.classList.remove('modal-open');
-  }
+  unlockBodyScroll();
 }
 
 function toggleMobileMenu() {
-  document.getElementById('mobileMenu').classList.toggle('open');
+  const isOpen = document.getElementById('mobileMenu').classList.toggle('open');
   document.getElementById('mobileMenuOverlay').classList.toggle('open');
   document.getElementById('navHamburger').classList.toggle('open');
+  if (isOpen) {
+    lockBodyScroll();
+  } else {
+    unlockBodyScroll();
+  }
 }
 
 function toggleCart() {
@@ -3146,7 +3177,7 @@ function openModal(id) {
     overlay.classList.add('open');
     overlay.style.pointerEvents = 'none';
     setTimeout(() => { overlay.style.pointerEvents = ''; }, 400);
-    document.body.classList.add('modal-open');
+    lockBodyScroll();
     modal.classList.remove('modal-badge-rare','modal-badge-bestseller');
     if (p.badge === 'Rare') modal.classList.add('modal-badge-rare');
     else if (p.badge === 'Bestseller') modal.classList.add('modal-badge-bestseller');
@@ -3168,32 +3199,32 @@ function toggleModalDesc() {
 
 function openBalticAmberModal() {
   document.getElementById('balticAmberOverlay').classList.add('open');
-  document.body.classList.add('modal-open');
+  lockBodyScroll();
 }
 function closeBalticAmberModal(e) { if (e.target === document.getElementById('balticAmberOverlay')) closeBalticAmberModalDirect(); }
 function closeBalticAmberModalDirect() {
   document.getElementById('balticAmberOverlay').classList.remove('open');
-  document.body.classList.remove('modal-open');
+  unlockBodyScroll();
 }
 
 function openWhyNaturalModal() {
   document.getElementById('whyNaturalOverlay').classList.add('open');
-  document.body.classList.add('modal-open');
+  lockBodyScroll();
 }
 function closeWhyNaturalModal(e) { if (e.target === document.getElementById('whyNaturalOverlay')) closeWhyNaturalModalDirect(); }
 function closeWhyNaturalModalDirect() {
   document.getElementById('whyNaturalOverlay').classList.remove('open');
-  document.body.classList.remove('modal-open');
+  unlockBodyScroll();
 }
 
 function openAuNativeModal() {
   document.getElementById('auNativeOverlay').classList.add('open');
-  document.body.classList.add('modal-open');
+  lockBodyScroll();
 }
 function closeAuNativeModal(e) { if (e.target === document.getElementById('auNativeOverlay')) closeAuNativeModalDirect(); }
 function closeAuNativeModalDirect() {
   document.getElementById('auNativeOverlay').classList.remove('open');
-  document.body.classList.remove('modal-open');
+  unlockBodyScroll();
 }
 
 function openLightbox(src) {
@@ -3209,9 +3240,7 @@ function closeModalDirect() {
   overlay.classList.remove('open');
   const modal = overlay.querySelector('.modal');
   if (modal) modal.classList.remove('modal-badge-rare','modal-badge-bestseller');
-  if (!document.querySelector('.notify-overlay.open, .badge-modal-overlay.open, .nefertem-overlay.open')) {
-    document.body.classList.remove('modal-open');
-  }
+  unlockBodyScroll();
 }
 
 function openNotifyModal(id) {
@@ -3223,15 +3252,13 @@ function openNotifyModal(id) {
   document.getElementById('notifyConfirm').classList.remove('show');
   requestAnimationFrame(() => {
     document.getElementById('notifyOverlay').classList.add('open');
-    document.body.classList.add('modal-open');
+    lockBodyScroll();
   });
 }
 function closeNotifyModal(e) { if (e.target === document.getElementById('notifyOverlay')) closeNotifyModalDirect(); }
 function closeNotifyModalDirect() {
   document.getElementById('notifyOverlay').classList.remove('open');
-  if (!document.querySelector('.modal-overlay.open, .badge-modal-overlay.open, .nefertem-overlay.open')) {
-    document.body.classList.remove('modal-open');
-  }
+  unlockBodyScroll();
 }
 async function submitNotify() {
   const hp = document.getElementById('hp_notify').value;
@@ -3294,15 +3321,13 @@ function openBadgeModal(badge) {
   modal.classList.add('badge-' + cls);
   requestAnimationFrame(() => {
     document.getElementById('badgeModalOverlay').classList.add('open');
-    document.body.classList.add('modal-open');
+    lockBodyScroll();
   });
 }
 function closeBadgeModal(e) { if (e.target === document.getElementById('badgeModalOverlay')) closeBadgeModalDirect(); }
 function closeBadgeModalDirect() {
   document.getElementById('badgeModalOverlay').classList.remove('open');
-  if (!document.querySelector('.modal-overlay.open, .notify-overlay.open, .nefertem-overlay.open')) {
-    document.body.classList.remove('modal-open');
-  }
+  unlockBodyScroll();
 }
 
 function showToast(msg, type) {
@@ -3475,7 +3500,7 @@ if (featuredProducts.length) {
 }
 
 // ── NEFERTEM MODAL ──
-const egyptKeywords = ['egypt', 'egyptian', 'ancient', 'nefertem', 'pr-nfr', 'pr-nfrt'];
+const egyptKeywords = ['egypt', 'egyptian', 'nefertem', 'pr-nfr', 'pr-nfrt', 'cleopatra', 'papyrus', 'tomb', 'pyramid', 'embalm'];
 
 function isNefertProduct(p) {
   const searchable = (p.name + ' ' + p.desc).toLowerCase();
@@ -3493,16 +3518,14 @@ function openNefertModal() {
     </div>`).join('');
   requestAnimationFrame(() => {
     document.getElementById('nefertOverlay').classList.add('open');
-    document.body.classList.add('modal-open');
+    lockBodyScroll();
   });
 }
 
 function closeNefertModal(e) { if (e.target === document.getElementById('nefertOverlay')) closeNefertModalDirect(); }
 function closeNefertModalDirect() {
   document.getElementById('nefertOverlay').classList.remove('open');
-  if (!document.querySelector('.modal-overlay.open, .notify-overlay.open, .badge-modal-overlay.open, .collection-modal-overlay.open')) {
-    document.body.classList.remove('modal-open');
-  }
+  unlockBodyScroll();
 }
 
 </script>

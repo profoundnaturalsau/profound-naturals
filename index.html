@@ -832,6 +832,7 @@
   .au-native-modal-body p { font-size:.88rem; color:var(--white-dim); line-height:1.85; font-weight:300; margin-bottom:16px; }
   .au-native-modal-body p:last-child { margin-bottom:0; }
   .au-native-modal-divider { width:48px; height:1px; background:linear-gradient(90deg, var(--green-lt), var(--amber)); margin:4px 0 20px; opacity:.5; }
+  .value-icon img[src*="australian-made"] { transform: scale(1.1); }
   .au-native-badge img { width:13px; height:13px; object-fit:contain; }
   .img-lightbox { display:none; position:fixed; inset:0; z-index:9999; background:rgba(8,13,9,.95); align-items:center; justify-content:center; cursor:zoom-out; }
   .img-lightbox.open { display:flex; }
@@ -1471,7 +1472,9 @@
     .nav-links { display:none; }
     .nav-search-wrap { display:none; }
     .nav-hamburger { display:flex; }
-    .announcement { font-size:.52rem; letter-spacing:.06em; padding:8px 12px; }
+    .announcement { font-size:.52rem; letter-spacing:.06em; padding:8px 12px; line-height:1.7; }
+    .announcement .ship-sep { display:none; }
+    .announcement .ship-line { display:block; }
     .hero { grid-template-columns:1fr; }
     .hero-visual { min-height:320px; }
     .hero-text { padding:40px 24px 32px; align-items:stretch; }
@@ -1552,8 +1555,6 @@
     .trust-icon img { width:24px; height:24px; }
     .trust-item.trust-shipping { display:flex; width:100%; justify-content:center; margin-top:4px; padding-top:10px; font-size:.52rem; letter-spacing:.06em; border-top:1px solid var(--border-sub); white-space:normal; text-align:center; line-height:1.5; }
     .shipping-bar { padding:14px 20px; font-size:.62rem; letter-spacing:.12em; line-height:1.7; }
-    .shipping-bar .ship-sep { display:none; }
-    .shipping-bar .ship-line { display:block; }
     .section-header { padding:60px 20px 32px; }
     .modal { grid-template-columns:1fr; }
     .modal-img { min-height:200px; }
@@ -1865,7 +1866,7 @@
 <body>
 <div id="page-wrap" style="overflow-x:hidden;width:100%;max-width:100vw;position:relative;">
 
-<div class="announcement">Free Shipping On Orders Over $85 &nbsp;·&nbsp; Free Express Shipping On Orders Over $180</div>
+<div class="announcement"><span class="ship-line">Free Shipping On Orders Over $85</span><span class="ship-sep">&nbsp;·&nbsp;</span><span class="ship-line">Free Express Shipping On Orders Over $180</span></div>
 
 <nav>
   <a href="#" class="nav-logo"><img src="/images/logo-wide.png" alt="Profound Naturals"></a>
@@ -2181,7 +2182,7 @@
 
 <!-- SHIPPING BAR -->
 <div class="shipping-bar">
-  <span class="ship-line">Free Shipping On Orders Over $85</span><span class="ship-sep">&nbsp;&nbsp;·&nbsp;&nbsp;</span><span class="ship-line">Free Express Shipping On Orders Over $180</span>
+  Free Shipping On Orders Over $85 &nbsp;&nbsp;·&nbsp;&nbsp; Free Express Shipping On Orders Over $180
 </div>
 
 <!-- FOOTER -->
@@ -2523,7 +2524,7 @@ const products = [
   { id:3,  name:"Jazz Lounge",      category:"Botanical Perfume", emoji:"🎷", bg:"#1a1020", price:88.88,  size:"50ml", badge:"Bestseller", desc:"A brooding, resinous accord where galbanum opens with wild green sharpness before davana weaves through the heart, bringing a boozy, fruity warmth with an animalic edge. Australian native blue cypress adds smoke and ancient wood, while labdanum and amber draw it to a dark, leathery close. Bold, sensual and completely unforgettable.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Davana, Blue Cypress (Australian Native - Callitris intratropica), Galbanum, Labdanum, Amber" },
   { id:4,  name:"Floral Fantasy",   category:"Botanical Perfume", emoji:"💐", bg:"#2a1828", price:98.00,  size:"50ml", badge:null,        desc:"A lush bouquet of living botanicals - neroli, ylang ylang and tuberose dancing over a soft musky base.", ingredients:"Neroli Absolute, Ylang Ylang, Tuberose, Rose Otto, White Musk" },
   { id:5,  name:"Pr-nfr",           category:"Botanical Perfume", emoji:"𓂀", bg:"#1c1a10", price:99.95,  size:"50ml", badge:null, image:"images/icons/pr-nfr.svg", desc:"Inspired by the sacred embalming rooms of ancient Egypt, Pr-Nfr opens with an instant, clean forest freshness of black spruce before myrrh weaves a smoky, ceremonial earthiness into the heart - the same sacred resin used in ancient ritual and preservation. Warm Baltic amber and rich vanilla oleoresin settle into the base, drawing it to a deeply resinous, honeyed close. Simple in composition, profound in character - Pr-Nfr is a timeless, skin-warming fragrance that settles beautifully and lasts.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Organic Baltic Amber (Pinus succinifera), Organic Vanilla Oleoresin (Vanilla planifolia), Organic Myrrh EO, Organic Black Spruce Oil (Picea mariana)" },
-  { id:6,  name:"Pr-nfrt",          category:"Botanical Perfume", emoji:"𓁿", bg:"#20101a", price:118.76, size:"50ml", badge:"Bestseller", image:"images/icons/pr-nfrt.svg", desc:"A radiant floral amber and the feminine counterpart to Pr-nfr. Rose and jasmine bloom over a heart of blue lotus, while davana lends a soft, fruity warmth that turns uniquely with the skin. A base of amber and sandalwood grounds the bouquet in golden, lingering warmth. Named for beauty itself - luminous, sensual and quietly profound.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Rose Absolute, Jasmine Sambac, Blue Lotus, Davana, Amber Accord, Sandalwood" },
+  { id:6,  name:"Pr-nfrt",          category:"Botanical Perfume", emoji:"𓁿", bg:"#20101a", price:118.76, size:"50ml", badge:"Bestseller", inStock:false, image:"images/icons/pr-nfrt.svg", desc:"A radiant floral amber and the feminine counterpart to Pr-nfr. Rose and jasmine bloom over a heart of blue lotus, while davana lends a soft, fruity warmth that turns uniquely with the skin. A base of amber and sandalwood grounds the bouquet in golden, lingering warmth. Named for beauty itself - luminous, sensual and quietly profound.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Rose Absolute, Jasmine Sambac, Blue Lotus, Davana, Amber Accord, Sandalwood" },
   // ── Natural Soaps
   { id:7,  name:"Hemp Soap - Lavender",         category:"Natural Soap", emoji:"💜", bg:"#1a1428", price:9.00,  size:null, badge:null, desc:"A gentle, conditioning soap bar crafted on a rich base of extra virgin olive oil, coconut oil and hemp seed oil. Lavandin Grosso - a bold, intense variety of lavender known for its lasting clean scent - fills every lather with a fresh, herbaceous calm. Sweet almond oil and castor oil add a creamy, skin-loving richness that soothes as it cleanses. Simple, pure and deeply satisfying.", ingredients:"Olive Oil (Grade A Extra Virgin), Sustainable Palm Oil, Coconut Oil, Safflower Oil, Glycerine (Vegetable Origin), Hemp Seed Oil (Unrefined), Purified Water, Sodium Hydroxide (Saponifying Agent), Sorbitol, Propylene Glycol (Vegetable Glycerine Derived), Sorbitan Oleate (Emulsifier), Oat Protein, Ricinus communis (Castor Oil), Prunus Amygdalus Dulcis (Organic Sweet Almond Oil), Lavandula Hybrida B (Lavandin Grosso) Essential Oil" },
   { id:8,  name:"Hemp Soap - Eucalyptus",       category:"Natural Soap", emoji:"🌿", bg:"#101e14", price:9.00,  size:null, badge:null, desc:"A deeply cleansing botanical soap bar built on a nourishing base of extra virgin olive oil, coconut oil and hemp seed oil. Two varieties of eucalyptus - the sharp, clarifying Kochii and the softer, more rounded Radiata - create a full-spectrum eucalyptus experience that awakens the senses and leaves skin feeling clean and refreshed. Enriched with apricot kernel oil, oat protein and Abyssinian oil for a gentle, conditioning lather that never strips.", ingredients:"Olive Oil (Grade A Extra Virgin), Sustainable Palm Oil, Coconut Oil, Safflower Oil, Glycerine (Vegetable Origin), Hemp Seed Oil (Unrefined), Purified Water, Sodium Hydroxide (Saponifying Agent), Sorbitol, Propylene Glycol (Vegetable Glycerine Derived), Sorbitan Oleate (Emulsifier), Oat Protein, Crambe Abyssinica (Abyssinian Oil Refined), Prunus Armeniaca (Apricot Kernel Oil), Eucalyptus Kochii EO, Eucalyptus Radiata EO" },
@@ -2533,9 +2534,7 @@ const products = [
   // ── Jewellery
   { id:11, name:"Aroma Necklaces", category:"Jewellery", emoji:"📿", bg:"#1e1c14", price:18.00, size:null, badge:"Bestseller", desc:"A hand-crafted diffuser necklace with a lava stone pendant - add a drop of your favourite essential oil and carry your scent all day.", ingredients:"Lava Stone, Essential Oil Compatible, Adjustable Chain, Hypoallergenic", variants:["Gold","Silver","Rose Gold"] },
   // ── Essential Oils
-  { id:12, name:"Virginian Cedarwood",    category:"100% Pure Essential Oil", emoji:"🌲", bg:"#1a1a0e", price:14.95, size:"10ml", badge:null, image:"images/products/virginian-cedarwood-eo.png", desc:"A warm, woody essential oil steam-distilled from Virginian cedarwood - grounding and calming with a soft, dry timber scent.", ingredients:"Cedrus Virginiana (100% Pure Essential Oil)" },
   { id:13, name:"Himalayan Cedarwood",    category:"100% Pure Essential Oil", emoji:"🏔️", bg:"#141c1a", price:9.95,  size:"10ml", badge:null, desc:"A rich, balsamic cedarwood steam-distilled from the Himalayan region - deeper and more resinous than Virginian cedarwood, with a warm, woody sweetness.", ingredients:"Cedrus Deodara (100% Pure Essential Oil)" },
-  { id:15, name:"Aussie Mint",            category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1e14", price:11.95, size:"10ml", badge:null, image:"images/products/aussie-mint-eo.png", desc:"A bright, invigorating mint oil sourced from Australian-grown plants - crisp, cooling and energising with a clean fresh finish.", ingredients:"Mentha Piperita (100% Pure Essential Oil)" },
   { id:16, name:"Jasmine",               category:"100% Pure Absolute Oil",  emoji:"🌸", bg:"#2a1a20", price:59.95, size:"10ml", badge:"Rare", inStock:false, image:"images/products/jasmine-ab.png", desc:"One of nature's most prized florals - a rich, heady jasmine absolute with an intoxicating sweetness that lingers beautifully on the skin.", ingredients:"Jasminum Grandiflorum (100% Pure Absolute)" },
   { id:17, name:"Bergamot",              category:"100% Pure Essential Oil", emoji:"🍋", bg:"#1a200e", price:16.95, size:"10ml", badge:null, image:"images/products/bergamot-eo.png", desc:"A bright, citrusy-floral oil cold-pressed from Italian bergamot rind - uplifting, balancing and a classic base note in fine perfumery.", ingredients:"Citrus Bergamia (100% Pure Essential Oil)" },
   { id:18, name:"Eucalyptus Blue Gum",   category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1c16", price:9.95,  size:"10ml", badge:"Bestseller", auNative:true, image:"images/products/euca-bluegum-eo.png", desc:"The classic Australian eucalyptus - sharp, camphorous and powerfully clarifying. Ideal for diffusing and respiratory support blends.", ingredients:"Eucalyptus Globulus (100% Pure Essential Oil)" },
@@ -2615,7 +2614,7 @@ function productCardHTML(p, i) {
       </div>
       ${p.badge ? `<span class="product-badge${p.badge === 'Rare' ? ' rare' : p.badge === 'Bestseller' ? ' bestseller' : ''}" onclick="event.stopPropagation(); ${p.inStock === false ? `openNotifyModal(${p.id})` : `openBadgeModal('${p.badge}')`}">${p.badge === 'Bestseller' ? 'Best-Seller' : p.badge}</span>` : ''}
       <div class="product-info">
-        <p class="product-category">${d(p.category)}${p.size ? ` <span style="color:#ffffff;opacity:.6;font-weight:300;font-family:var(--sans);font-variant-numeric:tabular-nums">· ${p.size}</span>` : ''}</p>
+        <p class="product-category"><span style="white-space:nowrap">${d(p.category)}</span>${p.size ? ` <span style="color:#ffffff;opacity:.6;font-weight:300;font-family:var(--sans);font-variant-numeric:tabular-nums;white-space:nowrap">· ${p.size}</span>` : ''}</p>
         ${p.auNative ? `<span class="au-native-badge" onclick="event.stopPropagation(); openAuNativeModal()"><img src="images/icons/australian-native.png" alt="Australian Native">Australian Native</span>` : ''}
         <h3 class="product-name">${d(p.name)}</h3>
         <p class="product-desc">${d(p.desc)}</p>
@@ -2655,9 +2654,55 @@ function renderProducts() {
   grid.innerHTML = initial.map((p, i) => productCardHTML(p, i)).join('');
 }
 
+function groupByNameKeyword(list) {
+  // Words too generic to group on
+  const stop = new Set(['the','and','of','oil','pure','essential','absolute','natural','soap','bar','seed','extract','100','first','3rd','1st','complete','distilled','indian','spanish','white','blue','black','rose','sweet','red','-','—','·']);
+  // Normalise common abbreviations so families unite
+  const normalise = (name) => name
+    .toLowerCase()
+    .replace(/euca\b/g, 'eucalyptus')
+    .replace(/[()]/g, ' ')
+    .replace(/[^a-z0-9\s-]/g, ' ');
+
+  // Build keyword -> products map (significant words only)
+  const wordCount = {};
+  list.forEach(p => {
+    const words = normalise(p.name).split(/\s+/).filter(w => w.length > 2 && !stop.has(w));
+    [...new Set(words)].forEach(w => { wordCount[w] = (wordCount[w] || 0) + 1; });
+  });
+  // Keywords shared by 2+ products form a group
+  const groupWords = Object.keys(wordCount).filter(w => wordCount[w] >= 2);
+
+  const assigned = new Set();
+  const groups = [];
+  // For each shared keyword, gather its members in order
+  groupWords.forEach(word => {
+    let members = list.filter(p => {
+      if (assigned.has(p.id)) return false;
+      const words = normalise(p.name).split(/\s+/);
+      return words.includes(word);
+    });
+    if (members.length >= 2) {
+      // Within a group, push non-oil categories (soaps etc.) to the end
+      members.sort((a, b) => {
+        const aOil = (a.category || '').toLowerCase().includes('essential oil') ? 0 : 1;
+        const bOil = (b.category || '').toLowerCase().includes('essential oil') ? 0 : 1;
+        return aOil - bOil;
+      });
+      members.forEach(m => assigned.add(m.id));
+      groups.push(members);
+    }
+  });
+  // Flatten groups, then append any ungrouped singletons in original order
+  const grouped = groups.flat();
+  const singles = list.filter(p => !assigned.has(p.id));
+  return [...grouped, ...singles];
+}
+
 function showAllProducts() {
   const grid = document.getElementById('productsGrid');
-  grid.innerHTML = allProductsOrder.map((p, i) => productCardHTML(p, i)).join('');
+  const ordered = groupByNameKeyword(allProductsOrder);
+  grid.innerHTML = ordered.map((p, i) => productCardHTML(p, i)).join('');
   document.getElementById('showMoreWrap').classList.add('hidden');
 }
 

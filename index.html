@@ -103,6 +103,14 @@
     letter-spacing:.18em;
     text-transform:uppercase;
   }
+  @media(min-width:901px) {
+    .announcement {
+      display:flex; align-items:center; justify-content:center;
+      gap:8vw; padding:15px 6vw;
+      font-size:.92rem; letter-spacing:.28em;
+    }
+    .announcement .ship-sep { display:none; }
+  }
 
   /* ── NAV ── */
   nav {
@@ -618,6 +626,7 @@
     letter-spacing:.12em; text-transform:uppercase;
     padding:10px 18px;
     white-space:nowrap; line-height:1;
+    min-width:104px; text-align:center; box-sizing:border-box;
   }
   .product-badge.out-of-stock:hover { background:rgba(140,196,15,.5); color:#d4f07a; box-shadow:0 0 14px rgba(140,196,15,.3); }
   .add-to-cart.out-of-stock {
@@ -1228,6 +1237,8 @@
   .modal-category { font-size:.64rem; letter-spacing:.2em; text-transform:uppercase; color:var(--green-lt); margin-bottom:10px; }
   .modal-name { font-family:var(--serif); font-size:1.8rem; font-weight:400; margin-bottom:16px; line-height:1.2; color:var(--white); }
   .modal-desc { font-size:.85rem; color:var(--white-dim); line-height:1.8; margin-bottom:24px; font-weight:300; }
+  .modal-desc-toggle { display:none; font-size:.68rem; color:var(--green-lt); letter-spacing:.1em; text-transform:uppercase; background:none; border:none; border-bottom:1px solid rgba(140,196,15,.3); padding:0 0 4px; margin-bottom:8px; cursor:pointer; -webkit-appearance:none; appearance:none; border-radius:0; box-shadow:none; align-self:flex-start; width:auto; }
+  .modal-desc-toggle.visible { display:inline-block; }
   .modal-ing-toggle {
     display:flex; align-items:center; justify-content:space-between;
     width:100%; background:none; border:none; border-top:1px solid var(--border-sub);
@@ -1472,9 +1483,9 @@
     .nav-links { display:none; }
     .nav-search-wrap { display:none; }
     .nav-hamburger { display:flex; }
-    .announcement { font-size:.52rem; letter-spacing:.06em; padding:8px 12px; line-height:1.7; }
+    .announcement { font-size:.5rem; letter-spacing:.14em; word-spacing:.5em; padding:6px 6px; line-height:1.6; }
     .announcement .ship-sep { display:none; }
-    .announcement .ship-line { display:block; }
+    .announcement .ship-line { display:block; white-space:nowrap; }
     .hero { grid-template-columns:1fr; }
     .hero-visual { min-height:320px; }
     .hero-text { padding:40px 24px 32px; align-items:stretch; }
@@ -1507,7 +1518,7 @@
     .product-badge.rare { font-size:.52rem; }
     .product-badge.bestseller { font-size:.52rem; }
     .add-to-cart { padding:8px 12px; font-size:.6rem; }
-    .product-badge.out-of-stock { position:relative; top:auto; left:auto; font-size:.55rem; padding:8px 12px; white-space:normal; letter-spacing:.05em; text-align:center; line-height:.9; width:auto; transition:opacity .25s, transform .25s; }
+    .product-badge.out-of-stock { position:relative; top:auto; left:auto; font-size:.55rem; padding:8px 12px; white-space:nowrap; letter-spacing:.05em; text-align:center; line-height:.9; min-width:92px; width:auto; transition:opacity .25s, transform .25s; }
   .product-badge.oos-roll-out {
     animation: oosRollOut .22s cubic-bezier(.4,0,1,1) forwards;
   }
@@ -1550,10 +1561,12 @@
     .footer-payments { flex-wrap:wrap; justify-content:center; }
     .trust-strip { flex-direction:column; flex-wrap:nowrap; align-items:center; gap:16px; padding:24px 16px; }
 
-    .trust-item { flex:none; white-space:nowrap; font-size:.78rem; letter-spacing:.1em; gap:12px; display:flex; align-items:center; justify-content:flex-start; width:230px; }
-    .trust-icon { width:24px; display:flex; justify-content:center; flex-shrink:0; }
+    .trust-item { flex:none; white-space:nowrap; font-size:.78rem; letter-spacing:.1em; gap:14px; display:flex; align-items:center; justify-content:flex-start; width:14.5em; margin:0 auto; }
+    .trust-icon { width:26px; display:flex; justify-content:center; flex-shrink:0; }
     .trust-icon img { width:24px; height:24px; }
-    .trust-item.trust-shipping { display:flex; width:100%; justify-content:center; margin-top:4px; padding-top:10px; font-size:.52rem; letter-spacing:.06em; border-top:1px solid var(--border-sub); white-space:normal; text-align:center; line-height:1.5; }
+    .trust-item.trust-shipping { display:flex; flex-direction:column; align-items:center; width:100%; margin-top:4px; padding-top:10px; font-size:.55rem; letter-spacing:.14em; word-spacing:.5em; border-top:1px solid var(--border-sub); text-align:center; line-height:1.6; }
+    .trust-item.trust-shipping .ship-sep { display:none; }
+    .trust-item.trust-shipping .ship-line { display:block; white-space:nowrap; }
     .shipping-bar { padding:14px 20px; font-size:.62rem; letter-spacing:.12em; line-height:1.7; }
     .section-header { padding:60px 20px 32px; }
     .modal { grid-template-columns:1fr; }
@@ -1974,7 +1987,7 @@
   <div class="trust-item"><span class="trust-icon"><img src="images/icons/clean-formulas.png" alt="No Added Synthetics"></span> No Added Synthetics</div>
   <div class="trust-item"><span class="trust-icon"><img src="images/icons/cruelty-free.png" alt="Completely Cruelty-Free"></span> Completely Cruelty-Free</div>
   <div class="trust-item"><span class="trust-icon"><img src="images/icons/sustainable-packaging.png" alt="Sustainable Packaging"></span> Sustainable Packaging</div>
-  <div class="trust-item trust-shipping">Free Shipping On Orders Over $85 &nbsp;·&nbsp; Free Express Shipping On Orders Over $180</div>
+  <div class="trust-item trust-shipping"><span class="ship-line">Free Shipping On Orders Over $85</span><span class="ship-sep">&nbsp;·&nbsp;</span><span class="ship-line">Free Express Shipping On Orders Over $180</span></div>
 </div>
 
 <!-- SHOP -->
@@ -2195,10 +2208,10 @@
     <div class="footer-col">
       <h4>Shop</h4>
       <ul>
-        <li><a href="#">All Products</a></li>
-        <li><a href="#">Oils &amp; Serums</a></li>
-        <li><a href="#">Botanical Perfume</a></li>
-        <li><a href="#">Soaps &amp; Cleansers</a></li>
+        <li><a href="#shop" onclick="showAllProducts()">All Products</a></li>
+        <li><a href="#" onclick="event.preventDefault(); openCollectionModal('oils')">Oils &amp; Absolutes</a></li>
+        <li><a href="#" onclick="event.preventDefault(); openCollectionModal('fragrance')">Botanical Perfume</a></li>
+        <li><a href="#" onclick="event.preventDefault(); openCollectionModal('soaps')">Natural Soaps</a></li>
         <li><a href="#">Gift Sets</a></li>
       </ul>
     </div>
@@ -2408,6 +2421,19 @@
   </div>
 </div>
 
+<div class="collection-modal-overlay" id="oilsModalOverlay" onclick="closeCollectionModal(event,'oils')">
+  <div class="collection-modal" id="oilsModal">
+    <div class="collection-modal-header">
+      <div class="collection-modal-title">
+        <small>Collection</small>
+        Oils &amp; Absolutes
+      </div>
+      <button class="collection-modal-close" onclick="closeCollectionModalDirect('oils')">✕</button>
+    </div>
+    <div class="collection-modal-grid" id="oilsGrid"></div>
+  </div>
+</div>
+
 <!-- BADGE COLLECTION MODAL -->
 <div class="baltic-amber-overlay" id="balticAmberOverlay" onclick="closeBalticAmberModal(event)">
   <div class="baltic-amber-modal">
@@ -2534,15 +2560,15 @@ const products = [
   // ── Jewellery
   { id:11, name:"Aroma Necklaces", category:"Jewellery", emoji:"📿", bg:"#1e1c14", price:18.00, size:null, badge:"Bestseller", desc:"A hand-crafted diffuser necklace with a lava stone pendant - add a drop of your favourite essential oil and carry your scent all day.", ingredients:"Lava Stone, Essential Oil Compatible, Adjustable Chain, Hypoallergenic", variants:["Gold","Silver","Rose Gold"] },
   // ── Essential Oils
-  { id:13, name:"Himalayan Cedarwood",    category:"100% Pure Essential Oil", emoji:"🏔️", bg:"#141c1a", price:9.95,  size:"10ml", badge:null, desc:"A rich, balsamic cedarwood steam-distilled from the Himalayan region - deeper and more resinous than Virginian cedarwood, with a warm, woody sweetness.", ingredients:"Cedrus Deodara (100% Pure Essential Oil)" },
-  { id:16, name:"Jasmine",               category:"100% Pure Absolute Oil",  emoji:"🌸", bg:"#2a1a20", price:59.95, size:"10ml", badge:"Rare", inStock:false, image:"images/products/jasmine-ab.png", desc:"One of nature's most prized florals - a rich, heady jasmine absolute with an intoxicating sweetness that lingers beautifully on the skin.", ingredients:"Jasminum Grandiflorum (100% Pure Absolute)" },
-  { id:17, name:"Bergamot",              category:"100% Pure Essential Oil", emoji:"🍋", bg:"#1a200e", price:16.95, size:"10ml", badge:null, image:"images/products/bergamot-eo.png", desc:"A bright, citrusy-floral oil cold-pressed from Italian bergamot rind - uplifting, balancing and a classic base note in fine perfumery.", ingredients:"Citrus Bergamia (100% Pure Essential Oil)" },
-  { id:18, name:"Eucalyptus Blue Gum",   category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1c16", price:9.95,  size:"10ml", badge:"Bestseller", auNative:true, image:"images/products/euca-bluegum-eo.png", desc:"The classic Australian eucalyptus - sharp, camphorous and powerfully clarifying. Ideal for diffusing and respiratory support blends.", ingredients:"Eucalyptus Globulus (100% Pure Essential Oil)" },
-  { id:19, name:"Eucalyptus Radiata",    category:"100% Pure Essential Oil", emoji:"🌿", bg:"#101e18", price:11.95, size:"10ml", badge:null, desc:"A softer, more refined eucalyptus with a lighter, crisper aroma than Blue Gum - gentle enough for everyday use and skin blends.", ingredients:"Eucalyptus Radiata (100% Pure Essential Oil)" },
-  { id:20, name:"Eucalyptus Kochii",     category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1a12", price:11.95, size:"10ml", badge:null, auNative:true, image:"images/products/euca-kochii-eo.png", desc:"A rare Western Australian eucalyptus with an exceptionally high cineole content - clean, medicinal and beautifully pure.", ingredients:"Eucalyptus Kochii (100% Pure Essential Oil)" },
+  { id:13, name:"Himalayan Cedarwood",    category:"100% Pure Essential Oil", emoji:"🏔️", bg:"#141c1a", price:9.95,  size:"10ml", badge:null, desc:"A rich, balsamic cedarwood steam-distilled from the Himalayan region - deeper and more resinous than Virginian cedarwood, with a warm, woody sweetness. Prized in aromatherapy for its naturally grounding and calming character, it is traditionally used to quiet a busy mind, encourage restful relaxation and bring a sense of stability. Its warm, anchoring scent also makes it a natural fit for meditative and woody base-note blends.", ingredients:"Cedrus Deodara (100% Pure Essential Oil)" },
+  { id:16, name:"Jasmine",               category:"100% Pure Absolute",  emoji:"🌸", bg:"#2a1a20", price:59.95, size:"10ml", badge:"Rare", inStock:false, image:"images/products/jasmine-ab.png", desc:"One of nature's most prized florals - a rich, heady jasmine absolute with an intoxicating sweetness that lingers beautifully on the skin. Known as the queen of the night, jasmine is traditionally treasured for its naturally uplifting and comforting qualities, long used to soothe the mind, lift the spirits and inspire confidence and warmth. A single drop transforms any blend with its deep, sensual floral richness.", ingredients:"Jasminum Grandiflorum (100% Pure Absolute)" },
+  { id:17, name:"Bergamot",              category:"100% Pure Essential Oil", emoji:"🍋", bg:"#1a200e", price:16.95, size:"10ml", badge:null, image:"images/products/bergamot-eo.png", desc:"A bright, citrusy-floral oil cold-pressed from Italian bergamot rind - uplifting, balancing and a classic in fine perfumery. Long valued in aromatherapy for its naturally mood-lifting and calming qualities, it is traditionally used to ease tension and encourage a sense of relaxed wellbeing, while its fresh, clarifying character also makes it a favourite in natural skincare blends. Radiant, fragrant and quietly restorative.", ingredients:"Citrus Bergamia (100% Pure Essential Oil)" },
+  { id:18, name:"Eucalyptus Blue Gum",   category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1c16", price:9.95,  size:"10ml", badge:"Bestseller", auNative:true, image:"images/products/euca-bluegum-eo.png", desc:"The classic Australian eucalyptus and the most recognisable of them all - sharp, camphorous and powerfully clarifying. Steam-distilled from Eucalyptus globulus, it is rich in 1,8-cineole, the compound prized for its naturally decongestant and air-purifying qualities. Traditionally valued to support clear breathing and ease tired muscles, it is the benchmark eucalyptus for diffusing, steam inhalation and invigorating blends. Bold, fresh and instantly recognisable.", ingredients:"Eucalyptus Globulus (100% Pure Essential Oil)" },
+  { id:19, name:"Eucalyptus Radiata",    category:"100% Pure Essential Oil", emoji:"🌿", bg:"#101e18", price:11.95, size:"10ml", badge:null, desc:"The gentlest member of the eucalyptus family - softer, smoother and less camphorous than Blue Gum, with a lighter, sweeter, crisper aroma. Steam-distilled from Eucalyptus radiata, it offers the same clarifying, respiratory-supporting and air-freshening benefits but in a far milder form, making it the preferred choice for everyday use, children's blends and direct skin application. Clean, fresh and easy to live with.", ingredients:"Eucalyptus Radiata (100% Pure Essential Oil)" },
+  { id:20, name:"Eucalyptus Kochii",     category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1a12", price:11.95, size:"10ml", badge:null, auNative:true, image:"images/products/euca-kochii-eo.png", desc:"A rare Western Australian eucalyptus with one of the highest natural 1,8-cineole contents of any species - exceptionally clean, medicinal and beautifully pure. Steam-distilled from Eucalyptus kochii, its remarkable purity makes it the most potent and penetrating of the eucalyptus oils, prized for strong decongestant and purifying blends where maximum clarifying power is wanted. Crisp, sharp and intensely fresh.", ingredients:"Eucalyptus Kochii (100% Pure Essential Oil)" },
   { id:21, name:"Blue Tansy",            category:"100% Pure Essential Oil", emoji:"💙", bg:"#0e1020", price:44.95, size:"10ml", badge:"Rare", image:"images/products/blue-tansy-eo.png", desc:"A stunning deep blue oil steam-distilled from Moroccan blue tansy flowers - soothing, anti-inflammatory and deeply calming with a sweet, herbaceous aroma.", ingredients:"Tanacetum Annuum (100% Pure Essential Oil)" },
-  { id:22, name:"Tea Tree",              category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1c0e", price:9.95,  size:"10ml", badge:null, image:"images/products/tea-tree-eo.png", desc:"Pure Australian tea tree oil - the gold standard in natural antiseptic and cleansing. Sharp, medicinal and an essential in every home.", ingredients:"Melaleuca Alternifolia (100% Pure Essential Oil)" },
-  { id:23, name:"Sandalwood",            category:"100% Pure Essential Oil", emoji:"🪵", bg:"#1e140a", price:39.95, size:"10ml", badge:"Rare", image:"images/products/sandalwood-eo.png", desc:"A deeply precious and sacred oil steam-distilled from the heartwood of Indian sandalwood - rich, creamy and woody with a warm, sweet softness that lingers on the skin for hours.", ingredients:"Santalum Album (100% Pure Essential Oil)" },
+  { id:22, name:"Tea Tree",              category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1c0e", price:9.95,  size:"10ml", badge:null, image:"images/products/tea-tree-eo.png", desc:"Pure Australian tea tree oil - the gold standard in natural cleansing and one of the most versatile oils you can own. Sharp, fresh and medicinal, it is renowned for its naturally antiseptic, antibacterial and purifying qualities. Long valued by Indigenous Australians and a staple in natural skincare, it is traditionally used to support clear, healthy-looking skin, soothe blemishes and freshen the air. A true essential in every home - steam-distilled from the leaves of Melaleuca alternifolia.", ingredients:"Melaleuca Alternifolia (100% Pure Essential Oil)" },
+  { id:23, name:"Sandalwood",            category:"100% Pure Essential Oil", emoji:"🪵", bg:"#1e140a", price:39.95, size:"10ml", badge:"Rare", image:"images/products/sandalwood-eo.png", desc:"A deeply precious and sacred oil steam-distilled from the heartwood of Indian sandalwood - rich, creamy and woody with a warm, sweet softness that lingers on the skin for hours. Revered for centuries in meditation and ritual, it is treasured for its naturally grounding and calming qualities, traditionally used to still the mind, deepen breath and encourage inner peace. Equally prized in natural skincare for its softening, conditioning character.", ingredients:"Santalum Album (100% Pure Essential Oil)" },
   { id:24, name:"Baltic Amber",          category:"100% Pure Essential Oil", emoji:"🟡", bg:"#1c1508", price:49.95, size:"10ml", badge:"Rare", image:"images/products/amber-res-eo.png", desc:"An extraordinary oil extracted from genuine Baltic amber - fossilised tree resin between 40 and 70 million years old. Warm, earthy and resinous with subtle woody and smoky undertones. One of the rarest ingredients in botanical perfumery.", ingredients:"Baltic Amber (Pinus succinifera) Extract, 40-70 Million Year Old Fossilised Resin" },
   { id:56, name:"Honeysuckle", category:"100% Pure Absolute", emoji:"🌼", bg:"#1e1808", price:37.95, size:"10ml", badge:"Rare", image:"images/products/honeysuckle-ab.png", desc:"Sweet, honeyed and luminously floral - honeysuckle absolute captures the living warmth of the flower at its peak bloom. Rich and slightly green with a soft, nectar-like depth that lingers beautifully on skin. Organic, hexane-free extraction.", ingredients:"Lonicera japonica (Honeysuckle Absolute, Organic Hexane-Free Extraction)" },
   { id:57, name:"Lemon", category:"100% Pure Essential Oil", emoji:"🍋", bg:"#1a1c06", price:11.95, size:"10ml", badge:null, image:"images/products/lemon-eo.png", desc:"Bright, clean and unmistakably fresh. Cold-pressed from the peel of Citrus limon - sharp, zesty and instantly uplifting with a sparkling, slightly floral character that makes it one of the most versatile top notes in natural perfumery. Blends beautifully with florals, woods, and other citrus oils alike.", ingredients:"Citrus limon (Cold-Pressed Peel, 100% Pure Essential Oil)" },
@@ -2554,16 +2580,16 @@ const products = [
 
   // ── NEW ESSENTIAL OILS (ids 26–40) ──
   { id:26, name:"Clary Sage",      category:"100% Pure Essential Oil", emoji:"🌿", bg:"#141e10", price:14.95, size:"10ml", badge:null, image:"images/products/clary-sage-eo.png", desc:"Herbaceous, earthy and slightly musky with a warm, hay-like sweetness. Deeply relaxing and balancing - a classic in natural perfumery and aromatherapy alike. Steam-distilled from the flowering tops of Salvia sclarea.", ingredients:"Salvia sclarea (100% Pure Essential Oil)" },
-  { id:27, name:"Ginger",          category:"100% Pure Essential Oil", emoji:"🫚", bg:"#1e1408", price:12.95, size:"10ml", badge:null, image:"images/products/ginger-eo.png", desc:"Warm, spicy and energising with a fresh, zesty edge. Steam-distilled from the rhizome of Zingiber officinale - grounding yet invigorating with a rich, peppery warmth.", ingredients:"Zingiber officinale (100% Pure Essential Oil)" },
-  { id:28, name:"Nerolina",        category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1a14", price:16.95, size:"10ml", badge:null, auNative:true, image:"images/products/nerolina-eo.png", desc:"Soft, floral and gently woody - often described as a bridge between neroli and tea tree. Steam-distilled from the leaves and twigs of Melaleuca quinquenervia, this Australian native has a calm, clean sweetness that belies its therapeutic depth. 🌿 Australian Native - icon to be updated.", ingredients:"Melaleuca quinquenervia (100% Pure Essential Oil)" },
-  { id:29, name:"Pink Grapefruit", category:"100% Pure Essential Oil", emoji:"🍊", bg:"#201408", price:9.95,  size:"10ml", badge:null, image:"images/products/pink-grapefruit-eo.png", desc:"Bright, juicy and uplifting - the freshest citrus in the collection. Cold-pressed from the peel of Citrus paradisi, pink grapefruit is an instant mood-lifter with a clean, slightly tart sweetness.", ingredients:"Citrus paradisi (100% Pure Essential Oil, Cold-Pressed)" },
+  { id:27, name:"Ginger",          category:"100% Pure Essential Oil", emoji:"🫚", bg:"#1e1408", price:12.95, size:"10ml", badge:null, image:"images/products/ginger-eo.png", desc:"Warm, spicy and energising with a fresh, zesty edge. Steam-distilled from the rhizome of Zingiber officinale - grounding yet invigorating with a rich, peppery warmth. Long valued for its naturally warming and comforting qualities, ginger is traditionally used to ease tension, settle and soothe, and bring a sense of vitality and warmth. A wonderfully fortifying oil for grounding, spicy and stimulating blends.", ingredients:"Zingiber officinale (100% Pure Essential Oil)" },
+  { id:28, name:"Nerolina",        category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1a14", price:16.95, size:"10ml", badge:null, auNative:true, image:"images/products/nerolina-eo.png", desc:"Soft, floral and gently woody - often described as a bridge between neroli and tea tree. Steam-distilled from the leaves and twigs of Melaleuca quinquenervia, this Australian native has a calm, clean sweetness that belies its therapeutic depth.", ingredients:"Melaleuca quinquenervia (100% Pure Essential Oil)" },
+  { id:29, name:"Pink Grapefruit", category:"100% Pure Essential Oil", emoji:"🍊", bg:"#201408", price:9.95,  size:"10ml", badge:null, image:"images/products/pink-grapefruit-eo.png", desc:"Bright, juicy and uplifting - the freshest citrus in the collection. Cold-pressed from the peel of Citrus paradisi, pink grapefruit is an instant mood-lifter with a clean, slightly tart sweetness. Renowned in aromatherapy for its naturally energising and refreshing qualities, it is traditionally used to revive the senses, lift low spirits and bring a feeling of brightness and clarity. A cheerful, revitalising oil that adds sparkle to any blend.", ingredients:"Citrus paradisi (100% Pure Essential Oil, Cold-Pressed)" },
   { id:30, name:"Clove Bud",       category:"100% Pure Essential Oil", emoji:"🌰", bg:"#1a0e08", price:9.95,  size:"10ml", badge:null, image:"images/products/clove-bud-eo.png", desc:"Intensely warm, spicy and deeply aromatic. Steam-distilled from the unopened flower buds of Syzygium aromaticum - one of the most powerful botanicals in natural perfumery. Use with care; a little goes a very long way.", ingredients:"Syzygium aromaticum (100% Pure Essential Oil)" },
   { id:31, name:"Rose Geranium",   category:"100% Pure Essential Oil", emoji:"🌸", bg:"#1e0e14", price:16.95, size:"10ml", badge:null, image:"images/products/rose-geranium-eo.png", desc:"Lush, rosy and softly green - a more complex and earthy alternative to rose absolute. Steam-distilled from Pelargonium graveolens, rose geranium bridges the gap between florals and herbaceous with effortless elegance.", ingredients:"Pelargonium graveolens (100% Pure Essential Oil)" },
-  { id:32, name:"Lime Distilled",  category:"100% Pure Essential Oil", emoji:"🍋", bg:"#141e08", price:9.95,  size:"10ml", badge:null,        image:"images/products/lime-eo.png", desc:"Crisp, clean and vibrantly citrusy - steam distillation gives this lime a brighter, more transparent character than cold-pressed. Refreshing and sharp with a subtle sweetness that lifts any accord.", ingredients:"Citrus aurantifolia (100% Pure Essential Oil, Steam-Distilled)" },
+  { id:32, name:"Lime Distilled",  category:"100% Pure Essential Oil", emoji:"🍋", bg:"#141e08", price:9.95,  size:"10ml", badge:null,        image:"images/products/lime-eo.png", desc:"Crisp, clean and vibrantly citrusy - steam distillation gives this lime a brighter, more transparent character than cold-pressed. Refreshing and sharp with a subtle sweetness that lifts any accord. Valued for its naturally uplifting and refreshing qualities, lime is traditionally used to clear the mind, sharpen focus and dispel sluggishness, bringing a clean, energising zing. A bright, revitalising top note for fresh and cheerful blends.", ingredients:"Citrus aurantifolia (100% Pure Essential Oil, Steam-Distilled)" },
   { id:33, name:"Ho Wood",         category:"100% Pure Essential Oil", emoji:"🪵", bg:"#1a1408", price:14.95, size:"10ml", badge:null,        image:"images/products/ho-wood-eo.png", desc:"Soft, woody and quietly rosy with a clean, slightly camphoraceous freshness. Steam-distilled from the wood of Cinnamomum camphora - a sustainable, high-linalool alternative to rosewood. Grounding, calming and beautifully versatile.", ingredients:"Cinnamomum camphora (Ho Wood) (100% Pure Essential Oil)" },
-  { id:34, name:"Sweet Orange",    category:"100% Pure Essential Oil", emoji:"🍊", bg:"#1e1008", price:8.95,  size:"10ml", badge:null,        image:"images/products/sweet-orange-eo.png", desc:"Warm, round and effortlessly cheerful - the most universally loved citrus oil. Cold-pressed from the peel of Citrus sinensis with a rich, sweet fruitiness that blends seamlessly with almost anything.", ingredients:"Citrus sinensis (100% Pure Essential Oil, Cold-Pressed)" },
-  { id:35, name:"Kunzea",          category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1c10", price:18.95, size:"10ml", badge:null, auNative:true, image:"images/products/kunzea-eo.png", desc:"Fresh, earthy and medicinal with a clean, slightly woody edge. Steam-distilled from Kunzea ambigua - an Australian native from the coastal heathlands of south-eastern Australia. A botanical gem with a grounding, clarifying character unique to this continent. 🌿 Australian Native - icon to be updated.", ingredients:"Kunzea ambigua (100% Pure Essential Oil)" },
-  { id:36, name:"Scots Pine",      category:"100% Pure Essential Oil", emoji:"🌲", bg:"#0e1a0e", price:11.95, size:"10ml", badge:null,        image:"images/products/scotch-pine-eo.png", desc:"Crisp, resinous and deeply forested. Steam-distilled from the needles of Pinus sylvestris - clean, sharp and invigorating with a warm, woody drydown that grounds and clarifies.", ingredients:"Pinus sylvestris (100% Pure Essential Oil)" },
+  { id:34, name:"Sweet Orange",    category:"100% Pure Essential Oil", emoji:"🍊", bg:"#1e1008", price:8.95,  size:"10ml", badge:null,        image:"images/products/sweet-orange-eo.png", desc:"Warm, round and effortlessly cheerful - the most universally loved citrus oil. Cold-pressed from the peel of Citrus sinensis with a rich, sweet fruitiness that blends seamlessly with almost anything. Beloved in aromatherapy for its naturally uplifting and comforting qualities, it is traditionally used to brighten mood, ease tension and bring a warm sense of cheer and calm to a room. A sunny, feel-good oil that makes any space feel welcoming.", ingredients:"Citrus sinensis (100% Pure Essential Oil, Cold-Pressed)" },
+  { id:35, name:"Kunzea",          category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1c10", price:18.95, size:"10ml", badge:null, auNative:true, image:"images/products/kunzea-eo.png", desc:"Fresh, earthy and medicinal with a clean, slightly woody edge. Steam-distilled from Kunzea ambigua - an Australian native from the coastal heathlands of south-eastern Australia. A botanical gem with a grounding, clarifying character unique to this continent.", ingredients:"Kunzea ambigua (100% Pure Essential Oil)" },
+  { id:36, name:"Scots Pine",      category:"100% Pure Essential Oil", emoji:"🌲", bg:"#0e1a0e", price:11.95, size:"10ml", badge:null,        image:"images/products/scotch-pine-eo.png", desc:"Crisp, resinous and deeply forested. Steam-distilled from the needles of Pinus sylvestris - clean, sharp and invigorating with a warm, woody drydown that grounds and clarifies. Renowned for its naturally refreshing and air-purifying qualities, it is traditionally used to support clear, easy breathing and to revive and invigorate tired bodies and minds. A bracing, restorative oil that brings the clean energy of the forest to any blend.", ingredients:"Pinus sylvestris (100% Pure Essential Oil)" },
   { id:37, name:"Nutmeg",          category:"100% Pure Essential Oil", emoji:"🌰", bg:"#1a1208", price:12.95, size:"10ml", badge:null,        image:"images/products/nutmeg-eo.png", desc:"Warm, spicy and sweetly woody with a rich, slightly camphoraceous depth. Steam-distilled from Myristica fragrans - a classic perfumery spice note that adds complexity and warmth to any accord. Familiar yet sophisticated.", ingredients:"Myristica fragrans (100% Pure Essential Oil)" },
   { id:38, name:"Ambrette Seed",   category:"100% Pure Essential Oil", emoji:"🤍", bg:"#1a1820", price:44.95, size:"10ml", badge:"Rare",       image:"images/products/ambrette-seed-eo.png", desc:"Velvety, musky and softly pear-like - one of the finest natural musk alternatives available. Steam-distilled from the seeds of Abelmoschus moschatus, ambrette carries a warmth and sensuality that lingers beautifully on skin. Rare and highly prized.", ingredients:"Abelmoschus moschatus (100% Pure Essential Oil)" },
   { id:39, name:"Cocoa",           category:"100% Pure Absolute",      emoji:"🍫", bg:"#1a0e08", price:34.95, size:"10ml", badge:"Rare", image:"images/products/cocoa-ab.png", desc:"Rich, dark and indulgent - the unmistakable warmth of pure cacao. A certified organic cocoa absolute from Theobroma cacao, clean-extracted and free from synthetic processes. Deep, roasted and sweetly bittersweet - it anchors gourmand accords with extraordinary depth. Decadent and deeply comforting.", ingredients:"Theobroma cacao (Organic Cocoa Absolute)" },
@@ -2575,10 +2601,10 @@ const products = [
   { id:43, name:"Ylang Ylang Complete",   category:"100% Pure Essential Oil", emoji:"🌼", bg:"#1c1a08", price:13.95, size:"10ml", badge:null, image:"images/products/ylangylang-complete-eo.png", desc:"The unfractionated, full distillation of Cananga odorata - a complete expression of the flower from top to base. Balanced, rich and complex with bright floral top notes giving way to a creamy, balsamic depth. The most naturalistic representation of the living flower.", ingredients:"Cananga odorata (100% Pure Essential Oil, Complete)" },
   { id:44, name:"Cypress",               category:"100% Pure Essential Oil", emoji:"🌲", bg:"#0e1a10", price:13.95, size:"10ml", badge:null,  image:"images/products/cypress-eo.png", desc:"Fresh, green and woody with a clean, resinous warmth. Steam-distilled from the needles and twigs of Cupressus sempervirens - a Mediterranean classic with a crisp, forest-like character that grounds and clarifies.", ingredients:"Cupressus sempervirens (100% Pure Essential Oil)" },
   { id:45, name:"May Chang",             category:"100% Pure Essential Oil", emoji:"🍋", bg:"#1a1e08", price:11.95, size:"10ml", badge:null,  image:"images/products/maychang-eo.png", desc:"Bright, lemony and intensely fresh with a clean, almost lemon hard candy-like sweetness that makes it instantly recognisable. Steam-distilled from the berries of Litsea cubeba - more complex and fruity-floral than a straight citrus oil, with a slightly spicy edge that keeps it interesting. A favourite in natural perfumery and botanical cleaning blends alike.", ingredients:"Litsea cubeba (100% Pure Essential Oil)" },
-  { id:46, name:"Euca Blue Mallee",      category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1c14", price:11.95, size:"10ml", badge:null, auNative:true,  image:"images/products/euca-blue-mallee-eo.png", desc:"An Australian native with a high 1,8-cineole content and powerfully clarifying character. Steam-distilled from Eucalyptus polybractea - sharper and more penetrating than Blue Gum, with a clean, medicinal intensity from the mallee scrublands of Victoria and New South Wales. 🌿 Australian Native - icon to be updated.", ingredients:"Eucalyptus polybractea (100% Pure Essential Oil)" },
+  { id:46, name:"Euca Blue Mallee",      category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1c14", price:11.95, size:"10ml", badge:null, auNative:true,  image:"images/products/euca-blue-mallee-eo.png", desc:"An Australian native with a high 1,8-cineole content and powerfully clarifying character. Steam-distilled from Eucalyptus polybractea - sharper and more penetrating than Blue Gum, with a clean, medicinal intensity from the mallee scrublands of Victoria and New South Wales.", ingredients:"Eucalyptus polybractea (100% Pure Essential Oil)" },
   { id:47, name:"Geranium Bourbon",      category:"100% Pure Essential Oil", emoji:"🌸", bg:"#1e0e14", price:18.95, size:"10ml", badge:null, image:"images/products/geranium-bourbon-eo.png", desc:"The finest expression of geranium - steam-distilled from Pelargonium x asperum grown on the island of Reunion. Rich, rosy and green with a complexity that far exceeds common geranium. A backbone ingredient in classical and natural perfumery alike.", ingredients:"Pelargonium x asperum (100% Pure Essential Oil)" },
   { id:48, name:"Rosemary (Spanish)",    category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1810", price:11.95, size:"10ml", badge:null, image:"images/products/rosemary-spanish-eo.png", desc:"Sharp, herbaceous and invigorating - steam-distilled from the flowering tops of Rosmarinus officinalis grown in Spain. Clean, clarifying and deeply familiar, Spanish rosemary has a particularly crisp, camphorous character with a resinous warmth that blends beautifully across a wide range of accords.", ingredients:"Rosmarinus officinalis (100% Pure Essential Oil)" },
-  { id:49, name:"Euca Citriodora",       category:"100% Pure Essential Oil", emoji:"🌿", bg:"#141e0a", price:11.95, size:"10ml", badge:null, auNative:true,  desc:"An Australian native with a bright, lemon-fresh character quite unlike any other eucalyptus. Steam-distilled from Eucalyptus citriodora, it carries a clean citrusy lift with a distinctly airy, kerosene-like undertone characteristic of the species and beloved by those who know it. Widely used as a natural insect repellent - particularly effective against mosquitoes. Dries down soft and powdery with a lingering freshness. 🌿 Australian Native - icon to be updated.", ingredients:"Eucalyptus citriodora (100% Pure Essential Oil)" },
+  { id:49, name:"Euca Citriodora",       category:"100% Pure Essential Oil", emoji:"🌿", bg:"#141e0a", price:11.95, size:"10ml", badge:null, auNative:true,  desc:"An Australian native with a bright, lemon-fresh character quite unlike any other eucalyptus. Steam-distilled from Eucalyptus citriodora, it carries a clean citrusy lift with a distinctly airy, kerosene-like undertone characteristic of the species and beloved by those who know it. Widely used as a natural insect repellent - particularly effective against mosquitoes. Dries down soft and powdery with a lingering freshness.", ingredients:"Eucalyptus citriodora (100% Pure Essential Oil)" },
   { id:50, name:"Tonka",                 category:"100% Pure Absolute",      emoji:"🤎", bg:"#1a1208", price:29.95, size:"10ml", badge:"Rare", image:"images/products/tonka-ab.png", desc:"Warm, sweet and richly coumarinic - tonka absolute carries a distinctive vanilla-like sweetness with hints of almond, hay and tobacco. Deeply comforting and tenacious, it anchors sweet accords with an almost edible warmth that lingers beautifully on skin. Organic, hexane-free extraction.", ingredients:"Dipteryx odorata (Tonka Absolute, Organic Hexane-Free Extraction)" },
   { id:51, name:"Tuberose",              category:"100% Pure Absolute",      emoji:"🤍", bg:"#1e1420", price:79.95, size:"10ml", badge:"Rare", image:"images/products/tuberose-ab.png", desc:"One of the most intensely floral botanicals in natural perfumery - rich, creamy and narcotic with a heady, waxy sweetness that deepens on the skin. Tuberose absolute is a statement ingredient; complex, bold and unforgettable at perfumery concentrations. Organic, hexane-free extraction.", ingredients:"Polianthes tuberosa (Tuberose Absolute, Organic Hexane-Free Extraction)" },
   { id:52, name:"Frangipani",            category:"100% Pure Absolute",      emoji:"🌺", bg:"#201420", price:59.95, size:"10ml", badge:"Rare", image:"images/products/frangipani-ab.png", desc:"Exotic, tropical and deeply floral - frangipani absolute carries the full warmth of the Plumeria flower with a creamy, slightly spiced sweetness. Evocative and sensual, it bridges florals and exotics with effortless grace. Organic, hexane-free extraction.", ingredients:"Plumeria alba (Frangipani Absolute, Organic Hexane-Free Extraction)" },
@@ -3082,6 +3108,11 @@ const collectionConfig = {
     overlayId: 'soapsModalOverlay',
     gridId: 'soapsGrid',
     filter: p => p.category === 'Natural Soap'
+  },
+  oils: {
+    overlayId: 'oilsModalOverlay',
+    gridId: 'oilsGrid',
+    filter: p => /essential oil|absolute|resinoid/i.test(p.category)
   }
 };
 

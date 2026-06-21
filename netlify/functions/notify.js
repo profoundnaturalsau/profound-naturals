@@ -38,7 +38,7 @@ exports.handler = async (event) => {
       await transporter.sendMail({
         from: `"Profound Naturals" <${process.env.ZOHO_USER}>`,
         to: email,
-        subject: `We'll notify you when ${productName} is back`,
+        subject: `I'll notify you when ${productName} is back`,
         html: `
           <div style="font-family:Georgia,serif;max-width:560px;margin:0 auto;color:#1a1a1a;">
             <h2 style="font-weight:300;font-size:28px;margin-bottom:8px;">You're on the list</h2>

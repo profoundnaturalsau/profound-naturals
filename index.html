@@ -3313,7 +3313,7 @@ function closeModalDirect() {
 function openNotifyModal(id) {
   const p = products.find(x => x.id === id);
   document.getElementById('notifyIcon').textContent = p.emoji;
-  document.getElementById('notifyTitle').textContent = d(p.name);
+  document.getElementById('notifyTitle').innerHTML = d(p.name);
   document.getElementById('notifyTitle').dataset.productId = id;
   document.getElementById('notifySub').textContent = 'This product is currently out of stock. Enter your email and we\'ll notify you the moment it\'s back.';
   document.getElementById('notifyEmail').value = '';

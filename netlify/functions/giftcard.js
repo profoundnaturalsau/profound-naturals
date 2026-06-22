@@ -3,6 +3,31 @@ const nodemailer = require('nodemailer');
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+// ── RATE LIMITER ──
+const rateMap = {};
+const RATE_LIMIT = 10;
+const RATE_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+
+function isRateLimited(ip) {
+  const now = Date.now();
+  if (!rateMap[ip] || now - rateMap[ip].start > RATE_WINDOW_MS) {
+    rateMap[ip] = { count: 1, start: now };
+    return false;
+  }
+  rateMap[ip].count++;
+  return rateMap[ip].count > RATE_LIMIT;
+}
+
+// ── HTML ESCAPE ──
+function esc(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+}
+
 // ── ZOHO SMTP TRANSPORTER ──
 function makeTransporter(host) {
   return nodemailer.createTransport({
@@ -36,6 +61,10 @@ function generateCode() {
 // ── GIFT CARD EMAIL ──
 async function sendGiftCardEmail({ recipientEmail, recipientName, senderName, amount, code, message }) {
   const dollarAmount = (amount / 100).toFixed(2);
+  const safeRecipientName = esc(recipientName || '');
+  const safeSenderName    = esc(senderName || '');
+  const safeMessage       = esc(message || '');
+  const safeCode          = esc(code || '');
 
   const html = `
     <div style="font-family:'Georgia',serif; background:#080d09; padding:0; margin:0;">
@@ -47,16 +76,16 @@ async function sendGiftCardEmail({ recipientEmail, recipientName, senderName, am
         </div>
 
         <p style="font-family:'Arial',sans-serif; font-size:.85rem; color:rgba(230,236,231,0.7); line-height:1.7; margin-bottom:8px;">
-          Dear ${recipientName},
+          Dear ${safeRecipientName},
         </p>
         <p style="font-family:'Arial',sans-serif; font-size:.85rem; color:rgba(230,236,231,0.7); line-height:1.7; margin-bottom:32px;">
-          ${senderName} has sent you a Profound Naturals gift card${message ? ` with a personal message:` : '.'}
+          ${safeSenderName} has sent you a Profound Naturals gift card${safeMessage ? ` with a personal message:` : '.'}
         </p>
 
-        ${message ? `
+        ${safeMessage ? `
         <div style="border-left:2px solid #d4a017; padding:16px 20px; margin-bottom:32px; background:#0f1610;">
-          <p style="font-family:'Georgia',serif; font-size:1rem; color:#e6ece7; font-style:italic; line-height:1.7; margin:0;">"${message}"</p>
-          <p style="font-family:'Arial',sans-serif; font-size:.72rem; color:#a0d916; margin:12px 0 0; letter-spacing:.1em;">— ${senderName}</p>
+          <p style="font-family:'Georgia',serif; font-size:1rem; color:#e6ece7; font-style:italic; line-height:1.7; margin:0;">"${safeMessage}"</p>
+          <p style="font-family:'Arial',sans-serif; font-size:.72rem; color:#a0d916; margin:12px 0 0; letter-spacing:.1em;">— ${safeSenderName}</p>
         </div>
         ` : ''}
 
@@ -64,7 +93,7 @@ async function sendGiftCardEmail({ recipientEmail, recipientName, senderName, am
           <p style="font-family:'Arial',sans-serif; font-size:.65rem; letter-spacing:.25em; text-transform:uppercase; color:#d4a017; margin:0 0 12px;">Gift Card Value</p>
           <p style="font-family:'Georgia',serif; font-size:3rem; font-weight:300; color:#e6ece7; margin:0 0 24px;">$${dollarAmount}</p>
           <p style="font-family:'Arial',sans-serif; font-size:.65rem; letter-spacing:.25em; text-transform:uppercase; color:#d4a017; margin:0 0 10px;">Your Code</p>
-          <p style="font-family:'Courier New',monospace; font-size:1.4rem; font-weight:700; color:#e6ece7; letter-spacing:.15em; margin:0 0 24px; background:#1a2419; padding:14px 20px; display:inline-block;">${code}</p>
+          <p style="font-family:'Courier New',monospace; font-size:1.4rem; font-weight:700; color:#e6ece7; letter-spacing:.15em; margin:0 0 24px; background:#1a2419; padding:14px 20px; display:inline-block;">${safeCode}</p>
           <br>
           <a href="https://profoundnaturals.com.au" style="display:inline-block; background:transparent; color:#d4a017; border:1px solid rgba(212,160,23,0.6); padding:14px 32px; font-family:'Arial',sans-serif; font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; text-decoration:none;">Shop Now</a>
         </div>
@@ -84,7 +113,7 @@ async function sendGiftCardEmail({ recipientEmail, recipientName, senderName, am
     from: `"Profound Naturals" <${process.env.ZOHO_USER}>`,
     to: recipientEmail,
     replyTo: process.env.ZOHO_USER,
-    subject: `${senderName} sent you a $${dollarAmount} Profound Naturals gift card 🌿`,
+    subject: `${safeSenderName} sent you a $${dollarAmount} Profound Naturals gift card 🌿`,
     html,
   });
 
@@ -92,17 +121,17 @@ async function sendGiftCardEmail({ recipientEmail, recipientName, senderName, am
   await sendMail({
     from: `"Profound Naturals" <${process.env.ZOHO_USER}>`,
     to: process.env.ZOHO_USER,
-    subject: `Gift card sold — $${dollarAmount} to ${recipientEmail}`,
+    subject: `Gift card sold — $${dollarAmount}`,
     html: `
       <div style="font-family:sans-serif; padding:24px; background:#0f1610; color:#e6ece7; max-width:500px;">
         <h2 style="color:#d4a017; margin-bottom:20px;">Gift Card Sold</h2>
         <table style="width:100%; border-collapse:collapse;">
           <tr><td style="padding:8px 0; color:#a0d916; width:140px;">Amount</td><td>$${dollarAmount}</td></tr>
-          <tr><td style="padding:8px 0; color:#a0d916;">Code</td><td style="font-family:monospace; font-size:1.1rem;">${code}</td></tr>
-          <tr><td style="padding:8px 0; color:#a0d916;">From</td><td>${senderName}</td></tr>
-          <tr><td style="padding:8px 0; color:#a0d916;">To (name)</td><td>${recipientName}</td></tr>
-          <tr><td style="padding:8px 0; color:#a0d916;">To (email)</td><td>${recipientEmail}</td></tr>
-          ${message ? `<tr><td style="padding:8px 0; color:#a0d916;">Message</td><td><em>"${message}"</em></td></tr>` : ''}
+          <tr><td style="padding:8px 0; color:#a0d916;">Code</td><td style="font-family:monospace; font-size:1.1rem;">${safeCode}</td></tr>
+          <tr><td style="padding:8px 0; color:#a0d916;">From</td><td>${safeSenderName}</td></tr>
+          <tr><td style="padding:8px 0; color:#a0d916;">To (name)</td><td>${safeRecipientName}</td></tr>
+          <tr><td style="padding:8px 0; color:#a0d916;">To (email)</td><td>${esc(recipientEmail)}</td></tr>
+          ${safeMessage ? `<tr><td style="padding:8px 0; color:#a0d916;">Message</td><td><em>"${safeMessage}"</em></td></tr>` : ''}
         </table>
       </div>
     `,
@@ -112,6 +141,12 @@ async function sendGiftCardEmail({ recipientEmail, recipientName, senderName, am
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
+  }
+
+  // Rate limit by IP
+  const ip = event.headers['x-forwarded-for']?.split(',')[0].trim() || 'unknown';
+  if (isRateLimited(ip)) {
+    return { statusCode: 429, body: JSON.stringify({ error: 'Too many requests' }) };
   }
 
   let body;
@@ -144,8 +179,21 @@ exports.handler = async (event) => {
   if (!amount || amount < 2500) {
     return { statusCode: 400, body: 'Minimum gift card value is $25' };
   }
-  if (!recipientEmail || !recipientName || !senderName) {
-    return { statusCode: 400, body: 'Missing required fields' };
+  // Amount ceiling — max $1000
+  if (amount > 100000) {
+    return { statusCode: 400, body: 'Maximum gift card value is $1000' };
+  }
+  if (!recipientEmail || typeof recipientEmail !== 'string' || !recipientEmail.includes('@') || recipientEmail.length > 254) {
+    return { statusCode: 400, body: 'Invalid recipient email' };
+  }
+  if (!recipientName || typeof recipientName !== 'string' || recipientName.length > 100) {
+    return { statusCode: 400, body: 'Invalid recipient name' };
+  }
+  if (!senderName || typeof senderName !== 'string' || senderName.length > 100) {
+    return { statusCode: 400, body: 'Invalid sender name' };
+  }
+  if (message && (typeof message !== 'string' || message.length > 500)) {
+    return { statusCode: 400, body: 'Message too long' };
   }
 
   try {
@@ -215,7 +263,7 @@ exports.handler = async (event) => {
     console.error('Stripe gift card error:', err);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: err.message }),
+      body: JSON.stringify({ error: 'Unable to process request' }),
     };
   }
 };

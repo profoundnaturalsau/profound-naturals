@@ -2864,6 +2864,8 @@ async function submitTestimonial() {
   const name    = document.getElementById('testiName').value.trim();
   const email   = document.getElementById('testiEmail').value.trim();
   const review  = document.getElementById('testiReview').value.trim();
+  const honeypot = document.getElementById('hp_testi').value;
+  if (honeypot) return; // bot detected — silent discard
   const btn     = document.querySelector('.testi-submit-btn');
 
   if (!name)   { showToast('Please enter your name', 'error'); return; }
@@ -2877,7 +2879,7 @@ async function submitTestimonial() {
     const res = await fetch('/.netlify/functions/testimonial', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, review })
+      body: JSON.stringify({ name, email, review, honeypot: document.getElementById('hp_testi').value })
     });
     if (res.ok) {
       showToast("Thank you! I'll be in touch if your testimonial is featured.");
@@ -2994,22 +2996,10 @@ async function buyGiftCard() {
 (function() {
   const params = new URLSearchParams(window.location.search);
   if (params.get('gc_success') === '1') {
-    const amount        = parseInt(params.get('amount')) || 0;
-    const recipient     = params.get('recipient') || '';
-    const recipientName = params.get('recipientName') || '';
-    const sender        = params.get('sender') || '';
-    const msg           = params.get('msg') || '';
-    const code          = params.get('code') || '';
-    if (recipient && amount && code) {
-      fetch('/.netlify/functions/giftcard', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'send', amount, recipientEmail: recipient, recipientName, senderName: sender, message: msg, code }),
-      }).then(() => {
-        showToast('Gift card sent to ' + recipient + '!');
-        window.history.replaceState({}, '', '/');
-      });
-    }
+    // Email is now sent by stripe-webhook.js on checkout.session.completed
+    // No frontend action needed — just show confirmation and clean URL
+    showToast('Gift card sent successfully!');
+    window.history.replaceState({}, '', '/');
   }
   if (params.get('gc_cancelled') === '1') {
     showToast('Gift card purchase cancelled.', 'error');
@@ -3324,6 +3314,7 @@ function openNotifyModal(id) {
   const p = products.find(x => x.id === id);
   document.getElementById('notifyIcon').textContent = p.emoji;
   document.getElementById('notifyTitle').textContent = d(p.name);
+  document.getElementById('notifyTitle').dataset.productId = id;
   document.getElementById('notifySub').textContent = 'This product is currently out of stock. Enter your email and we\'ll notify you the moment it\'s back.';
   document.getElementById('notifyEmail').value = '';
   document.getElementById('notifyConfirm').classList.remove('show');
@@ -3346,7 +3337,10 @@ async function submitNotify() {
     return;
   }
   const btn = document.querySelector('.notify-modal-submit');
-  const productName = document.getElementById('notifyTitle').textContent;
+  const titleEl = document.getElementById('notifyTitle');
+  const productId = parseInt(titleEl.dataset.productId, 10);
+  const productObj = products.find(x => x.id === productId);
+  const productName = productObj ? productObj.name : titleEl.textContent;
   btn.textContent = 'Sending...';
   btn.disabled = true;
   try {
@@ -3619,6 +3613,7 @@ function closeNefertModalDirect() {
       <input class="testi-field" id="testiEmail" type="email" placeholder="Your email address">
     </div>
     <textarea class="testi-textarea" id="testiReview" placeholder="Share your experience..."></textarea>
+    <input type="text" name="website" id="hp_testi" autocomplete="off" tabindex="-1" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" aria-hidden="true">
     <button type="button" class="testi-submit-btn" onclick="submitTestimonial()">Submit Testimonial</button>
     <p class="testi-note">By submitting you agree your testimonial may be published on profoundnaturals.com.au</p>
   </div>

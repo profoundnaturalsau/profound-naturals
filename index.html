@@ -79,8 +79,6 @@
   }
 
   body.modal-open {
-    position: fixed;
-    width: 100%;
     overflow: hidden;
   }
 
@@ -103,13 +101,18 @@
     letter-spacing:.18em;
     text-transform:uppercase;
   }
+  .announce-offer { display:none; }
+  .announce-sep { display:none; }
   @media(min-width:901px) {
     .announcement {
       display:flex; align-items:center; justify-content:center;
-      gap:8vw; padding:15px 6vw;
+      gap:3vw; padding:15px 6vw;
       font-size:.92rem; letter-spacing:.28em;
     }
     .announcement .ship-sep { display:none; }
+    .announce-offer { display:inline; }
+    .announce-sep { display:flex; align-items:center; opacity:.6; }
+    .announce-sep img { width:18px; height:18px; object-fit:contain; }
   }
 
   /* ── NAV ── */
@@ -759,6 +762,46 @@
   .baltic-amber-section-title { font-family:var(--serif); font-size:1.1rem; font-weight:400; color:var(--amber); margin:20px 0 8px; text-shadow:0 0 12px rgba(212,160,23,.3); }
   .baltic-amber-body p { font-size:.86rem; color:var(--white-dim); line-height:1.85; font-weight:300; margin-bottom:12px; }
   .baltic-amber-body strong { color:var(--white); font-weight:400; }
+  .sustain-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,.82);
+    z-index:1000; display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none; transition:opacity .3s;
+  }
+  .sustain-overlay.open { opacity:1; pointer-events:all; backdrop-filter:blur(10px); }
+  .sustain-modal {
+    background:linear-gradient(160deg, #091a03 0%, #080d09 50%, #061000 100%);
+    border:1px solid rgba(140,196,15,.5);
+    box-shadow:0 32px 100px rgba(0,0,0,.85), 0 0 40px rgba(140,196,15,.2), 0 0 80px rgba(140,196,15,.08);
+    animation:sustainGlow 4s ease-in-out infinite;
+    width:min(680px, 94vw); max-height:88vh; overflow-y:auto;
+    display:flex; flex-direction:column; position:relative;
+    transform:scale(.95); transition:transform .3s;
+  }
+  .sustain-overlay.open .sustain-modal { transform:scale(1); }
+  @keyframes sustainGlow {
+    0%,100% { box-shadow:0 32px 100px rgba(0,0,0,.85), 0 0 30px rgba(140,196,15,.15), 0 0 60px rgba(140,196,15,.06); border-color:rgba(140,196,15,.4); }
+    50%      { box-shadow:0 32px 100px rgba(0,0,0,.85), 0 0 60px rgba(140,196,15,.4), 0 0 120px rgba(140,196,15,.18); border-color:rgba(140,196,15,.8); }
+  }
+  .sustain-header {
+    padding:28px 32px 20px;
+    border-bottom:1px solid rgba(140,196,15,.2);
+    background:linear-gradient(90deg, rgba(140,196,15,.08) 0%, transparent 100%);
+    display:flex; align-items:center; justify-content:space-between;
+    position:sticky; top:0; z-index:2; backdrop-filter:blur(8px);
+  }
+  .sustain-title { font-family:var(--serif); font-size:1.8rem; font-weight:300; color:var(--green-lt); margin:0; text-shadow:0 0 20px rgba(140,196,15,.35); }
+  .sustain-close {
+    background:none; border:none; font-size:1.2rem; cursor:pointer;
+    color:rgba(255,80,80,.6); transition:color .2s, text-shadow .2s;
+    text-shadow:0 0 8px rgba(255,80,80,.3); flex-shrink:0;
+  }
+  .sustain-close:hover { color:rgba(255,80,80,1); text-shadow:0 0 16px rgba(255,80,80,.8); }
+  .sustain-body { padding:24px 32px 36px; }
+  .sustain-lead { font-size:.95rem; color:var(--white); line-height:1.8; font-weight:300; margin-bottom:20px; }
+  .sustain-divider { width:60px; height:1px; background:linear-gradient(90deg, var(--green-lt), transparent); margin:20px 0; opacity:.6; }
+  .sustain-section-title { font-family:var(--serif); font-size:1.1rem; font-weight:400; color:var(--green-lt); margin:20px 0 8px; text-shadow:0 0 12px rgba(140,196,15,.25); }
+  .sustain-body p { font-size:.86rem; color:var(--white-dim); line-height:1.85; font-weight:300; margin-bottom:12px; }
+  .sustain-body strong { color:var(--white); font-weight:400; }
   .why-natural-overlay {
     position:fixed; inset:0; background:rgba(0,0,0,.82);
     z-index:1000; display:flex; align-items:center; justify-content:center;
@@ -1066,7 +1109,6 @@
     position:fixed; inset:0; background:rgba(0,0,0,.78);
     z-index:1100; display:flex; align-items:center; justify-content:center;
     opacity:0; pointer-events:none; transition:opacity .3s;
-    
   }
   .testi-modal-overlay.open { opacity:1; pointer-events:all; backdrop-filter:blur(6px); }
   .testi-modal {
@@ -1156,15 +1198,27 @@
   .footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:48px; margin-bottom:48px; }
   .footer-brand-name { margin-bottom:14px; }
   .footer-brand-name img { height:400px; width:auto; display:block; }
+  .footer-logo-link { cursor:default; display:block; }
   .footer-tagline { font-size:.8rem; color:var(--white-dim); line-height:1.7; font-weight:300; max-width:240px; }
   .footer-col h4 { font-size:.64rem; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.35); margin-bottom:20px; font-weight:400; }
   .footer-col ul { list-style:none; }
   .footer-col ul li { margin-bottom:12px; }
   .footer-col ul li a { font-size:.83rem; color:var(--white-dim); text-decoration:none; font-weight:300; transition:color .2s; }
   .footer-col ul li a:hover { color:var(--green-lt); }
+  .footer-link-amber { color:#d4a017; text-shadow:0 0 10px rgba(212,160,23,.4); }
+  .footer-link-amber:hover { color:#e8b830 !important; }
+  .footer-link-teal { color:#35b8d4; text-shadow:0 0 10px rgba(53,184,212,.4); }
+  .footer-link-teal:hover { color:#5fd4ec !important; }
   .footer-bottom { border-top:1px solid var(--border-sub); padding-top:28px; display:flex; justify-content:space-between; align-items:center; }
   .footer-copy { font-size:.71rem; color:rgba(255,255,255,.25); font-weight:300; }
   .footer-payments { display:flex; gap:12px; font-size:.64rem; letter-spacing:.1em; color:rgba(255,255,255,.2); }
+  .back-to-top {
+    display:none;
+    background:none; border:1px solid rgba(140,196,15,.35); color:rgba(140,196,15,.6);
+    font-family:var(--sans); font-size:.62rem; letter-spacing:.22em; text-transform:uppercase;
+    padding:8px 20px; cursor:pointer; transition:border-color .2s, color .2s;
+  }
+  .back-to-top:hover, .back-to-top:active { border-color:rgba(140,196,15,.8); color:var(--green-lt); }
 
   /* ── CART DRAWER ── */
   .cart-overlay { position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:200; opacity:0; pointer-events:none; transition:opacity .3s; }
@@ -1267,7 +1321,6 @@
     position:fixed; inset:0; background:rgba(0,0,0,.82);
     z-index:1000; display:flex; align-items:center; justify-content:center;
     opacity:0; pointer-events:none; transition:opacity .3s;
-    
   }
   .policy-overlay.open { opacity:1; pointer-events:all; backdrop-filter:blur(10px); }
   .policy-modal {
@@ -1331,8 +1384,6 @@
   }
   .modal-qty-btn:hover { background:var(--green); }
   .modal-qty-num { width:40px; text-align:center; font-size:.9rem; font-variant-numeric:tabular-nums; color:var(--white); background:var(--surface-2); height:36px; line-height:36px; }
-
-  /* ── GIFT CARD FLOATING BUTTON — removed, now inline in hero-ctas ── */
 
   /* ── GIFT CARD SECTION ── */
   .gc-section {
@@ -1477,7 +1528,6 @@
   /* ── RESPONSIVE ── */
   @media(max-width:900px){
     nav { padding:0 16px 0 8px; height:60px; overflow:hidden; }
-    .footer-brand-name img { height:140px; max-width:100%; }
     .nav-logo { flex:1 1 0; min-width:0; max-width:calc(100% - 100px); overflow:hidden; margin-left:0; }
     .nav-logo img { height:31px; width:auto; max-width:100%; display:block; object-fit:contain; }
     .nav-links { display:none; }
@@ -1486,6 +1536,7 @@
     .announcement { font-size:.5rem; letter-spacing:.14em; word-spacing:.5em; padding:6px 6px; line-height:1.6; }
     .announcement .ship-sep { display:none; }
     .announcement .ship-line { display:block; white-space:nowrap; }
+    .announcement .announce-offer { display:none; }
     .hero { grid-template-columns:1fr; }
     .hero-visual { min-height:320px; }
     .hero-text { padding:40px 24px 32px; align-items:stretch; }
@@ -1545,21 +1596,19 @@
     .payment-section { padding:40px 20px; }
     .payment-methods { display:flex; flex-direction:column; align-items:center; gap:12px; }
     .payment-methods-row { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; }
-    .payment-methods .payment-pill:nth-child(5),
-    .payment-methods .payment-pill:nth-child(6),
-    .payment-methods .payment-pill:nth-child(7) { grid-row:unset; }
-    .payment-methods .payment-pill:nth-child(5),
-    .payment-methods .payment-pill:nth-child(6),
-    .payment-methods .payment-pill:nth-child(7) { grid-column:unset; justify-self:unset; }
     .payment-pill { padding:12px 18px; }
     .newsletter { grid-template-columns:1fr; padding:60px 24px; gap:28px; }
     .testimonials-grid { grid-template-columns:1fr; }
     .testimonials { padding:60px 24px; }
     .testimonials .section-title { font-size:clamp(1.8rem, 6vw, 2.4rem); text-align:center; }
     .testimonials .section-header { text-align:center; }
-    .footer-grid { grid-template-columns:1fr 1fr; }
+    .footer-grid { grid-template-columns:1fr 1fr; gap:24px; }
+    .footer-brand-name { padding-right:0; }
+    .footer-brand-name img { height:180px; width:auto; max-width:100%; }
+    .footer-logo-link { cursor:pointer; }
     .footer-bottom { flex-direction:column; gap:14px; text-align:center; }
     .footer-payments { flex-wrap:wrap; justify-content:center; }
+    .back-to-top { display:flex; }
     .trust-strip { flex-direction:column; flex-wrap:nowrap; align-items:center; gap:16px; padding:24px 16px; }
 
     .trust-item { flex:none; white-space:nowrap; font-size:.78rem; letter-spacing:.1em; gap:14px; display:flex; align-items:center; justify-content:flex-start; width:14.5em; margin:0 auto; }
@@ -1880,7 +1929,7 @@
 <body>
 <div id="page-wrap" style="overflow-x:hidden;width:100%;max-width:100vw;position:relative;">
 
-<div class="announcement"><span class="ship-line">Free Shipping On Orders Over $85</span><span class="ship-sep">&nbsp;·&nbsp;</span><span class="ship-line">Free Express Shipping On Orders Over $180</span></div>
+<div class="announcement"><span class="ship-line">Free Shipping On Orders Over $85</span><span class="ship-sep">&nbsp;·&nbsp;</span><span class="announce-sep"><img src="images/icons/australian-native.png" alt="" aria-hidden="true"></span><span class="ship-line">Free Express Shipping On Orders Over $180</span><span class="announce-sep"><img src="images/icons/australian-native.png" alt="" aria-hidden="true"></span><span class="ship-line announce-offer">10% Off Your First Order - Subscribe Below</span></div>
 
 <nav>
   <a href="#" class="nav-logo"><img src="/images/logo-wide.png" alt="Profound Naturals"></a>
@@ -2016,12 +2065,12 @@
   <div class="value-card">
     <span class="value-icon"><img src="images/icons/small-batch-crafted.png" alt="Small-Batch Crafted"></span>
     <h3 class="value-title">Small-Batch Crafted</h3>
-    <p class="value-desc">Made in small batches to preserve potency and ensure each product meets our highest standards.</p>
+    <p class="value-desc">Made in small batches to preserve potency and ensure each product meets the highest standards.</p>
   </div>
   <div class="value-card">
     <span class="value-icon"><img src="images/icons/australian-made.png" alt="Australian Made"></span>
     <h3 class="value-title">Australian Made</h3>
-    <p class="value-desc">Proudly made in Australia, supporting local growers and artisans while keeping our footprint close to home.</p>
+    <p class="value-desc">Proudly made in Australia, supporting local growers and artisans while keeping the footprint close to home.</p>
   </div>
   <div class="value-card">
     <span class="value-icon"><img src="images/icons/clean-formulas.png" alt="Clean Formulas"></span>
@@ -2063,7 +2112,7 @@
       <div class="collection-content">
         <span class="featured-label">Collection</span>
         <h2 class="featured-title">Natural<br>Soap Bars</h2>
-        <p class="featured-desc">Hand-poured and small-batch crafted, our soap bars are made with nourishing plant oils and pure botanical extracts <span style="font-size:.5em;vertical-align:middle;margin:0 .2em">-</span> free from synthetic detergents and artificial lather agents.</p>
+        <p class="featured-desc">Hand-poured and small-batch crafted, each soap bar is made with nourishing plant oils and pure botanical extracts <span style="font-size:.5em;vertical-align:middle;margin:0 .2em">-</span> free from synthetic detergents and artificial lather agents.</p>
         <a href="#" class="btn-green-outline" onclick="event.preventDefault(); openCollectionModal('soaps')">Shop Soaps</a>
       </div>
     </div>
@@ -2203,7 +2252,7 @@
 <footer>
   <div class="footer-grid">
     <div>
-      <div class="footer-brand-name"><img src="/images/logo.png" alt="Profound Naturals"></div>
+      <div class="footer-brand-name"><a class="footer-logo-link" onclick="window.scrollTo({top:0,behavior:'smooth'})"><img src="/images/logo.png" alt="Profound Naturals"></a></div>
       <p class="footer-tagline">Botanical wellness products crafted with care, rooted in nature's intelligence.</p>
     </div>
     <div class="footer-col">
@@ -2220,21 +2269,21 @@
       <h4>Info</h4>
       <ul>
         <li><a href="#" onclick="event.preventDefault(); openWhyNaturalModal()">Why Natural?</a></li>
+        <li><a href="#" onclick="event.preventDefault(); const o=document.getElementById('sustainabilityOverlay'); o.classList.add('open'); lockBodyScroll();">Sustainability</a></li>
+        <li><a href="#" class="footer-link-amber" onclick="event.preventDefault(); openBalticAmberModal()">Baltic Amber</a></li>
         <li><a href="#">Ingredients</a></li>
-        <li><a href="#">Sustainability</a></li>
         <li><a href="#">Journal</a></li>
-        <li><a href="#" onclick="event.preventDefault(); openBalticAmberModal()" style="color:#d4a017; text-shadow:0 0 10px rgba(212,160,23,.4);">Baltic Amber</a></li>
+        <li><a href="https://profoundnaturals.online" target="_blank" class="footer-link-teal">Custom Scent</a></li>
       </ul>
     </div>
     <div class="footer-col">
       <h4>Help</h4>
       <ul>
-        <li><a href="#" onclick="event.preventDefault(); openPolicyModal('returns')">Shipping &amp; Returns</a></li>
-        <li><a href="#" onclick="event.preventDefault(); openPolicyModal('returns')">FAQ</a></li>
+        <li><a href="#" onclick="event.preventDefault(); openPolicyModal('shipping')">Shipping &amp; Returns</a></li>
+        <li><a href="#" onclick="event.preventDefault(); openPolicyModal('faq')">FAQ</a></li>
         <li><a href="#gc-section">Gift Cards</a></li>
-        <li><a href="#contact">Contact Us</a></li>
-        <li><a href="#" onclick="event.preventDefault(); openPolicyModal('returns')">Afterpay FAQ</a></li>
-        <li><a href="#" onclick="event.preventDefault(); openPolicyModal('returns')">Privacy Policy</a></li>
+        <li><a href="#contact">Contact Me</a></li>
+        <li><a href="#" onclick="event.preventDefault(); openPolicyModal('privacy')">Privacy Policy</a></li>
       </ul>
     </div>
   </div>
@@ -2243,40 +2292,228 @@
     <div class="footer-payments">
       <span style="color:#4da9e8">VISA</span><span style="color:#eb001b">MASTER<span style="color:#f79e1b">CARD</span></span><span style="color:#7b6ff0">STRIPE</span><span style="color:#b2fce4;filter:brightness(.8)">AFTERPAY</span><span style="color:#AA8FFF">ZIP</span><span><span style="color:#EA4335">G</span><span style="color:#FBBC05">P</span><span style="color:#34A853">A</span><span style="color:#4285F4">Y</span></span>
     </div>
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Back to Top</button>
   </div>
 </footer>
 
-<!-- RETURNS POLICY MODAL -->
+<!-- POLICY MODALS -->
+<div class="policy-overlay" id="privacyOverlay" onclick="closePolicyModal(event,'privacy')">
+  <div class="policy-modal" id="privacyModal">
+    <div class="policy-modal-header">
+      <div class="policy-modal-title">
+        <small>Profound Naturals</small>
+        Privacy Policy
+      </div>
+      <button class="policy-modal-close" onclick="closePolicyModalDirect('privacy')">✕</button>
+    </div>
+    <div class="policy-modal-body">
+      <p>Profound Naturals is a sole trader business based in Australia. This policy sets out how personal information is collected, used, stored, and disclosed in accordance with the <em>Privacy Act 1988</em> (Cth) and the Australian Privacy Principles. By using this website you agree to the terms of this policy.</p>
+
+      <h3>1. Information Collected</h3>
+      <p>Personal information is only collected when you actively provide it. Depending on how you interact with the site, this may include:</p>
+      <ul>
+        <li><strong>Purchases</strong> - name, email address, and delivery address</li>
+        <li><strong>Gift cards</strong> - sender name, recipient name, and recipient email address</li>
+        <li><strong>Newsletter subscriptions</strong> - email address</li>
+        <li><strong>Back-in-stock notifications</strong> - email address and product of interest</li>
+        <li><strong>Testimonials</strong> - name, email address, and review content</li>
+      </ul>
+      <p>No customer accounts are created. No passwords are stored. Payment card details are entered directly into Stripe's secure environment and are never transmitted to or stored by Profound Naturals.</p>
+
+      <h3>2. Purpose of Collection</h3>
+      <p>Information is collected for the primary purpose for which it was provided, including:</p>
+      <ul>
+        <li>Processing and fulfilling orders, including dispatch notifications and tracking</li>
+        <li>Delivering gift card codes to nominated recipients</li>
+        <li>Sending requested back-in-stock notifications</li>
+        <li>Sending the newsletter to subscribers (unsubscribe at any time by replying to any email)</li>
+        <li>Publishing approved testimonials on the website</li>
+        <li>Responding to customer enquiries</li>
+      </ul>
+      <p>Personal information will not be used for any secondary purpose without consent, unless permitted by law.</p>
+
+      <h3>3. Disclosure to Third Parties</h3>
+      <p>Personal information is not sold, rented, or shared for marketing purposes. It is disclosed only to the following service providers, strictly to the extent necessary to operate the site:</p>
+      <ul>
+        <li><strong>Stripe</strong> - payment processing. Stripe receives order value and billing details to process transactions. Stripe's privacy policy applies to data it holds: stripe.com/privacy</li>
+        <li><strong>Australia Post</strong> - name and shipping address are shared solely for order delivery</li>
+        <li><strong>Zoho Mail</strong> - transactional email delivery (order confirmations, notifications, gift card codes)</li>
+        <li><strong>Netlify</strong> - website hosting. Netlify may log technical metadata including IP addresses and request timestamps for security and operational purposes</li>
+        <li><strong>Google Fonts</strong> - typefaces are loaded from Google's servers. Google may log connection metadata. No personal data submitted on this site is shared with Google</li>
+      </ul>
+      <p>No advertising networks, social media pixels, or analytics platforms are used on this site.</p>
+
+      <h3>4. Cookies &amp; Tracking</h3>
+      <p>This site does not use cookies for tracking, advertising, or analytics. Stripe may set strictly functional cookies during the checkout process for fraud detection and session integrity.</p>
+
+      <h3>5. Data Security</h3>
+      <p>Reasonable technical and organisational measures are in place to protect personal information from misuse, interference, loss, and unauthorised access. These include HTTPS encryption across the entire site, server-side handling of all sensitive operations, and no storage of payment data. No internet transmission can be guaranteed absolutely secure; reasonable efforts are made to protect all information held.</p>
+
+      <h3>6. Data Retention</h3>
+      <p>Order records are retained for a minimum of five years to meet Australian taxation and business record-keeping obligations. Subscription and notification email addresses are held until removal is requested. Testimonials are held until a request for removal is received.</p>
+
+      <h3>7. Access, Correction &amp; Deletion</h3>
+      <p>Under the Australian Privacy Principles, you have the right to request access to personal information held about you, to request correction of inaccurate information, and to request deletion where retention is no longer required by law. Contact <strong>hello@profoundnaturals.com.au</strong> to make a request. Requests will be acknowledged and actioned within a reasonable timeframe at no charge.</p>
+
+      <h3>8. Complaints</h3>
+      <p>If you believe your privacy has been mishandled, please contact <strong>hello@profoundnaturals.com.au</strong>. All concerns will be taken seriously and responded to promptly.</p>
+
+      <h3>9. Policy Updates</h3>
+      <p>This policy may be updated from time to time. The current version will always be available on this page. Last updated: June 2026.</p>
+    </div>
+  </div>
+</div>
+
+<div class="policy-overlay" id="shippingOverlay" onclick="closePolicyModal(event,'shipping')">
+  <div class="policy-modal" id="shippingModal">
+    <div class="policy-modal-header">
+      <div class="policy-modal-title">
+        <small>Profound Naturals</small>
+        Shipping &amp; Returns
+      </div>
+      <button class="policy-modal-close" onclick="closePolicyModalDirect('shipping')">✕</button>
+    </div>
+    <div class="policy-modal-body">
+
+      <h3>Shipping Rates</h3>
+      <ul>
+        <li><strong>Standard Shipping</strong> - $8.95 · free on orders $85 and over</li>
+        <li><strong>Express Shipping</strong> - $13.95 · free on orders $180 and over</li>
+      </ul>
+      <p>Profound Naturals ships within Australia only via Australia Post. International shipping is not currently available. Delivery timeframes are subject to Australia Post schedules and may vary by location.</p>
+
+      <h3>Order Processing</h3>
+      <p>Every order is hand-packed in small batches and typically dispatched within 1–3 business days of payment confirmation. During high-volume periods this may extend slightly - every order receives the same care regardless of when it was placed.</p>
+
+      <h3>Tracking</h3>
+      <p>A tracking number is emailed once your order has been dispatched. You can track your parcel directly at auspost.com.au. Express orders include priority tracking.</p>
+
+      <h3>Natural Product Variation</h3>
+      <p>As handcrafted small-batch products made from natural ingredients, slight variations in colour, texture, or appearance between batches are normal. These are not defects - they are an inherent characteristic of genuine botanical goods.</p>
+
+      <h3>Faulty or Damaged Items</h3>
+      <p>All products are sold in accordance with the <em>Australian Consumer Law</em> (Schedule 2, <em>Competition and Consumer Act 2010</em> (Cth)). If a product arrives with a major manufacturing defect or is damaged in transit, you are entitled to choose a full refund or replacement. For minor defects, a replacement or refund will be offered at discretion. Contact <strong>hello@profoundnaturals.com.au</strong> within 7 days of delivery with your order number and clear photographs. Return shipping for confirmed faults is covered in full.</p>
+
+      <h3>Change of Mind</h3>
+      <p>Australian Consumer Law does not require retailers to accept change-of-mind returns. Due to the hygiene-sensitive and personal nature of botanical wellness products, change-of-mind returns cannot be accepted. This includes personal preferences relating to scent, texture, or appearance.</p>
+
+      <h3>Storage &amp; Exclusions</h3>
+      <p>Store all products in a cool, dry place away from direct sunlight and heat. This policy does not cover damage resulting from improper storage, misuse, accidental damage, or normal wear and tear after delivery.</p>
+
+      <div class="policy-note">All Profound Naturals products are formulated in accordance with IFRA (International Fragrance Association) guidelines, which set safe usage levels for fragrance ingredients in cosmetic and topical applications. Profound Naturals accepts no liability for adverse physical reactions - including skin irritation, allergic responses, or sensitivities - to naturally occurring botanical concentrates. A patch test on a small area of skin is strongly recommended before first use, particularly for those with known sensitivities or skin conditions.</div>
+
+    </div>
+  </div>
+</div>
+
 <div class="policy-overlay" id="returnsOverlay" onclick="closePolicyModal(event,'returns')">
   <div class="policy-modal" id="returnsModal">
     <div class="policy-modal-header">
       <div class="policy-modal-title">
         <small>Profound Naturals</small>
-        Returns & Refund Policy
+        Returns &amp; Refund Policy
       </div>
       <button class="policy-modal-close" onclick="closePolicyModalDirect('returns')">✕</button>
     </div>
     <div class="policy-modal-body">
-      <p>Profound Naturals hand-crafts every product with care and attention. As natural, small-batch items, slight variations in colour, texture or appearance may occur between batches - these are not defects but a hallmark of genuine handcrafted goods.</p>
-      <p>All products are made and sold in accordance with Australian Consumer Law.</p>
+      <p>All Profound Naturals products are sold in accordance with the <em>Australian Consumer Law</em> (Schedule 2, <em>Competition and Consumer Act 2010</em> (Cth)). Consumer guarantees under Australian law cannot be excluded, restricted, or modified.</p>
 
-      <h3>1. Faulty or Damaged Items</h3>
-      <p>If a product arrives with a major manufacturing defect or is damaged in transit, the customer is entitled to a full refund or replacement at their choice. For minor defects, Profound Naturals will offer a replacement or refund at its discretion. Every product is stood behind fully.</p>
+      <h3>Consumer Guarantees</h3>
+      <p>Products must be of acceptable quality, match their description, and be fit for any purpose communicated at the time of purchase. Where a product does not meet these guarantees, you are entitled to a remedy. For a major failure, you may choose a full refund or replacement. For a minor failure, a repair, replacement, or refund will be provided at discretion.</p>
 
-      <h3>2. Change of Mind</h3>
-      <p>Due to the personal and hygiene-sensitive nature of Profound Naturals products, returns or refunds for change of mind cannot be accepted. This includes personal preferences relating to scent, texture or appearance.</p>
+      <h3>Change of Mind</h3>
+      <p>Australian Consumer Law does not require retailers to accept change-of-mind returns. Due to the personal and hygiene-sensitive nature of botanical wellness products, change-of-mind returns cannot be accepted. This includes preferences relating to scent, texture, or appearance.</p>
 
-      <h3>3. Storage & Exclusions</h3>
-      <p>Natural ingredients require proper care. Products must be stored in a cool, dry place away from direct sunlight and heat. This policy does not cover damage resulting from improper storage, misuse, or general wear and tear following delivery.</p>
-      <div class="policy-note">Profound Naturals is not liable for adverse physical reactions - including skin irritation, allergic responses or sensitivities - to naturally occurring botanical concentrates. A patch test is strongly recommended prior to first use, particularly for those with known sensitivities.</div>
+      <h3>How to Make a Claim</h3>
+      <p>Email <strong>hello@profoundnaturals.com.au</strong> within 7 days of delivery with your order number and clear photographs of the issue. Verified claims will be resolved promptly - return shipping for confirmed faults is covered in full. Full detail on shipping, processing times, and product variation is available under Shipping &amp; Returns in the footer.</p>
 
-      <h3>4. How to Report a Fault</h3>
-      <p>To lodge a claim, please contact Profound Naturals within 7 days of delivery:</p>
-      <ul>
-        <li>Email <strong>hello@profoundnaturals.com.au</strong> with the order number and clear photos of the defect</li>
-        <li>Once verified, return instructions will be provided and all return shipping costs covered</li>
-        <li>Replacements are dispatched promptly, subject to standard Australia Post delivery timeframes</li>
-      </ul>
+      <div class="policy-note">Profound Naturals accepts no liability for adverse physical reactions - including skin irritation, allergic responses, or sensitivities - to naturally occurring botanical concentrates. A patch test is strongly recommended before first use.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- FAQ MODAL -->
+<div class="policy-overlay" id="faqOverlay" onclick="closePolicyModal(event,'faq')">
+  <div class="policy-modal" id="faqModal">
+    <div class="policy-modal-header">
+      <div class="policy-modal-title">
+        <small>Profound Naturals</small>
+        Frequently Asked Questions
+      </div>
+      <button class="policy-modal-close" onclick="closePolicyModalDirect('faq')">✕</button>
+    </div>
+    <div class="policy-modal-body">
+
+      <h3>Orders &amp; Shipping</h3>
+
+      <p><strong>How long until my order is shipped?</strong><br>
+      Orders placed before 1PM are dispatched the same day. Orders placed after 1PM are dispatched the following business day. Every order is hand-packed before it leaves.</p>
+
+      <p><strong>How long will delivery take?</strong><br>
+      Once dispatched, delivery times are in Australia Post's hands. Standard shipping typically takes 2–6 business days depending on location. Express is generally 1–3 business days. A tracking number will be emailed once dispatched. Full shipping detail is available under Shipping &amp; Returns in the footer.</p>
+
+      <p><strong>Is international shipping available?</strong><br>
+      Not at this stage. Profound Naturals ships within Australia only.</p>
+
+      <h3>Returns &amp; Refunds</h3>
+
+      <p><strong>How do I return a product or request a refund?</strong><br>
+      Email <strong>hello@profoundnaturals.com.au</strong> with your order number, the product name, a description of the issue, and a photo or video showing the fault. If the return is applicable under Australian Consumer Law, it will be processed promptly. Change-of-mind returns cannot be accepted. Refunds are issued for faulty products - for example, a defective spray head or damaged packaging on arrival.</p>
+
+      <h3>Products</h3>
+
+      <p><strong>Are your essential oils 100% pure?</strong><br>
+      Absolutely. Every essential oil sold is 100% pure and undiluted - no carrier oils, no fillers, no synthetic additions. A simple way to verify purity at home is the paper droplet test - a quick internet search will show you how.</p>
+
+      <p><strong>Are all products 100% natural?</strong><br>
+      Most are entirely natural. The exception is the alcohol-based botanical perfumes and colognes, which contain a very small amount (as low as 0.05%) of synthetic denaturant in the ethanol. This is a legal requirement under Australian regulations - ethanol sold outside of the food and beverage industry must include a denaturant to prevent oral consumption. Everything else in the formula is pure botanical.</p>
+
+      <p><strong>Do you offer free samples?</strong><br>
+      Scent samples on paper strips are available free of charge - however shipping is not covered. Small 3ml testers are also available as part of smell tester kits sold on the website.</p>
+
+      <h3>Workshops</h3>
+
+      <p><strong>How do I book a perfume or cologne making workshop?</strong><br>
+      Workshop booking details will be available through the dedicated booking tab on the website. Follow the prompts to select a date and secure your spot. If you have a specific enquiry in the meantime, email <strong>hello@profoundnaturals.com.au</strong>.</p>
+
+      <p><strong>What do the workshops include?</strong><br>
+      A mix of theory and practical hands-on blending. Topics covered include the nature of scent blending, fragrance levels and note structures, scent strengths, chemical safety of natural components, and extraction methods used to produce pure oil concentrates. Participants leave with a real understanding of perfumery - not just a formula.</p>
+
+      <p><strong>Are workshops suitable for children?</strong><br>
+      Workshops for children aged 8 and above can be organised. A parent or guardian must provide written consent and be present for the full duration of any workshop involving children.</p>
+
+    </div>
+  </div>
+</div>
+
+<!-- SUSTAINABILITY MODAL -->
+<div class="sustain-overlay" id="sustainabilityOverlay" onclick="if(event.target===this){closePolicyModalDirect('sustainability');}">
+  <div class="sustain-modal">
+    <div class="sustain-header">
+      <div class="sustain-title">Sustainability</div>
+      <button class="sustain-close" onclick="closePolicyModalDirect('sustainability')">✕</button>
+    </div>
+    <div class="sustain-body">
+      <p class="sustain-lead">Sustainability at Profound Naturals is an honest, ongoing commitment - not a marketing position. As a small business, the transition to fully sustainable packaging is a gradual one, and this page reflects exactly where things currently stand.</p>
+
+      <div class="sustain-divider"></div>
+      <div class="sustain-section-title">Packaging &amp; Shipping</div>
+      <p>Wherever possible, excess packaging is eliminated entirely. Orders are shipped in padded mailer envelopes rather than boxes, reducing both material use and shipping weight.</p>
+      <p>Products are protected using <strong>recycled honeycomb wrap</strong> and <strong>recycled bubble wrap</strong> - still plastic, but sourced from recycled material rather than virgin. The goal is to move progressively toward fully biodegradable, paper-based packaging as the business grows. That transition is already underway.</p>
+
+      <div class="sustain-divider"></div>
+      <div class="sustain-section-title">Product Containers</div>
+      <p>All essential oils, absolutes, and perfumes are bottled in <strong>amber glass</strong> - recyclable, inert, and reusable. Amber glass also protects the integrity of natural oils from UV degradation, extending shelf life and reducing waste.</p>
+      <p>Lids are metal or glass depending on the product. Labels are not yet biodegradable - this is on the roadmap as sustainable label stock becomes more accessible at small-batch scale.</p>
+
+      <div class="sustain-divider"></div>
+      <div class="sustain-section-title">Aromatherapy Nasal Inhalers</div>
+      <p>The aromatherapy nasal inhalers are made from <strong>PET plastic</strong> - a durable, lightweight material chosen specifically because these inhalers are designed for long-term reuse. Refill wicks are available separately, meaning the inhaler body can be used and refreshed for years rather than discarded after a single use. Reusable and refillable is always preferable to single-use.</p>
+
+      <div class="sustain-divider"></div>
+      <div class="sustain-section-title">The Honest Position</div>
+      <p>Not everything is perfect yet - labels, some outer wrap, and certain closures are still conventional materials. That is acknowledged openly. Every product decision at Profound Naturals weighs environmental impact alongside quality, and that won't change as the range grows.</p>
     </div>
   </div>
 </div>
@@ -2366,7 +2603,7 @@
     <input class="notify-modal-input" type="email" id="notifyEmail" placeholder="Your email address" />
     <input type="text" name="website" id="hp_notify" autocomplete="off" tabindex="-1" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" aria-hidden="true">
     <button class="notify-modal-submit" onclick="submitNotify()">Notify Me When Available</button>
-    <div class="notify-modal-confirm" id="notifyConfirm">✓ You're on the list - we'll let you know!</div>
+    <div class="notify-modal-confirm" id="notifyConfirm">✓ You're on the list - I'll let you know the moment it's back!</div>
     <button class="notify-modal-close" onclick="closeNotifyModalDirect()">Close</button>
   </div>
 </div>
@@ -2467,21 +2704,44 @@
       <button class="why-natural-close" onclick="closeWhyNaturalModalDirect()">✕</button>
     </div>
     <div class="why-natural-body">
-      <p class="why-natural-lead">The research on synthetic fragrance ingredients and human hormones is ongoing - but the concerns are real enough to take seriously.</p>
+      <p class="why-natural-lead">The research on synthetic fragrance ingredients and human hormones is ongoing - but the concerns are real, well-documented, and have been known within the industry for decades.</p>
       <div class="why-natural-divider"></div>
+
       <h3 class="why-natural-section-title">Endocrine Disruptors</h3>
-      <p>The primary concern with synthetic fragrances is endocrine disruption - chemicals that can mimic, block, or interfere with the body's hormones. This can happen in three ways: by binding to hormone receptors and triggering inappropriate responses, by blocking natural hormones from functioning, or by altering how hormones are produced, transported, metabolised and eliminated.</p>
+      <p>The primary concern with synthetic fragrances is endocrine disruption - chemicals that can mimic, block, or interfere with the body's hormonal system. This can happen in three ways: by binding to hormone receptors and triggering responses that shouldn't occur, by blocking natural hormones from functioning correctly, or by altering how hormones are produced, transported, metabolised, and eliminated.</p>
+      <p>The endocrine system governs reproduction, metabolism, growth, mood, and immunity. Disrupting it - even subtly, over time - is not a trivial concern.</p>
+
+      <div class="why-natural-divider"></div>
       <h3 class="why-natural-section-title">The Chemical Classes of Concern</h3>
-      <p><strong>Phthalates</strong> are used as solvents and fixatives to make synthetic scents last longer. Some, particularly diethyl phthalate (DEP), are linked to reproductive health issues and potential hormonal disruption.</p>
-      <p><strong>Synthetic musks</strong> such as galaxolide and tonalide have been detected in human tissue and the environment, and have shown potential for hormonal activity in laboratory studies.</p>
-      <p><strong>Other synthetic compounds</strong> - synthetic fragrances can contain hundreds of chemicals, and the potential hormonal effects of many remain poorly understood.</p>
-      <h3 class="why-natural-section-title">Potential Impacts</h3>
-      <p>Depending on the chemical, dose, duration and individual sensitivity, endocrine disruptors have been linked to: reproductive health issues, thyroid dysfunction, metabolic disruption, and neurological development concerns in offspring.</p>
+      <p><strong>Phthalates</strong> are used as solvents and fixatives to make synthetic scents last longer. Some, particularly diethyl phthalate (DEP), are linked to reproductive health issues and potential hormonal disruption. While certain phthalates have been phased out in some markets, they remain in widespread use globally.</p>
+      <p><strong>Synthetic musks</strong> such as galaxolide and tonalide have been detected in human tissue, breast milk, and the broader environment. Laboratory studies have shown potential for hormonal activity - and unlike most compounds, they bioaccumulate rather than being easily eliminated by the body.</p>
+      <p><strong>Parabens</strong>, while primarily used as preservatives, have weak estrogen-mimicking properties and are commonly found in fragranced personal care products. Their cumulative effect across multiple daily-use products is an ongoing area of research.</p>
+      <p><strong>Other synthetic compounds</strong> - synthetic fragrances can contain hundreds of individual chemicals. The potential hormonal and biological effects of many remain poorly understood, and long-term combination effects are rarely studied.</p>
+
+      <div class="why-natural-divider"></div>
+      <h3 class="why-natural-section-title">The Skin Absorption Factor</h3>
+      <p>Fragrance applied to skin is not simply sitting on the surface. The skin absorbs compounds into the bloodstream - bypassing the digestive system and its filtration processes entirely. This makes the ingredient quality of anything applied topically more significant than it might appear for something "just worn on the skin." Wrists, neck, and chest - the most common application points - are areas with high blood flow and thin skin, increasing absorption further.</p>
+
+      <div class="why-natural-divider"></div>
+      <h3 class="why-natural-section-title">Industry Awareness - and Inaction</h3>
+      <p>The fragrance industry has not been unaware of these concerns. The International Fragrance Association (IFRA) was established specifically to regulate ingredient safety - yet the same synthetic chemicals linked to endocrine disruption continue to appear in mainstream products at scale. The reason is straightforward: synthetic fragrance compounds are extraordinarily cheap to produce compared to natural alternatives, and the profit margins in mass-market perfumery depend on them.</p>
+      <p>Major fragrance houses supply ingredients to hundreds of brands simultaneously. The financial incentive to reformulate away from cheap, effective synthetics is low - particularly when ingredient disclosure laws allow everything to be listed simply as "fragrance," with no obligation to name individual compounds. Consumers are left without the information needed to make an informed choice.</p>
+      <p>It is also worth noting that many products marketed as "fragrance-free" still contain masking fragrances - synthetic compounds used to neutralise unpleasant chemical odours in the base formula. These are not required to be declared as fragrance ingredients. The problem is more pervasive than labels suggest.</p>
+
+      <div class="why-natural-divider"></div>
+      <h3 class="why-natural-section-title">Potential Health Impacts</h3>
+      <p>Depending on the chemical, dose, duration, and individual sensitivity, endocrine-disrupting compounds have been associated with: reproductive health issues including menstrual irregularities and changes in sperm quality, thyroid dysfunction, metabolic disruption with links to obesity and insulin resistance, and neurological development concerns - particularly in offspring exposed during pregnancy.</p>
+      <p>Individual sensitivity varies significantly. Some people are more affected than others, and cumulative daily exposure across multiple fragranced products - shampoo, moisturiser, deodorant, cleaning products, candles - compounds the risk beyond any single product in isolation.</p>
+
+      <div class="why-natural-divider"></div>
       <h3 class="why-natural-section-title">The Transparency Problem</h3>
-      <p>In Australia, companies are not required to disclose individual ingredients under the term "fragrance." This lack of transparency makes it impossible for consumers to know exactly what they are being exposed to.</p>
+      <p>In Australia, companies are not required to disclose individual ingredients under the term "fragrance." A single word on an ingredient list can legally represent dozens or hundreds of synthetic compounds. This makes it effectively impossible for consumers to know what they are being exposed to - or to make genuinely informed decisions about the products they use daily.</p>
+
       <div class="why-natural-divider"></div>
       <h3 class="why-natural-section-title">Why Natural Perfumes Are Different</h3>
-      <p>Natural perfumes use essential oils, absolutes, and natural isolates derived from plants. While these can contain complex compounds, the focus is on naturally occurring substances - free from the synthetic chemicals most commonly linked to endocrine disruption. For those concerned about hormonal health, it is a cleaner and more transparent alternative.</p>
+      <p>Natural perfumes use essential oils, absolutes, and plant-derived isolates. These are complex by nature - plants produce hundreds of compounds - but they are naturally occurring substances the human body has had long evolutionary exposure to, rather than novel synthetic molecules it has not.</p>
+      <p>It is worth being honest: some natural essential oils contain compounds that have biological activity, and a small number have their own safety considerations at high concentrations. This is why IFRA guidelines exist, and why responsible natural perfumers - including Profound Naturals - formulate within them. The difference is that the risk profile of natural ingredients is far better understood, the ingredients are fully declarable, and the absence of phthalates, synthetic musks, and masking agents removes the primary classes of endocrine-disrupting concern entirely.</p>
+      <p>For those who want to know exactly what they are putting on their skin - and why - natural is the only category that makes that possible.</p>
     </div>
   </div>
 </div>
@@ -2512,22 +2772,26 @@
 </div>
 
 <script>
-let _savedScrollY = 0;
 let _modalLockCount = 0;
 function lockBodyScroll() {
   _modalLockCount++;
-  if (_modalLockCount > 1) return; // already locked by an underlying modal
-  _savedScrollY = window.scrollY || window.pageYOffset || 0;
-  document.body.style.top = `-${_savedScrollY}px`;
+  if (_modalLockCount > 1) return;
+  const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+  if (scrollbarWidth > 0) {
+    document.body.style.paddingRight = scrollbarWidth + 'px';
+    const nav = document.querySelector('nav');
+    if (nav) nav.style.paddingRight = (48 + scrollbarWidth) + 'px';
+  }
   document.body.classList.add('modal-open');
 }
 function unlockBodyScroll() {
   if (_modalLockCount === 0) return;
   _modalLockCount--;
-  if (_modalLockCount > 0) return; // a modal is still open underneath
+  if (_modalLockCount > 0) return;
   document.body.classList.remove('modal-open');
-  document.body.style.top = '';
-  window.scrollTo(0, _savedScrollY);
+  document.body.style.paddingRight = '';
+  const nav = document.querySelector('nav');
+  if (nav) nav.style.paddingRight = '';
 }
 
 const DASH = '<span style="font-size:.5em;vertical-align:middle;margin:0 .2em">-</span>';
@@ -2576,7 +2840,7 @@ const products = [
   { id:58, name:"Cinnamon Bark", category:"100% Pure Essential Oil", emoji:"🟤", bg:"#1e1008", price:13.95, size:"10ml", badge:null, image:"images/products/cinnamon-bark-eo.png", desc:"Warm, spiced and sweetly enveloping. Steam-distilled from the bark of Cinnamomum zeylanicum - deeply rich and aromatic with an immediate intensity that anchors and elevates any blend. A natural fixative used in compliant concentrations for leave-on formulations.", ingredients:"Cinnamomum zeylanicum (100% Pure Essential Oil, Steam-Distilled)" },
   { id:59, name:"Black Spruce", category:"100% Pure Essential Oil", emoji:"🌲", bg:"#0e1810", price:13.95, size:"10ml", badge:null, image:"images/products/black-spruce-eo.png", desc:"Clean, crisp and deeply forested. Steam-distilled from the needles of Picea mariana - an instantly recognisable forest freshness with a resinous, slightly sweet depth. Grounding and invigorating in equal measure, it opens beautifully in both solo wear and complex botanical blends.", ingredients:"Picea mariana (100% Pure Essential Oil, Steam-Distilled)" },
   { id:60, name:"Blue Cypress", category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0a1a1e", price:28.95, size:"10ml", badge:"Rare", auNative:true, image:"images/products/blue-cypress-eo.png", desc:"Ancient, smoky and deeply grounding. Steam-distilled from the heartwood of Callitris intratropica - an extraordinary Australian native found only in the tropical woodlands of the Northern Territory. Rich, blue-toned and unmistakably earthy with a warm, resinous depth unlike any other cypress in the world. One of the most sought-after Australian native botanicals in perfumery. 🌿 Australian Native.", ingredients:"Callitris intratropica (100% Pure Essential Oil, Steam-Distilled)" },
-  { id:61, name:"Boronia Absolute", category:"100% Pure Absolute", emoji:"🌿", bg:"#1a1018", price:89.95, size:"10ml", badge:"Rare", auNative:true, image:"images/products/boronia-ab.png", desc:"One of the rarest and most prized botanicals in natural perfumery. Solvent-extracted from the flowers of Boronia megastigma - a small flowering shrub native to the southwestern tip of Western Australia. Extraordinarily complex - rich, earthy and deeply floral with fresh fruity-sweet and tea-like facets, soft cinnamon and tobacco nuances, and a warm woody-sweet undertone that lingers beautifully on skin. Frequently adulterated elsewhere - ours is genuine. 🌿 Australian Native.", ingredients:"Boronia megastigma (Absolute, Organic Hexane-Free Extraction)" },
+  { id:61, name:"Boronia Absolute", category:"100% Pure Absolute", emoji:"🌿", bg:"#1a1018", price:89.95, size:"10ml", badge:"Rare", auNative:true, image:"images/products/boronia-ab.png", desc:"One of the rarest and most prized botanicals in natural perfumery. Solvent-extracted from the flowers of Boronia megastigma - a small flowering shrub native to the southwestern tip of Western Australia. Extraordinarily complex - rich, earthy and deeply floral with fresh fruity-sweet and tea-like facets, soft cinnamon and tobacco nuances, and a warm woody-sweet undertone that lingers beautifully on skin. Frequently adulterated elsewhere - Profound Naturals sources genuine. 🌿 Australian Native.", ingredients:"Boronia megastigma (Absolute, Organic Hexane-Free Extraction)" },
   { id:55, name:"Galbanum",              category:"100% Pure Essential Oil", emoji:"🟢", bg:"#1a2010", price:16.95, size:"10ml", badge:"Rare", image:"images/products/galbanum-eo.png", desc:"One of the oldest aromatic ingredients known to humanity - galbanum was burned as sacred incense in ancient Egypt and mentioned in the Old Testament. Steam-distilled from the gum resin of Ferula galbaniflua, it opens with a sharply green, almost electric freshness before settling into a deep, resinous, woody earthiness that is completely unlike anything else. Rare, potent and unforgettable - a single drop transforms any accord.", ingredients:"Ferula galbaniflua (100% Pure Essential Oil, Steam-Distilled)" },
 
   // ── NEW ESSENTIAL OILS (ids 26–40) ──
@@ -2683,7 +2947,7 @@ function renderProducts() {
 
 function groupByNameKeyword(list) {
   // Words too generic to group on
-  const stop = new Set(['the','and','of','oil','pure','essential','absolute','natural','soap','bar','seed','extract','100','first','3rd','1st','complete','distilled','indian','spanish','white','blue','black','rose','sweet','red','-','—','·']);
+  const stop = new Set(['the','and','of','oil','pure','essential','absolute','natural','soap','bar','seed','extract','100','first','3rd','1st','complete','distilled','indian','spanish','white','blue','black','rose','sweet','red','-','-','·']);
   // Normalise common abbreviations so families unite
   const normalise = (name) => name
     .toLowerCase()
@@ -2865,7 +3129,7 @@ async function submitTestimonial() {
   const email   = document.getElementById('testiEmail').value.trim();
   const review  = document.getElementById('testiReview').value.trim();
   const honeypot = document.getElementById('hp_testi').value;
-  if (honeypot) return; // bot detected — silent discard
+  if (honeypot) return; // bot detected - silent discard
   const btn     = document.querySelector('.testi-submit-btn');
 
   if (!name)   { showToast('Please enter your name', 'error'); return; }
@@ -2997,7 +3261,7 @@ async function buyGiftCard() {
   const params = new URLSearchParams(window.location.search);
   if (params.get('gc_success') === '1') {
     // Email is now sent by stripe-webhook.js on checkout.session.completed
-    // No frontend action needed — just show confirmation and clean URL
+    // No frontend action needed - just show confirmation and clean URL
     showToast('Gift card sent successfully!');
     window.history.replaceState({}, '', '/');
   }
@@ -3166,9 +3430,23 @@ function openModal(id) {
   selectedVariant = null;
 
   document.getElementById('modalQty').textContent = '1';
-  // Reset ingredients toggle
-  document.getElementById('modalIngredientsWrap').classList.remove('open');
-  document.getElementById('modalIngToggle').classList.remove('open');
+  // Ingredients — auto-open if single ingredient, toggle if multiple
+  const singleIngredient = p.ingredients && !p.ingredients.includes(',');
+  const ingWrap = document.getElementById('modalIngredientsWrap');
+  const ingToggle = document.getElementById('modalIngToggle');
+  if (singleIngredient) {
+    ingWrap.classList.add('open');
+    ingToggle.classList.add('open');
+    ingToggle.querySelector('.modal-ing-arrow').style.display = 'none';
+    ingToggle.style.cursor = 'default';
+    ingToggle.onclick = null;
+  } else {
+    ingWrap.classList.remove('open');
+    ingToggle.classList.remove('open');
+    ingToggle.querySelector('.modal-ing-arrow').style.display = '';
+    ingToggle.style.cursor = '';
+    ingToggle.onclick = toggleModalIngredients;
+  }
   const modalImgEl = document.getElementById('modalImg');
   modalImgEl.style.background = p.bg;
   modalImgEl.className = 'modal-img';
@@ -3192,12 +3470,16 @@ function openModal(id) {
   if (window.innerWidth <= 900) {
     descEl.style.visibility = 'hidden';
     descEl.classList.add('clamped');
+    if (singleIngredient) descEl.style.webkitLineClamp = '3';
+    else descEl.style.webkitLineClamp = '';
     requestAnimationFrame(() => {
       const overflows = descEl.scrollHeight > descEl.clientHeight + 2;
       if (!overflows) descEl.classList.remove('clamped');
       else toggleEl.classList.add('visible');
       descEl.style.visibility = '';
     });
+  } else {
+    descEl.style.webkitLineClamp = '';
   }
   document.getElementById('modalIngredients').textContent = p.ingredients;
   document.getElementById('modalPrice').textContent = `$${p.price.toFixed(2)}${p.size ? '  -  ' + p.size : ''}`;
@@ -3495,8 +3777,8 @@ function cycleOutOfStockBadges() {
 setInterval(cycleOutOfStockBadges, 2000);
 
 // -- HERO CARD CYCLING --
-const featuredProducts = products.filter(p => p.badge === 'Bestseller' || p.badge === 'Rare');
-let heroIndex = 0;
+const featuredProducts = products.filter(p => p.badge === 'Bestseller' || p.badge === 'Rare').sort(() => Math.random() - 0.5);
+let heroIndex = Math.floor(Math.random() * featuredProducts.length);
 let heroTimer;
 
 function renderHero(p) {
@@ -3570,7 +3852,7 @@ function startHeroTimer() {
 }
 
 if (featuredProducts.length) {
-  renderHero(featuredProducts[0]);
+  renderHero(featuredProducts[heroIndex]);
   preloadHeroImage(0);
   startHeroTimer();
 }
@@ -3612,7 +3894,7 @@ function closeNefertModalDirect() {
     <button type="button" class="testi-modal-close" onclick="closeTestiModal()">&times;</button>
     <span class="testi-modal-label">Community</span>
     <h2 class="testi-modal-title">Share your<br><em>experience</em></h2>
-    <p class="testi-modal-sub">We love hearing from you. If your testimonial is selected, we'll feature it right here on the site.</p>
+    <p class="testi-modal-sub">Always love hearing from you. If your testimonial is selected, it'll be featured right here on the site.</p>
     <div class="testi-row">
       <input class="testi-field" id="testiName" type="text" placeholder="Your name">
       <input class="testi-field" id="testiEmail" type="email" placeholder="Your email address">

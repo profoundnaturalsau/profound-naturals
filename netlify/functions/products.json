@@ -8,8 +8,8 @@
     { "id": 6,  "name": "Pr-nfrt",                    "price": 118.76 },
     { "id": 7,  "name": "Hemp Soap - Lavender",       "price": 9.00   },
     { "id": 8,  "name": "Hemp Soap - Eucalyptus",     "price": 9.00   },
-    { "id": 9,  "name": "Blk Soap - Daisy & Daffodil","price": 14.00  },
-    { "id": 10, "name": "Blk Soap - Woody Eucalyptus","price": 14.00  },
+    { "id": 9,  "name": "Black Soap - Lavender, Boronia & Daisy","price": 14.00  },
+    { "id": 10, "name": "Black Soap - Woody Eucalyptus","price": 14.00  },
     { "id": 11, "name": "Aroma Necklaces",            "price": 18.00  },
     { "id": 13, "name": "Himalayan Cedarwood",        "price": 9.95   },
     { "id": 16, "name": "Jasmine",                    "price": 59.95  },
@@ -68,6 +68,7 @@
     { "id": 69, "name": "Mandarin",                   "price": 12.95  },
     { "id": 70, "name": "Oakmoss",                    "price": 38.95  },
     { "id": 71, "name": "Myrrh",                      "price": 34.95  },
-    { "id": 72, "name": "Rosalina",                   "price": 16.00  }
+    { "id": 72, "name": "Rosalina",                   "price": 16.00  },
+    { "id": 73, "name": "Davana",                     "price": 34.95  }
   ]
 }

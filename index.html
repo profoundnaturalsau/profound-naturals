@@ -589,6 +589,13 @@
   .product-img img[src*="pr-nfrt.svg"] {
     animation: iconAmberGlow 3.5s ease-in-out infinite;
   }
+  .product-img img[src*="jazz-lounge"] {
+    animation: jazzGlow 4s ease-in-out infinite;
+  }
+  @keyframes jazzGlow {
+    0%,100% { filter: drop-shadow(0 0 6px rgba(216,58,0,.3)) drop-shadow(0 0 14px rgba(216,58,0,.15)); }
+    50%     { filter: drop-shadow(0 0 12px rgba(216,58,0,.6)) drop-shadow(0 0 28px rgba(216,58,0,.3)); }
+  }
   @keyframes iconAmberGlow {
     0%,100% { filter: drop-shadow(0 0 4px rgba(212,160,23,0.45)) drop-shadow(0 0 10px rgba(212,160,23,0.25)); }
     50%     { filter: drop-shadow(0 0 8px rgba(212,160,23,0.8)) drop-shadow(0 0 20px rgba(212,160,23,0.45)); }
@@ -720,7 +727,11 @@
     display:grid; grid-template-columns:repeat(4,1fr); gap:2px;
   }
   .value-card { background:var(--surface-2); padding:48px 40px; text-align:center; }
-  .au-native-badge { display:inline-flex; align-items:center; gap:5px; background:rgba(140,196,15,.12); border:1px solid rgba(140,196,15,.3); border-radius:20px; padding:3px 8px 3px 5px; font-size:.58rem; letter-spacing:.12em; text-transform:uppercase; color:var(--green-lt); margin-bottom:6px; white-space:nowrap; cursor:pointer; align-self:flex-start; }
+  .au-native-badge { display:inline-flex; align-items:center; gap:5px; background:rgba(140,196,15,.12); border:1px solid rgba(140,196,15,.3); border-radius:20px; padding:3px 8px 3px 5px; font-size:.58rem; letter-spacing:.12em; text-transform:uppercase; color:var(--green-lt); margin-bottom:6px; white-space:nowrap; cursor:pointer; align-self:flex-start; animation:auBadgePulse 4s ease-in-out infinite; }
+  @keyframes auBadgePulse {
+    0%,45%  { border-color:rgba(140,196,15,.5); color:var(--green-lt); }
+    55%,100% { border-color:rgba(212,160,23,.6); color:#d4a017; }
+  }
   .au-native-badge:hover { background:rgba(140,196,15,.2); }
 
   .baltic-amber-overlay {
@@ -1228,13 +1239,15 @@
   .newsletter-form input::placeholder { color:rgba(255,255,255,.25); }
   .newsletter-form input:focus { border-color:var(--green-lt); }
   .newsletter-form button {
-    background:var(--green); color:var(--white);
-    border:none; padding:16px 28px;
-    font-family:var(--sans); font-size:.71rem;
-    letter-spacing:.12em; text-transform:uppercase;
-    cursor:pointer; transition:background .2s; white-space:nowrap;
+    background:transparent; color:#b8e832;
+    border:1px solid #b8e832; padding:16px 28px;
+    font-family:var(--sans); font-size:.71rem; font-weight:500;
+    letter-spacing:.15em; text-transform:uppercase;
+    cursor:pointer; white-space:nowrap; flex-shrink:0;
+    transition:background .2s, color .2s, border-color .2s, box-shadow .2s;
+    animation:btnPrimaryGlow 3s ease-in-out infinite;
   }
-  .newsletter-form button:hover { background:var(--green-lt); }
+  .newsletter-form button:hover { background:#b8e832; color:#080d09; font-weight:600; animation:none; }
 
   /* ── FOOTER ── */
   footer {
@@ -1564,7 +1577,7 @@
   }
   .nav-hamburger span {
     display:block; width:22px; height:1.5px;
-    background:var(--white); border-radius:2px;
+    background:var(--green-lt); border-radius:2px;
     transition:all .35s cubic-bezier(.4,0,.2,1);
     transform-origin:center;
   }
@@ -1645,6 +1658,9 @@
     .payment-methods-row { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; }
     .payment-pill { padding:12px 18px; }
     .newsletter { grid-template-columns:1fr; padding:60px 24px; gap:28px; }
+    .newsletter-form { width:100%; }
+    .newsletter-form input { min-width:0; }
+    .newsletter-form button { white-space:nowrap; flex-shrink:0; }
     .testimonials-grid { grid-template-columns:1fr; }
     #testiMoreGrid { grid-template-columns:1fr; }
     .testimonials { padding:60px 24px; }
@@ -1657,6 +1673,12 @@
     .footer-bottom { flex-direction:column; gap:14px; text-align:center; }
     .footer-payments { flex-wrap:wrap; justify-content:center; }
     .back-to-top { display:flex; }
+    .modal-close, .policy-modal-close, .baltic-amber-close, .sustain-close,
+    .why-natural-close, .au-native-modal-close, .contact-close,
+    .notify-modal-close, .testi-modal-close, .badge-modal-close,
+    .nefertem-modal-close, .collection-modal-close {
+      color:rgba(255,80,80,1); text-shadow:0 0 12px rgba(255,80,80,.7);
+    }
     .trust-strip { flex-direction:column; flex-wrap:nowrap; align-items:center; gap:16px; padding:24px 16px; }
 
     .trust-item { flex:none; white-space:nowrap; font-size:.78rem; letter-spacing:.1em; gap:14px; display:flex; align-items:center; justify-content:center; margin:0 auto; }
@@ -1678,7 +1700,7 @@
       display:flex; flex-direction:column;
     }
     .modal-img {
-      min-height:0; height:220px; flex-shrink:0;
+      min-height:0; height:200px; flex-shrink:0;
       font-size:4rem;
     }
     .modal-content {
@@ -1686,8 +1708,9 @@
       overflow-y:auto; flex:1;
       display:flex; flex-direction:column; gap:0;
     }
-    .modal-category { font-size:.58rem; margin-bottom:4px; }
-    .modal-name { font-size:1.3rem; margin-bottom:8px; }
+    .modal-category { font-size:.58rem; margin-bottom:2px; }
+    .au-native-badge { margin-bottom:4px; padding:2px 6px 2px 4px; font-size:.54rem; }
+    .modal-name { font-size:1.3rem; margin-bottom:6px; }
     .modal-desc { font-size:.78rem; line-height:1.6; margin-bottom:10px; }
     .modal-desc.clamped { display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical; overflow:hidden; }
     .modal-desc-toggle { font-size:.68rem; color:var(--green-lt); letter-spacing:.1em; text-transform:uppercase; background:none; border:none; border-bottom:1px solid rgba(140,196,15,.3); padding:0 0 4px; cursor:pointer; display:none; margin-bottom:8px; align-self:flex-start; width:auto; -webkit-appearance:none; appearance:none; border-radius:0; box-shadow:none; }
@@ -1733,7 +1756,7 @@
   .mobile-menu-logo {
     display:flex; align-items:center; text-decoration:none;
   }
-  .mobile-menu-logo img { height:44px; width:auto; display:block; }
+  .mobile-menu-logo img { height:44px; width:auto; max-width:200px; display:block; object-fit:contain; }
   .mobile-menu-close {
     background:none; border:none; font-size:1.2rem;
     cursor:pointer; color:var(--white-dim); transition:color .2s;
@@ -2160,7 +2183,7 @@
       <div class="collection-content">
         <span class="featured-label">Collection</span>
         <h2 class="featured-title">Natural<br>Soap Bars</h2>
-        <p class="featured-desc">Hand-poured and small-batch crafted, each soap bar is made with nourishing plant oils and pure botanical extracts <span style="font-size:.5em;vertical-align:middle;margin:0 .2em">-</span> free from synthetic detergents and artificial lather agents.</p>
+        <p class="featured-desc">Hand-poured and small-batch crafted, each 115g soap bar is made with nourishing plant oils and pure botanical extracts <span style="font-size:.5em;vertical-align:middle;margin:0 .2em">-</span> free from synthetic detergents and artificial lather agents.</p>
         <a href="#" class="btn-green-outline" onclick="event.preventDefault(); openCollectionModal('soaps')">Shop Soaps</a>
       </div>
     </div>
@@ -2887,14 +2910,14 @@ const products = [
   { id:2,  name:"Velvet Forest",    category:"Botanical Perfume", emoji:"🌲", bg:"#0e1f12", price:79.80,  size:"50ml", badge:null,        desc:"Mediterranean cypress opens with a cool, green freshness before Australian native blue cypress deepens the accord with smoke and ancient earth. Baltic amber brings a warm, honeyed resin to the heart while creamy amyris sandalwood softens the base. Ambrette lingers as a velvety, pear-kissed musk - making Velvet Forest as close to living woodland as a bottle can hold.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Organic Baltic Amber (Pinus succinifera), Organic Cypress (Cupressus sempervirens), Organic Blue Cypress Oil (Callitris intratropica), Organic Sandalwood (Amyris balsamifera), Organic Ambrette Oil (Abelmoschus moschatus)" },
   { id:3,  name:"Jazz Lounge",      category:"Botanical Perfume", emoji:"🎷", bg:"#1a1020", price:88.88,  size:"50ml", badge:"Bestseller", image:"images/products/jazz-lounge.png", desc:"A brooding, resinous accord where galbanum opens with wild green sharpness before davana weaves through the heart, bringing a boozy, fruity warmth with an animalic edge. Australian native blue cypress adds smoke and ancient wood, while labdanum and amber draw it to a dark, leathery close. Bold, sensual and completely unforgettable.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Davana, Blue Cypress (Australian Native - Callitris intratropica), Galbanum, Labdanum, Amber" },
   { id:4,  name:"Floral Fantasy",   category:"Botanical Perfume", emoji:"💐", bg:"#2a1828", price:98.00,  size:"50ml", badge:null,        desc:"A lush bouquet of living botanicals - neroli, ylang ylang and tuberose dancing over a soft musky base.", ingredients:"Neroli Absolute, Ylang Ylang, Tuberose, Rose Otto, White Musk" },
-  { id:5,  name:"Pr-nfr",           category:"Botanical Perfume", emoji:"𓂀", bg:"#1c1a10", price:99.95,  size:"50ml", badge:null, image:"images/icons/pr-nfr.svg", desc:"Inspired by the sacred embalming rooms of ancient Egypt, Pr-Nfr opens with an instant, clean forest freshness of black spruce before myrrh weaves a smoky, ceremonial earthiness into the heart - the same sacred resin used in ancient ritual and preservation. Warm Baltic amber and rich vanilla oleoresin settle into the base, drawing it to a deeply resinous, honeyed close. Simple in composition, profound in character - Pr-Nfr is a timeless, skin-warming fragrance that settles beautifully and lasts.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Organic Baltic Amber (Pinus succinifera), Organic Vanilla Oleoresin (Vanilla planifolia), Organic Myrrh EO, Organic Black Spruce Oil (Picea mariana)" },
+  { id:5,  name:"Pr-nfr",           category:"Botanical Perfume", emoji:"𓂀", bg:"#1c1a10", price:99.95,  size:"50ml", badge:"Rare", image:"images/icons/pr-nfr.svg", desc:"Inspired by the sacred embalming rooms of ancient Egypt, Pr-Nfr opens with an instant, clean forest freshness of black spruce before myrrh weaves a smoky, ceremonial earthiness into the heart - the same sacred resin used in ancient ritual and preservation. Warm Baltic amber and rich vanilla oleoresin settle into the base, drawing it to a deeply resinous, honeyed close. Simple in composition, profound in character - Pr-Nfr is a timeless, skin-warming fragrance that settles beautifully and lasts.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Organic Baltic Amber (Pinus succinifera), Organic Vanilla Oleoresin (Vanilla planifolia), Organic Myrrh EO, Organic Black Spruce Oil (Picea mariana)" },
   { id:6,  name:"Pr-nfrt",          category:"Botanical Perfume", emoji:"𓁿", bg:"#20101a", price:118.76, size:"50ml", badge:"Bestseller", inStock:false, image:"images/icons/pr-nfrt.svg", desc:"A radiant floral amber and the feminine counterpart to Pr-nfr. Rose and jasmine bloom over a heart of blue lotus, while davana lends a soft, fruity warmth that turns uniquely with the skin. A base of amber and sandalwood grounds the bouquet in golden, lingering warmth. Named for beauty itself - luminous, sensual and quietly profound.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Rose Absolute, Jasmine Sambac, Blue Lotus, Davana, Amber Accord, Sandalwood" },
   // ── Natural Soaps
-  { id:7,  name:"Hemp Soap - Lavender",         category:"Natural Soap", emoji:"💜", bg:"#1a1428", price:9.00,  size:null, badge:null, desc:"A gentle, conditioning soap bar crafted on a rich base of extra virgin olive oil, coconut oil and hemp seed oil. Lavandin Grosso - a bold, intense variety of lavender known for its lasting clean scent - fills every lather with a fresh, herbaceous calm. Sweet almond oil and castor oil add a creamy, skin-loving richness that soothes as it cleanses. Simple, pure and deeply satisfying.", ingredients:"Olive Oil (Grade A Extra Virgin), Sustainable Palm Oil, Coconut Oil, Safflower Oil, Glycerine (Vegetable Origin), Hemp Seed Oil (Unrefined), Purified Water, Sodium Hydroxide (Saponifying Agent), Sorbitol, Propylene Glycol (Vegetable Glycerine Derived), Sorbitan Oleate (Emulsifier), Oat Protein, Ricinus communis (Castor Oil), Prunus Amygdalus Dulcis (Organic Sweet Almond Oil), Lavandula Hybrida B (Lavandin Grosso) Essential Oil" },
-  { id:8,  name:"Hemp Soap - Eucalyptus",       category:"Natural Soap", emoji:"🌿", bg:"#101e14", price:9.00,  size:null, badge:null, desc:"A deeply cleansing botanical soap bar built on a nourishing base of extra virgin olive oil, coconut oil and hemp seed oil. Two varieties of eucalyptus - the sharp, clarifying Kochii and the softer, more rounded Radiata - create a full-spectrum eucalyptus experience that awakens the senses and leaves skin feeling clean and refreshed. Enriched with apricot kernel oil, oat protein and Abyssinian oil for a gentle, conditioning lather that never strips.", ingredients:"Olive Oil (Grade A Extra Virgin), Sustainable Palm Oil, Coconut Oil, Safflower Oil, Glycerine (Vegetable Origin), Hemp Seed Oil (Unrefined), Purified Water, Sodium Hydroxide (Saponifying Agent), Sorbitol, Propylene Glycol (Vegetable Glycerine Derived), Sorbitan Oleate (Emulsifier), Oat Protein, Crambe Abyssinica (Abyssinian Oil Refined), Prunus Armeniaca (Apricot Kernel Oil), Eucalyptus Kochii EO, Eucalyptus Radiata EO" },
-  { id:9,  name:"Blk Soap - Daisy & Daffodil",  category:"Natural Soap", emoji:"🌼", bg:"#141414", price:14.00, size:null, badge:null, inStock:false, desc:"Crafted with authentic African black soap from Ghana, this bar combines traditional deep-cleansing power with activated charcoal and bright floral botanicals - a light, cheerful scent of daisy and daffodil.", ingredients:"African Black Soap (Ghana), Activated Charcoal, Daisy Extract, Daffodil Absolute, Coconut Oil, Shea Butter" },
-  { id:10, name:"Blk Soap - Woody Eucalyptus",  category:"Natural Soap", emoji:"🖤", bg:"#0e160e", price:14.00, size:null, badge:null, inStock:false, desc:"Crafted with authentic African black soap from Ghana, this bar pairs traditional deep-cleansing properties with activated charcoal and a grounding woody eucalyptus blend - purifying, earthy and forest-fresh.", ingredients:"African Black Soap (Ghana), Activated Charcoal, Eucalyptus Essential Oil, Cedarwood, Vetiver, Coconut Oil" },
-  { id:25, name:"Hemp Soap - Peppermint",       category:"Natural Soap", emoji:"🌱", bg:"#0a1e14", price:9.00,  size:null, badge:null, desc:"A refreshing, skin-loving soap bar built on a nourishing base of extra virgin olive oil, coconut oil and hemp seed oil. Peppermint essential oil delivers a powerful, long-lasting coolness that awakens the senses while golden jojoba and sweet almond oil leave skin soft and conditioned. Pure, simple and invigorating.\n\n⚠️ Not recommended for use on sensitive areas - the cooling effect is powerful and long-lasting.", ingredients:"Olive Oil (Grade A Extra Virgin), Sustainable Palm Oil, Coconut Oil, Safflower Oil, Glycerine (Vegetable Origin), Hemp Seed Oil (Unrefined), Purified Water, Sodium Hydroxide (Saponifying Agent), Sorbitol, Propylene Glycol (Vegetable Glycerine Derived), Sorbitan Oleate (Emulsifier), Oat Protein, Simmondsia chinensis (Golden Jojoba Oil), Prunus Amygdalus Dulcis (Organic Sweet Almond Oil), Mentha Arvensis (Peppermint EO)" },
+  { id:7,  name:"Hemp Soap - Lavender",         category:"Natural Soap", emoji:"💜", bg:"#1a1428", price:9.00,  size:"115g", badge:null, image:"images/products/lavender-hemp-soap.png", desc:"A gentle, conditioning soap bar crafted on a rich base of extra virgin olive oil, coconut oil and hemp seed oil. Lavandin Grosso - a bold, intense variety of lavender known for its lasting clean scent - fills every lather with a fresh, herbaceous calm. Sweet almond oil and castor oil add a creamy, skin-loving richness that soothes as it cleanses. Simple, pure and deeply satisfying.", ingredients:"Olive Oil (Grade A Extra Virgin), Sustainable Palm Oil, Coconut Oil, Safflower Oil, Glycerine (Vegetable Origin), Hemp Seed Oil (Unrefined), Purified Water, Sodium Hydroxide (Saponifying Agent), Sorbitol, Propylene Glycol (Vegetable Glycerine Derived), Sorbitan Oleate (Emulsifier), Oat Protein, Ricinus communis (Castor Oil), Prunus Amygdalus Dulcis (Organic Sweet Almond Oil), Lavandula Hybrida B (Lavandin Grosso) Essential Oil" },
+  { id:8,  name:"Hemp Soap - Eucalyptus",       category:"Natural Soap", emoji:"🌿", bg:"#101e14", price:9.00,  size:"115g", badge:null, image:"images/products/euca-hemp-soap.png", desc:"A deeply cleansing botanical soap bar built on a nourishing base of extra virgin olive oil, coconut oil and hemp seed oil. Two varieties of eucalyptus - the sharp, clarifying Kochii and the softer, more rounded Radiata - create a full-spectrum eucalyptus experience that awakens the senses and leaves skin feeling clean and refreshed. Enriched with apricot kernel oil, oat protein and Abyssinian oil for a gentle, conditioning lather that never strips.", ingredients:"Olive Oil (Grade A Extra Virgin), Sustainable Palm Oil, Coconut Oil, Safflower Oil, Glycerine (Vegetable Origin), Hemp Seed Oil (Unrefined), Purified Water, Sodium Hydroxide (Saponifying Agent), Sorbitol, Propylene Glycol (Vegetable Glycerine Derived), Sorbitan Oleate (Emulsifier), Oat Protein, Crambe Abyssinica (Abyssinian Oil Refined), Prunus Armeniaca (Apricot Kernel Oil), Eucalyptus Kochii EO, Eucalyptus Radiata EO" },
+  { id:9,  name:"Black Soap - Lavender, Boronia & Daisy",  category:"Natural Soap", emoji:"🌼", bg:"#141414", price:14.00, size:"115g", badge:null, inStock:false, desc:"Built on a base of authentic African black soap from Ghana - a traditional deep-cleansing formulation made with plantain skin ash, palm kernel oil and shea butter that has been used for centuries across West Africa for its extraordinary skin-purifying properties. Activated charcoal amplifies the cleanse, drawing out impurities while leaving skin balanced and refreshed. The botanical heart is a trio of rare florals - boronia absolute from the wild heathlands of Western Australia brings a rich, earthy complexity; lavender adds a clean, herbal calm; and daisy lends a soft, cheerful brightness that lifts the whole accord. Deeply cleansing, beautifully fragrant and genuinely botanical.", ingredients:"African Black Soap (Ghana), Activated Charcoal, Boronia Absolute, Lavender Essential Oil, Daisy Extract, Coconut Oil, Shea Butter" },
+  { id:10, name:"Black Soap - Woody Eucalyptus",  category:"Natural Soap", emoji:"🖤", bg:"#0e160e", price:14.00, size:"115g", badge:null, inStock:false, desc:"Crafted with authentic African black soap from Ghana, this bar pairs traditional deep-cleansing properties with activated charcoal and a grounding woody eucalyptus blend - purifying, earthy and forest-fresh.", ingredients:"African Black Soap (Ghana), Activated Charcoal, Eucalyptus Essential Oil, Cedarwood, Vetiver, Coconut Oil" },
+  { id:25, name:"Hemp Soap - Peppermint",       category:"Natural Soap", emoji:"🌱", bg:"#0a1e14", price:9.00,  size:"115g", badge:null, image:"images/products/peppermint-hemp-soap.png", desc:"A refreshing, skin-loving soap bar built on a nourishing base of extra virgin olive oil, coconut oil and hemp seed oil. Peppermint essential oil delivers a powerful, long-lasting coolness that awakens the senses while golden jojoba and sweet almond oil leave skin soft and conditioned. Pure, simple and invigorating.\n\n⚠️ Not recommended for use on sensitive areas - the cooling effect is powerful and long-lasting.", ingredients:"Olive Oil (Grade A Extra Virgin), Sustainable Palm Oil, Coconut Oil, Safflower Oil, Glycerine (Vegetable Origin), Hemp Seed Oil (Unrefined), Purified Water, Sodium Hydroxide (Saponifying Agent), Sorbitol, Propylene Glycol (Vegetable Glycerine Derived), Sorbitan Oleate (Emulsifier), Oat Protein, Simmondsia chinensis (Golden Jojoba Oil), Prunus Amygdalus Dulcis (Organic Sweet Almond Oil), Mentha Arvensis (Peppermint EO)" },
   // ── Jewellery
   { id:11, name:"Aroma Necklaces", category:"Jewellery", emoji:"📿", bg:"#1e1c14", price:18.00, size:null, badge:"Bestseller", desc:"A hand-crafted diffuser necklace with a lava stone pendant - add a drop of your favourite essential oil and carry your scent all day.", ingredients:"Lava Stone, Essential Oil Compatible, Adjustable Chain, Hypoallergenic", variants:["Gold","Silver","Rose Gold"] },
   // ── Essential Oils
@@ -2959,6 +2982,7 @@ const products = [
   { id:70, name:"Oakmoss", category:"100% Pure Essential Oil", emoji:"🌿", bg:"#101a0c", price:38.95, size:"10ml", badge:"Rare", image:"images/products/oakmoss-eo.png", desc:"Dark, earthy and unmistakably wild - oakmoss is one of the most iconic base notes in classical perfumery. Steam-distilled from Evernia prunastri, it carries a deep, forest-floor earthiness with mossy, woody and slightly marine facets that ground and anchor any accord. Used in compliant concentrations - IFRA regulated for leave-on applications.", ingredients:"Evernia prunastri" },
   { id:71, name:"Myrrh", category:"100% Pure Essential Oil", emoji:"🟤", bg:"#1a1008", price:34.95, size:"10ml", badge:"Rare", image:"images/products/myrrh-eo.png", desc:"Ancient, smoky and deeply resinous - myrrh has been prized for thousands of years as a sacred aromatic, medicine and perfumery ingredient. Steam-distilled from the oleo-resin of Commiphora myrrha, it carries a warm, bittersweet earthiness with smoky, slightly medicinal facets and a rich, balsamic depth that evolves beautifully in a blend. One of the great base notes of natural perfumery.", ingredients:"Commiphora myrrha" },
   { id:72, name:"Rosalina", category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1a10", price:16.00, size:"10ml", badge:null, auNative:true, image:"images/products/rosalina-eo.png", desc:"Soft, floral and gently medicinal - rosalina is a lesser-known Australian native with a character that sits beautifully between lavender and tea tree. Steam-distilled from the leaves of Melaleuca ericifolia, it carries a sweet, slightly camphorous freshness with a calm, rounded warmth. A versatile mid note that blends effortlessly across floral, herbal and woody accords.", ingredients:"Melaleuca ericifolia" },
+  { id:73, name:"Davana", category:"100% Pure Essential Oil", emoji:"🌼", bg:"#1a1408", price:34.95, size:"10ml", badge:"Rare", image:"images/products/davana-eo.png", desc:"One of the most extraordinary and coveted ingredients in natural perfumery. Steam-distilled from the flowering tops of Artemisia pallens - a small aromatic herb native to southern India, harvested at the precise moment of peak bloom. Davana has a quality unlike almost any other oil - warm, fruity and richly complex with a boozy, dried-fruit sweetness layered over soft woody and slightly herbaceous undertones. What makes it truly exceptional is its behaviour on the skin - in a blend, davana shifts and evolves differently on every person who wears it, taking on a uniquely individual character. Prized by perfumers worldwide and found in some of the most celebrated contemporary fragrances. Deeply grounding, emotionally balancing and quietly euphoric.", ingredients:"Artemisia pallens" },
 ];
 
 let cart = [];
@@ -2978,7 +3002,7 @@ function productCardHTML(p, i) {
       </div>
       ${p.badge ? `<span class="product-badge${p.badge === 'Rare' ? ' rare' : p.badge === 'Bestseller' ? ' bestseller' : ''}" onclick="event.stopPropagation(); ${p.inStock === false ? `openNotifyModal(${p.id})` : `openBadgeModal('${p.badge}')`}">${p.badge === 'Bestseller' ? 'Best-Seller' : p.badge}</span>` : ''}
       <div class="product-info">
-        <p class="product-category"><span style="white-space:nowrap">${d(p.category)}</span>${p.size ? ` <span style="color:#ffffff;opacity:.6;font-weight:300;font-family:var(--sans);font-variant-numeric:tabular-nums;white-space:nowrap">· ${p.size}</span>` : ''}</p>
+        <p class="product-category"><span style="white-space:nowrap">${d(p.category)}</span>${p.size ? `<br><span style="color:#ffffff;opacity:.5;font-weight:300;font-family:var(--sans);font-variant-numeric:tabular-nums;font-size:.9em;">${p.size}</span>` : ''}</p>
         ${p.auNative ? `<span class="au-native-badge" onclick="event.stopPropagation(); openAuNativeModal()"><img src="images/icons/australian-native.png" alt="Australian Native">Australian Native</span>` : ''}
         <h3 class="product-name">${d(p.name)}</h3>
         <p class="product-desc">${d(p.desc)}</p>
@@ -3482,7 +3506,7 @@ function openCollectionModal(type) {
   document.getElementById(cfg.gridId).innerHTML = filtered.map(p => `
     <div class="collection-modal-card" onclick="closeCollectionModalDirect('${type}'); setTimeout(()=>openModal(${p.id}),120)">
       <div class="collection-modal-card-icon">${p.image ? `<img src="${p.image}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:contain;color:transparent;">` : p.emoji}</div>
-      <div class="collection-modal-card-category">${p.category}${p.size ? ' · '+p.size : ''}</div>
+      <div class="collection-modal-card-category">${p.category}${p.size ? '<br>'+p.size : ''}</div>
       <div class="collection-modal-card-name">${d(p.name)}</div>
       <div class="collection-modal-card-price">$${p.price.toFixed(2)}</div>
     </div>`).join('');
@@ -3602,7 +3626,7 @@ function openModal(id) {
     descEl.style.webkitLineClamp = '';
   }
   document.getElementById('modalIngredients').textContent = p.ingredients;
-  document.getElementById('modalPrice').textContent = `$${p.price.toFixed(2)}${p.size ? '  -  ' + p.size : ''}`;
+  document.getElementById('modalPrice').textContent = `$${p.price.toFixed(2)}${p.size ? ' · ' + p.size : ''}`;
   document.getElementById('modalAfterpay').textContent = `or 4 × $${(p.price/4).toFixed(2)} interest-free with Afterpay`;
 
   // Variants
@@ -3803,7 +3827,7 @@ function openBadgeModal(badge) {
   document.getElementById('badgeModalGrid').innerHTML = filtered.map(p => `
     <div class="badge-modal-card" onclick="closeBadgeModalDirect(); setTimeout(()=>openModal(${p.id}),120)">
       <div class="badge-modal-card-icon">${p.image ? `<img src="${p.image}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:contain;color:transparent;">` : p.emoji}</div>
-      <div class="badge-modal-card-category">${p.category}${p.size ? ' · '+p.size : ''}</div>
+      <div class="badge-modal-card-category">${p.category}${p.size ? '<br>'+p.size : ''}</div>
       <div class="badge-modal-card-name">${d(p.name)}</div>
       <div class="badge-modal-card-price">$${p.price.toFixed(2)}</div>
     </div>`).join('');
@@ -3929,7 +3953,7 @@ function renderHero(p) {
     catEl.style.fontSize = '';
     catEl.style.letterSpacing = '';
   }
-  document.getElementById('heroName').innerHTML    = d(p.name) + (p.size ? ' <span style="font-size:.65em;opacity:.6;font-family:var(--sans);font-variant-numeric:tabular-nums">· ' + p.size + '</span>' : '');
+  document.getElementById('heroName').innerHTML    = d(p.name) + (p.size ? '<br><span style="font-size:.55em;opacity:.5;font-family:var(--sans);font-variant-numeric:tabular-nums;">' + p.size + '</span>' : '');
   document.getElementById('heroPrice').textContent = '$' + p.price.toFixed(2);
   const badgeEl = document.getElementById('heroBadge');
   badgeEl.innerHTML = p.badge ? '<span class="hero-badge-pill ' + p.badge.toLowerCase() + '" onclick="event.stopPropagation(); openBadgeModal(\'' + p.badge + '\')">' + (p.badge === 'Bestseller' ? 'Best-Seller' : p.badge) + '</span>' : '';
@@ -4003,7 +4027,7 @@ function openNefertModal() {
   document.getElementById('nefertGrid').innerHTML = filtered.map(p => `
     <div class="nefertem-card" onclick="closeNefertModalDirect(); setTimeout(()=>openModal(${p.id}),120)">
       <div class="nefertem-card-icon">${p.image ? `<img src="${p.image}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:contain;color:transparent;">` : p.emoji}</div>
-      <div class="nefertem-card-category">${p.category}${p.size ? ' · '+p.size : ''}</div>
+      <div class="nefertem-card-category">${p.category}${p.size ? '<br>'+p.size : ''}</div>
       <div class="nefertem-card-name">${d(p.name)}</div>
       <div class="nefertem-card-price">$${p.price.toFixed(2)}</div>
     </div>`).join('');

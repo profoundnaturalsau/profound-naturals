@@ -803,6 +803,51 @@
   .sustain-section-title { font-family:var(--serif); font-size:1.1rem; font-weight:400; color:var(--green-lt); margin:20px 0 8px; text-shadow:0 0 12px rgba(140,196,15,.25); }
   .sustain-body p { font-size:.86rem; color:var(--white-dim); line-height:1.85; font-weight:300; margin-bottom:12px; }
   .sustain-body strong { color:var(--white); font-weight:400; }
+
+  /* ── CONTACT MODAL ── */
+  .contact-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,.82);
+    z-index:1000; display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none; transition:opacity .3s;
+  }
+  .contact-overlay.open { opacity:1; pointer-events:all; backdrop-filter:blur(10px); }
+  .contact-modal {
+    background:linear-gradient(160deg, #0a140a 0%, #080d09 50%, #060e06 100%);
+    border:1px solid rgba(140,196,15,.4);
+    box-shadow:0 32px 100px rgba(0,0,0,.85), 0 0 40px rgba(140,196,15,.15), 0 0 80px rgba(140,196,15,.06);
+    width:min(520px, 94vw);
+    display:flex; flex-direction:column; position:relative;
+    transform:scale(.95); transition:transform .3s;
+  }
+  .contact-overlay.open .contact-modal { transform:scale(1); }
+  .contact-header {
+    padding:28px 32px 20px;
+    border-bottom:1px solid rgba(140,196,15,.15);
+    background:linear-gradient(90deg, rgba(140,196,15,.06) 0%, transparent 100%);
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .contact-title { font-family:var(--serif); font-size:1.8rem; font-weight:300; color:var(--white); margin:0; }
+  .contact-title small { display:block; font-family:var(--sans); font-size:.6rem; letter-spacing:.2em; text-transform:uppercase; color:var(--white-dim); margin-bottom:4px; }
+  .contact-close {
+    background:none; border:none; font-size:1.2rem; cursor:pointer;
+    color:rgba(255,80,80,.6); transition:color .2s, text-shadow .2s;
+    text-shadow:0 0 8px rgba(255,80,80,.3); flex-shrink:0;
+  }
+  .contact-close:hover { color:rgba(255,80,80,1); text-shadow:0 0 16px rgba(255,80,80,.8); }
+  .contact-body { padding:32px; display:flex; flex-direction:column; gap:20px; }
+  .contact-item {
+    display:flex; align-items:center; gap:18px;
+    padding:18px 20px;
+    border:1px solid var(--border-sub);
+    background:var(--surface);
+    text-decoration:none;
+    transition:border-color .2s, background .2s;
+  }
+  .contact-item:hover { border-color:var(--green); background:var(--surface-2); }
+  .contact-item-icon { width:36px; height:36px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .contact-item-icon img { width:32px; height:32px; object-fit:contain; }
+  .contact-item-label { font-family:var(--sans); font-size:.62rem; letter-spacing:.18em; text-transform:uppercase; color:var(--white-dim); margin-bottom:3px; }
+  .contact-item-value { font-family:var(--serif); font-size:1.05rem; color:var(--white); }
   .why-natural-overlay {
     position:fixed; inset:0; background:rgba(0,0,0,.82);
     z-index:1000; display:flex; align-items:center; justify-content:center;
@@ -1069,7 +1114,8 @@
 
   /* ── TESTIMONIALS ── */
   .testimonials { padding:80px 48px; background:var(--bg); }
-  .testimonials-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin-top:48px; }
+  .testimonials-grid { display:grid; grid-template-columns:1fr; gap:20px; margin-top:48px; max-width:680px; margin-left:auto; margin-right:auto; }
+  #testiMoreGrid { grid-template-columns:repeat(3,1fr); max-width:100%; margin-top:28px; }
   .testimonial {
     background:var(--surface);
     padding:36px 32px;
@@ -1600,6 +1646,7 @@
     .payment-pill { padding:12px 18px; }
     .newsletter { grid-template-columns:1fr; padding:60px 24px; gap:28px; }
     .testimonials-grid { grid-template-columns:1fr; }
+    #testiMoreGrid { grid-template-columns:1fr; }
     .testimonials { padding:60px 24px; }
     .testimonials .section-title { font-size:clamp(1.8rem, 6vw, 2.4rem); text-align:center; }
     .testimonials .section-header { text-align:center; }
@@ -1939,7 +1986,7 @@
     <li><a href="#collections">Collections</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#journal">Journal</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#" onclick="event.preventDefault(); openContactModal()">Contact</a></li>
   </ul>
   <div style="display:flex;align-items:center;gap:14px;">
     <div class="nav-search-wrap">
@@ -1970,7 +2017,7 @@
     <li><a href="#collections" onclick="toggleMobileMenu()">Collections</a></li>
     <li><a href="#about" onclick="toggleMobileMenu()">About</a></li>
     <li><a href="#journal" onclick="toggleMobileMenu()">Journal</a></li>
-    <li><a href="#contact" onclick="toggleMobileMenu()">Contact</a></li>
+    <li><a href="#" onclick="event.preventDefault(); toggleMobileMenu(); setTimeout(openContactModal, 300)">Contact</a></li>
     <li><a href="#" onclick="event.preventDefault(); toggleMobileMenu(); setTimeout(openWhyNaturalModal, 300)">Why Natural?</a></li>
   </ul>
   <div class="mobile-search-wrap">
@@ -2197,27 +2244,12 @@
     <span class="section-label">Kind Words</span>
     <h2 class="section-title">From the <em>Profound Naturals</em> community</h2>
   </div>
-  <div class="testimonials-grid">
-    <div class="testimonial">
-      <div class="testimonial-stars">★★★★★</div>
-      <p class="testimonial-text">Pr-nfrt is the most beautiful thing I've ever worn. Warm, sweet and deeply feminine - like wrapping yourself in liquid amber and florals. I've never had so many compliments.</p>
-      <span class="testimonial-author">- Sarah M, Melbourne</span>
-    </div>
-    <div class="testimonial">
-      <div class="testimonial-stars">★★★★★</div>
-      <p class="testimonial-text">The Hemp Eucalyptus soap is something else - the scent hits you the moment you open it. Fresh, clean and genuinely strong. It wakes you up in the shower like nothing else. My new daily staple.</p>
-      <span class="testimonial-author">- Priya L, Sydney</span>
-    </div>
-    <div class="testimonial">
-      <div class="testimonial-stars">★★★★★</div>
-      <p class="testimonial-text">The Hemp Lavender soap has the most beautiful, strong scent - it fills the whole bathroom and lingers on your skin long after you've stepped out of the shower. Absolutely love it.</p>
-      <span class="testimonial-author">- Emma R, Brisbane</span>
-    </div>
-    <div class="testimonial">
-      <div class="testimonial-stars">★★★★★</div>
-      <p class="testimonial-text">I couldn't believe Pr-nfr is actually made with real amber gemstone - I had to look it up. You can smell it the moment it hits your skin. Warm, resinous, comforting. It's become my daily wear without question.</p>
-      <span class="testimonial-author">- James K, Perth</span>
-    </div>
+  <div class="testimonials-grid" id="testiGrid"></div>
+  <div style="text-align:center; margin-top:28px; display:none;" id="testiMoreWrap">
+    <div class="testimonials-grid" id="testiMoreGrid" style="margin-top:0;"></div>
+  </div>
+  <div style="text-align:center; margin-top:24px;">
+    <button class="btn-amber-outline" id="testiSeeMore" onclick="toggleMoreTestimonials()" style="min-width:0; padding:10px 32px; font-size:.68rem;">See More</button>
   </div>
 
   <!-- SHARE TESTIMONIAL TRIGGER -->
@@ -2283,7 +2315,7 @@
         <li><a href="#" onclick="event.preventDefault(); openPolicyModal('shipping')">Shipping &amp; Returns</a></li>
         <li><a href="#" onclick="event.preventDefault(); openPolicyModal('faq')">FAQ</a></li>
         <li><a href="#gc-section">Gift Cards</a></li>
-        <li><a href="#contact">Contact Me</a></li>
+        <li><a href="#" onclick="event.preventDefault(); openContactModal()">Contact Me</a></li>
         <li><a href="#" onclick="event.preventDefault(); openPolicyModal('privacy')">Privacy Policy</a></li>
       </ul>
     </div>
@@ -2519,6 +2551,43 @@
   </div>
 </div>
 
+<!-- CONTACT MODAL -->
+<div class="contact-overlay" id="contactOverlay" onclick="if(event.target===this)closeContactModal()">
+  <div class="contact-modal">
+    <div class="contact-header">
+      <div class="contact-title">
+        <small>Profound Naturals</small>
+        Get in Touch
+      </div>
+      <button class="contact-close" onclick="closeContactModal()">✕</button>
+    </div>
+    <div class="contact-body">
+      <a class="contact-item" href="mailto:hello@profoundnaturals.com.au">
+        <span class="contact-item-icon">
+          <img src="images/icons/email.png" alt="Email">
+        </span>
+        <div>
+          <div class="contact-item-label">Email</div>
+          <div class="contact-item-value">hello@profoundnaturals.com.au</div>
+        </div>
+      </a>
+      <a class="contact-item" href="https://www.instagram.com/profound.naturals" target="_blank">
+        <span class="contact-item-icon">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="rgba(230,236,231,0.6)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <circle cx="12" cy="12" r="4"/>
+            <circle cx="17.5" cy="6.5" r=".8" fill="rgba(230,236,231,0.6)" stroke="none"/>
+          </svg>
+        </span>
+        <div>
+          <div class="contact-item-label">Instagram</div>
+          <div class="contact-item-value">@profound.naturals</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+
 <!-- CART OVERLAY + DRAWER -->
 <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
 <div class="cart-drawer" id="cartDrawer">
@@ -2601,6 +2670,7 @@
     <span class="notify-modal-icon" id="notifyIcon"></span>
     <div class="notify-modal-title" id="notifyTitle"></div>
     <p class="notify-modal-sub" id="notifySub"></p>
+    <input class="notify-modal-input" type="text" id="notifyName" placeholder="Your name (optional)" autocomplete="name" style="margin-bottom:8px;" />
     <input class="notify-modal-input" type="email" id="notifyEmail" placeholder="Your email address" />
     <input type="text" name="website" id="hp_notify" autocomplete="off" tabindex="-1" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" aria-hidden="true">
     <button class="notify-modal-submit" onclick="submitNotify()">Notify Me When Available</button>
@@ -2829,21 +2899,21 @@ const products = [
   { id:11, name:"Aroma Necklaces", category:"Jewellery", emoji:"📿", bg:"#1e1c14", price:18.00, size:null, badge:"Bestseller", desc:"A hand-crafted diffuser necklace with a lava stone pendant - add a drop of your favourite essential oil and carry your scent all day.", ingredients:"Lava Stone, Essential Oil Compatible, Adjustable Chain, Hypoallergenic", variants:["Gold","Silver","Rose Gold"] },
   // ── Essential Oils
   { id:13, name:"Himalayan Cedarwood",    category:"100% Pure Essential Oil", emoji:"🏔️", bg:"#141c1a", price:9.95,  size:"10ml", badge:null, image:"images/products/himalayan-cedarwood-eo.png", desc:"A rich, balsamic cedarwood steam-distilled from the Himalayan region - deeper and more resinous than Virginian cedarwood, with a warm, woody sweetness. Prized in aromatherapy for its naturally grounding and calming character, it is traditionally used to quiet a busy mind, encourage restful relaxation and bring a sense of stability. Its warm, anchoring scent also makes it a natural fit for meditative and woody base-note blends.", ingredients:"Cedrus Deodara" },
-  { id:16, name:"Jasmine",               category:"100% Pure Absolute",  emoji:"🌸", bg:"#2a1a20", price:59.95, size:"10ml", badge:"Rare", inStock:false, image:"images/products/jasmine-ab.png", desc:"One of nature's most prized florals - a rich, heady jasmine absolute with an intoxicating sweetness that lingers beautifully on the skin. Known as the queen of the night, jasmine is traditionally treasured for its naturally uplifting and comforting qualities, long used to soothe the mind, lift the spirits and inspire confidence and warmth. A single drop transforms any blend with its deep, sensual floral richness.", ingredients:"Jasminum Grandiflorum" },
+  { id:16, name:"Jasmine",               category:"100% Pure Absolute",  emoji:"🌸", bg:"#2a1a20", price:59.95, size:"10ml", badge:"Rare", inStock:false, image:"images/products/jasmine-ab.png", desc:"One of nature's most prized florals - a rich, heady jasmine absolute with an intoxicating sweetness that lingers beautifully in a blend. Known as the queen of the night, jasmine is traditionally treasured for its naturally uplifting and comforting qualities, long used to soothe the mind, lift the spirits and inspire confidence and warmth. A single drop transforms any blend with its deep, sensual floral richness.", ingredients:"Jasminum Grandiflorum" },
   { id:17, name:"Bergamot",              category:"100% Pure Essential Oil", emoji:"🍋", bg:"#1a200e", price:16.95, size:"10ml", badge:null, image:"images/products/bergamot-eo.png", desc:"A bright, citrusy-floral oil cold-pressed from Italian bergamot rind - uplifting, balancing and a classic in fine perfumery. Long valued in aromatherapy for its naturally mood-lifting and calming qualities, it is traditionally used to ease tension and encourage a sense of relaxed wellbeing, while its fresh, clarifying character also makes it a favourite in natural skincare blends. Radiant, fragrant and quietly restorative.", ingredients:"Citrus Bergamia" },
   { id:18, name:"Eucalyptus Blue Gum",   category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1c16", price:9.95,  size:"10ml", badge:"Bestseller", auNative:true, image:"images/products/euca-bluegum-eo.png", desc:"The classic Australian eucalyptus and the most recognisable of them all - sharp, camphorous and powerfully clarifying. Steam-distilled from Eucalyptus globulus, it is rich in 1,8-cineole, the compound prized for its naturally decongestant and air-purifying qualities. Traditionally valued to support clear breathing and ease tired muscles, it is the benchmark eucalyptus for diffusing, steam inhalation and invigorating blends. Bold, fresh and instantly recognisable.", ingredients:"Eucalyptus Globulus" },
   { id:19, name:"Eucalyptus Radiata",    category:"100% Pure Essential Oil", emoji:"🌿", bg:"#101e18", price:11.95, size:"10ml", badge:null, image:"images/products/euca-radiata-eo.png", desc:"The gentlest member of the eucalyptus family - softer, smoother and less camphorous than Blue Gum, with a lighter, sweeter, crisper aroma. Steam-distilled from Eucalyptus radiata, it offers the same clarifying, respiratory-supporting and air-freshening benefits but in a far milder form, making it the preferred choice for everyday use, children's blends and direct skin application. Clean, fresh and easy to live with.", ingredients:"Eucalyptus Radiata" },
   { id:20, name:"Eucalyptus Kochii",     category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1a12", price:11.95, size:"10ml", badge:null, auNative:true, image:"images/products/euca-kochii-eo.png", desc:"A rare Western Australian eucalyptus with one of the highest natural 1,8-cineole contents of any species - exceptionally clean, medicinal and beautifully pure. Steam-distilled from Eucalyptus kochii, its remarkable purity makes it the most potent and penetrating of the eucalyptus oils, prized for strong decongestant and purifying blends where maximum clarifying power is wanted. Crisp, sharp and intensely fresh.", ingredients:"Eucalyptus Kochii" },
   { id:21, name:"Blue Tansy",            category:"100% Pure Essential Oil", emoji:"💙", bg:"#0e1020", price:44.95, size:"10ml", badge:"Rare", image:"images/products/blue-tansy-eo.png", desc:"A stunning deep blue oil steam-distilled from Moroccan blue tansy flowers - soothing, anti-inflammatory and deeply calming with a sweet, herbaceous aroma.", ingredients:"Tanacetum Annuum" },
   { id:22, name:"Tea Tree",              category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1c0e", price:9.95,  size:"10ml", badge:null, image:"images/products/tea-tree-eo.png", desc:"Pure Australian tea tree oil - the gold standard in natural cleansing and one of the most versatile oils you can own. Sharp, fresh and medicinal, it is renowned for its naturally antiseptic, antibacterial and purifying qualities. Long valued by Indigenous Australians and a staple in natural skincare, it is traditionally used to support clear, healthy-looking skin, soothe blemishes and freshen the air. A true essential in every home - steam-distilled from the leaves of Melaleuca alternifolia.", ingredients:"Melaleuca Alternifolia" },
-  { id:23, name:"Sandalwood",            category:"100% Pure Essential Oil", emoji:"🪵", bg:"#1e140a", price:39.95, size:"10ml", badge:"Rare", image:"images/products/sandalwood-eo.png", desc:"A deeply precious and sacred oil steam-distilled from the heartwood of Indian sandalwood - rich, creamy and woody with a warm, sweet softness that lingers on the skin for hours. Revered for centuries in meditation and ritual, it is treasured for its naturally grounding and calming qualities, traditionally used to still the mind, deepen breath and encourage inner peace. Equally prized in natural skincare for its softening, conditioning character.", ingredients:"Santalum Album" },
+  { id:23, name:"Sandalwood",            category:"100% Pure Essential Oil", emoji:"🪵", bg:"#1e140a", price:39.95, size:"10ml", badge:"Rare", image:"images/products/sandalwood-eo.png", desc:"A deeply precious and sacred oil steam-distilled from the heartwood of Indian sandalwood - rich, creamy and woody with a warm, sweet softness that lingers beautifully in a blend for hours. Revered for centuries in meditation and ritual, it is treasured for its naturally grounding and calming qualities, traditionally used to still the mind, deepen breath and encourage inner peace. Equally prized in natural skincare for its softening, conditioning character.", ingredients:"Santalum Album" },
   { id:24, name:"Baltic Amber",          category:"100% Pure Essential Oil", emoji:"🟡", bg:"#1c1508", price:49.95, size:"10ml", badge:"Rare", image:"images/products/amber-res-eo.png", desc:"An extraordinary oil extracted from genuine Baltic amber - fossilised tree resin between 40 and 70 million years old. Warm, earthy and resinous with subtle woody and smoky undertones. One of the rarest ingredients in botanical perfumery.", ingredients:"Pinus succinifera, 40-70 Million Years Old" },
-  { id:56, name:"Honeysuckle", category:"100% Pure Absolute", emoji:"🌼", bg:"#1e1808", price:37.95, size:"10ml", badge:"Rare", image:"images/products/honeysuckle-ab.png", desc:"Sweet, honeyed and luminously floral - honeysuckle absolute captures the living warmth of the flower at its peak bloom. Rich and slightly green with a soft, nectar-like depth that lingers beautifully on skin. Organic, hexane-free extraction.", ingredients:"Lonicera japonica" },
+  { id:56, name:"Honeysuckle", category:"100% Pure Absolute", emoji:"🌼", bg:"#1e1808", price:37.95, size:"10ml", badge:"Rare", image:"images/products/honeysuckle-ab.png", desc:"Sweet, honeyed and luminously floral - honeysuckle absolute captures the living warmth of the flower at its peak bloom. Rich and slightly green with a soft, nectar-like depth that lingers beautifully in a blend. Organic, hexane-free extraction.", ingredients:"Lonicera japonica" },
   { id:57, name:"Lemon", category:"100% Pure Essential Oil", emoji:"🍋", bg:"#1a1c06", price:11.95, size:"10ml", badge:null, image:"images/products/lemon-eo.png", desc:"Bright, clean and unmistakably fresh. Cold-pressed from the peel of Citrus limon - sharp, zesty and instantly uplifting with a sparkling, slightly floral character that makes it one of the most versatile top notes in natural perfumery. Blends beautifully with florals, woods, and other citrus oils alike.", ingredients:"Citrus limon" },
   { id:58, name:"Cinnamon Bark", category:"100% Pure Essential Oil", emoji:"🟤", bg:"#1e1008", price:13.95, size:"10ml", badge:null, image:"images/products/cinnamon-bark-eo.png", desc:"Warm, spiced and sweetly enveloping. Steam-distilled from the bark of Cinnamomum zeylanicum - deeply rich and aromatic with an immediate intensity that anchors and elevates any blend. A natural fixative used in compliant concentrations for leave-on formulations.", ingredients:"Cinnamomum zeylanicum" },
   { id:59, name:"Black Spruce", category:"100% Pure Essential Oil", emoji:"🌲", bg:"#0e1810", price:13.95, size:"10ml", badge:null, image:"images/products/black-spruce-eo.png", desc:"Clean, crisp and deeply forested. Steam-distilled from the needles of Picea mariana - an instantly recognisable forest freshness with a resinous, slightly sweet depth. Grounding and invigorating in equal measure, it opens beautifully in both solo wear and complex botanical blends.", ingredients:"Picea mariana" },
-  { id:60, name:"Blue Cypress", category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0a1a1e", price:28.95, size:"10ml", badge:"Rare", auNative:true, image:"images/products/blue-cypress-eo.png", desc:"Ancient, smoky and deeply grounding. Steam-distilled from the heartwood of Callitris intratropica - an extraordinary Australian native found only in the tropical woodlands of the Northern Territory. Rich, blue-toned and unmistakably earthy with a warm, resinous depth unlike any other cypress in the world. One of the most sought-after Australian native botanicals in perfumery. <img src=\"images/icons/australian-native.png\" style=\"width:13px;height:13px;object-fit:contain;vertical-align:middle;opacity:.8;\"> Australian Native.", ingredients:"Callitris intratropica" },
-  { id:61, name:"Boronia Absolute", category:"100% Pure Absolute", emoji:"🌿", bg:"#1a1018", price:89.95, size:"10ml", badge:"Rare", auNative:true, image:"images/products/boronia-ab.png", desc:"One of the rarest and most prized botanicals in natural perfumery. Solvent-extracted from the flowers of Boronia megastigma - a small flowering shrub native to the southwestern tip of Western Australia. Extraordinarily complex - rich, earthy and deeply floral with fresh fruity-sweet and tea-like facets, soft cinnamon and tobacco nuances, and a warm woody-sweet undertone that lingers beautifully on skin. Frequently adulterated elsewhere - Profound Naturals sources genuine. <img src=\"images/icons/australian-native.png\" style=\"width:13px;height:13px;object-fit:contain;vertical-align:middle;opacity:.8;\"> Australian Native.", ingredients:"Boronia megastigma" },
+  { id:60, name:"Blue Cypress", category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0a1a1e", price:28.95, size:"10ml", badge:"Rare", auNative:true, image:"images/products/blue-cypress-eo.png", desc:"Ancient, smoky and deeply grounding. Steam-distilled from the heartwood of Callitris intratropica - an extraordinary Australian native found only in the tropical woodlands of the Northern Territory. Rich, blue-toned and unmistakably earthy with a warm, resinous depth unlike any other cypress in the world. One of the most sought-after Australian native botanicals in perfumery.", ingredients:"Callitris intratropica" },
+  { id:61, name:"Boronia Absolute", category:"100% Pure Absolute", emoji:"🌿", bg:"#1a1018", price:89.95, size:"10ml", badge:"Rare", auNative:true, image:"images/products/boronia-ab.png", desc:"One of the rarest and most prized botanicals in natural perfumery. Solvent-extracted from the flowers of Boronia megastigma - a small flowering shrub native to the southwestern tip of Western Australia. Extraordinarily complex - rich, earthy and deeply floral with fresh fruity-sweet and tea-like facets, soft cinnamon and tobacco nuances, and a warm woody-sweet undertone that lingers beautifully in perfumery. Frequently adulterated elsewhere - Profound Naturals sources genuine.", ingredients:"Boronia megastigma" },
   { id:55, name:"Galbanum",              category:"100% Pure Essential Oil", emoji:"🟢", bg:"#1a2010", price:16.95, size:"10ml", badge:"Rare", image:"images/products/galbanum-eo.png", desc:"One of the oldest aromatic ingredients known to humanity - galbanum was burned as sacred incense in ancient Egypt and mentioned in the Old Testament. Steam-distilled from the gum resin of Ferula galbaniflua, it opens with a sharply green, almost electric freshness before settling into a deep, resinous, woody earthiness that is completely unlike anything else. Rare, potent and unforgettable - a single drop transforms any accord.", ingredients:"Ferula galbaniflua" },
 
   // ── NEW ESSENTIAL OILS (ids 26–40) ──
@@ -2859,9 +2929,9 @@ const products = [
   { id:35, name:"Kunzea",          category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1c10", price:18.95, size:"10ml", badge:null, auNative:true, image:"images/products/kunzea-eo.png", desc:"Fresh, earthy and medicinal with a clean, slightly woody edge. Steam-distilled from Kunzea ambigua - an Australian native from the coastal heathlands of south-eastern Australia. A botanical gem with a grounding, clarifying character unique to this continent.", ingredients:"Kunzea ambigua" },
   { id:36, name:"Scots Pine",      category:"100% Pure Essential Oil", emoji:"🌲", bg:"#0e1a0e", price:11.95, size:"10ml", badge:null,        image:"images/products/scotch-pine-eo.png", desc:"Crisp, resinous and deeply forested. Steam-distilled from the needles of Pinus sylvestris - clean, sharp and invigorating with a warm, woody drydown that grounds and clarifies. Renowned for its naturally refreshing and air-purifying qualities, it is traditionally used to support clear, easy breathing and to revive and invigorate tired bodies and minds. A bracing, restorative oil that brings the clean energy of the forest to any blend.", ingredients:"Pinus sylvestris" },
   { id:37, name:"Nutmeg",          category:"100% Pure Essential Oil", emoji:"🌰", bg:"#1a1208", price:12.95, size:"10ml", badge:null,        image:"images/products/nutmeg-eo.png", desc:"Warm, spicy and sweetly woody with a rich, slightly camphoraceous depth. Steam-distilled from Myristica fragrans - a classic perfumery spice note that adds complexity and warmth to any accord. Familiar yet sophisticated.", ingredients:"Myristica fragrans" },
-  { id:38, name:"Ambrette Seed",   category:"100% Pure Essential Oil", emoji:"🤍", bg:"#1a1820", price:44.95, size:"10ml", badge:"Rare",       image:"images/products/ambrette-seed-eo.png", desc:"Velvety, musky and softly pear-like - one of the finest natural musk alternatives available. Steam-distilled from the seeds of Abelmoschus moschatus, ambrette carries a warmth and sensuality that lingers beautifully on skin. Rare and highly prized.", ingredients:"Abelmoschus moschatus" },
+  { id:38, name:"Ambrette Seed",   category:"100% Pure Essential Oil", emoji:"🤍", bg:"#1a1820", price:44.95, size:"10ml", badge:"Rare",       image:"images/products/ambrette-seed-eo.png", desc:"Velvety, musky and softly pear-like - one of the finest natural musk alternatives available. Steam-distilled from the seeds of Abelmoschus moschatus, ambrette carries a warmth and sensuality that lingers beautifully in a blend. Rare and highly prized.", ingredients:"Abelmoschus moschatus" },
   { id:39, name:"Cocoa",           category:"100% Pure Absolute",      emoji:"🍫", bg:"#1a0e08", price:34.95, size:"10ml", badge:"Rare", image:"images/products/cocoa-ab.png", desc:"Rich, dark and indulgent - the unmistakable warmth of pure cacao. A certified organic cocoa absolute from Theobroma cacao, clean-extracted and free from synthetic processes. Deep, roasted and sweetly bittersweet - it anchors gourmand accords with extraordinary depth. Decadent and deeply comforting.", ingredients:"Theobroma cacao" },
-  { id:40, name:"Agarwood (Indian Oud)", category:"100% Pure Essential Oil", emoji:"🟤", bg:"#1a1008", price:89.95, size:"10ml", badge:"Rare", image:"images/products/agarwood-indian-eo.png", desc:"One of the most precious and revered aromatic materials on earth. Steam-distilled from the resin-saturated heartwood of Indian Aquilaria trees - dark, complex, woody and animalic with a smoky, balsamic depth that evolves continuously on skin. A statement ingredient.", ingredients:"Aquilaria malaccensis" },
+  { id:40, name:"Agarwood (Indian Oud)", category:"100% Pure Essential Oil", emoji:"🟤", bg:"#1a1008", price:89.95, size:"10ml", badge:"Rare", image:"images/products/agarwood-indian-eo.png", desc:"One of the most precious and revered aromatic materials on earth. Steam-distilled from the resin-saturated heartwood of Indian Aquilaria trees - dark, complex, woody and animalic with a smoky, balsamic depth that evolves continuously in a blend. A statement ingredient.", ingredients:"Aquilaria malaccensis" },
 
   // ── BATCH 3 - Ylang Ylang fractions, absolutes, new EOs ──
   { id:41, name:"Ylang Ylang 1st",        category:"100% Pure Essential Oil", emoji:"🌼", bg:"#1e1a08", price:14.95, size:"10ml", badge:null,  image:"images/products/ylangylang-first-eo.png", desc:"The first fraction of the distillation process - the most volatile, bright and intensely floral. Sharp, heady and euphoric with an almost narcotic sweetness. The boldest expression of ylang ylang, used sparingly in top notes for maximum floral impact.", ingredients:"Cananga odorata (1st Fraction)" },
@@ -2873,21 +2943,21 @@ const products = [
   { id:47, name:"Geranium Bourbon",      category:"100% Pure Essential Oil", emoji:"🌸", bg:"#1e0e14", price:18.95, size:"10ml", badge:null, image:"images/products/geranium-bourbon-eo.png", desc:"The finest expression of geranium - steam-distilled from Pelargonium x asperum grown on the island of Reunion. Rich, rosy and green with a complexity that far exceeds common geranium. A backbone ingredient in classical and natural perfumery alike.", ingredients:"Pelargonium x asperum" },
   { id:48, name:"Rosemary (Spanish)",    category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1810", price:11.95, size:"10ml", badge:null, image:"images/products/rosemary-spanish-eo.png", desc:"Sharp, herbaceous and invigorating - steam-distilled from the flowering tops of Rosmarinus officinalis grown in Spain. Clean, clarifying and deeply familiar, Spanish rosemary has a particularly crisp, camphorous character with a resinous warmth that blends beautifully across a wide range of accords.", ingredients:"Rosmarinus officinalis" },
   { id:49, name:"Euca Citriodora",       category:"100% Pure Essential Oil", emoji:"🌿", bg:"#141e0a", price:11.95, size:"10ml", badge:null, auNative:true,  desc:"An Australian native with a bright, lemon-fresh character quite unlike any other eucalyptus. Steam-distilled from Eucalyptus citriodora, it carries a clean citrusy lift with a distinctly airy, kerosene-like undertone characteristic of the species and beloved by those who know it. Widely used as a natural insect repellent - particularly effective against mosquitoes. Dries down soft and powdery with a lingering freshness.", ingredients:"Eucalyptus citriodora" },
-  { id:50, name:"Tonka",                 category:"100% Pure Absolute",      emoji:"🤎", bg:"#1a1208", price:29.95, size:"10ml", badge:"Rare", image:"images/products/tonka-ab.png", desc:"Warm, sweet and richly coumarinic - tonka absolute carries a distinctive vanilla-like sweetness with hints of almond, hay and tobacco. Deeply comforting and tenacious, it anchors sweet accords with an almost edible warmth that lingers beautifully on skin. Organic, hexane-free extraction.", ingredients:"Dipteryx odorata" },
-  { id:51, name:"Tuberose",              category:"100% Pure Absolute",      emoji:"🤍", bg:"#1e1420", price:79.95, size:"10ml", badge:"Rare", image:"images/products/tuberose-ab.png", desc:"One of the most intensely floral botanicals in natural perfumery - rich, creamy and narcotic with a heady, waxy sweetness that deepens on the skin. Tuberose absolute is a statement ingredient; complex, bold and unforgettable at perfumery concentrations. Organic, hexane-free extraction.", ingredients:"Polianthes tuberosa" },
+  { id:50, name:"Tonka",                 category:"100% Pure Absolute",      emoji:"🤎", bg:"#1a1208", price:29.95, size:"10ml", badge:"Rare", image:"images/products/tonka-ab.png", desc:"Warm, sweet and richly coumarinic - tonka absolute carries a distinctive vanilla-like sweetness with hints of almond, hay and tobacco. Deeply comforting and tenacious, it anchors sweet accords with an almost edible warmth that lingers beautifully in a blend. Organic, hexane-free extraction.", ingredients:"Dipteryx odorata" },
+  { id:51, name:"Tuberose",              category:"100% Pure Absolute",      emoji:"🤍", bg:"#1e1420", price:79.95, size:"10ml", badge:"Rare", image:"images/products/tuberose-ab.png", desc:"One of the most intensely floral botanicals in natural perfumery - rich, creamy and narcotic with a heady, waxy sweetness that deepens in a blend. Tuberose absolute is a statement ingredient; complex, bold and unforgettable at perfumery concentrations. Organic, hexane-free extraction.", ingredients:"Polianthes tuberosa" },
   { id:52, name:"Frangipani",            category:"100% Pure Absolute",      emoji:"🌺", bg:"#201420", price:59.95, size:"10ml", badge:"Rare", image:"images/products/frangipani-ab.png", desc:"Exotic, tropical and deeply floral - frangipani absolute carries the full warmth of the Plumeria flower with a creamy, slightly spiced sweetness. Evocative and sensual, it bridges florals and exotics with effortless grace. Organic, hexane-free extraction.", ingredients:"Plumeria alba" },
-  { id:53, name:"Osmanthus",             category:"100% Pure Absolute",      emoji:"🌸", bg:"#201808", price:49.95, size:"10ml", badge:"Rare",  image:"images/products/osmanthus-eo.png", desc:"Delicate, peachy and apricot-like with a distinctive dark cherry undertone that emerges on the skin and gives it a remarkable, almost jammy depth. Steam-distilled from the tiny flowers of Osmanthus fragrans - one of the most prized florals in Chinese perfumery. Subtle yet persistent with a soft, leathery finish that elevates any accord it touches. Organic, hexane-free extraction.", ingredients:"Osmanthus fragrans" },
-  { id:54, name:"Magnolia (White Champaca)", category:"100% Pure Absolute",  emoji:"🌸", bg:"#1e1818", price:64.95, size:"10ml", badge:"Rare", image:"images/products/magnolia-white-champaca-eo.png", desc:"Heady, luminous and intoxicatingly floral with a warm, tea-like creaminess that is entirely its own. White champaca - Michelia alba - is one of the most revered florals in Asian perfumery, prized for its rich intensity and extraordinary tenacity on skin. Organic, hexane-free extraction.", ingredients:"Michelia alba" },
-  { id:62, name:"Vanilla Oleoresin", category:"100% Pure Absolute", emoji:"🤍", bg:"#1e1810", price:24.95, size:"10ml", badge:"Rare", image:"images/products/vanilla-eo.png", desc:"Rich, creamy and deeply comforting - vanilla oleoresin is one of the most beloved base notes in natural perfumery. Solvent-extracted from Vanilla planifolia pods, it carries a warm, balsamic sweetness with subtle woody and floral undertones that develop slowly on skin. A natural fixative that rounds, anchors and softens everything around it. Organic, hexane-free extraction.", ingredients:"Vanilla planifolia" },
+  { id:53, name:"Osmanthus",             category:"100% Pure Absolute",      emoji:"🌸", bg:"#201808", price:49.95, size:"10ml", badge:"Rare",  image:"images/products/osmanthus-eo.png", desc:"Delicate, peachy and apricot-like with a distinctive dark cherry undertone that emerges in a blend and gives it a remarkable, almost jammy depth. Steam-distilled from the tiny flowers of Osmanthus fragrans - one of the most prized florals in Chinese perfumery. Subtle yet persistent with a soft, leathery finish that elevates any accord it touches. Organic, hexane-free extraction.", ingredients:"Osmanthus fragrans" },
+  { id:54, name:"Magnolia (White Champaca)", category:"100% Pure Absolute",  emoji:"🌸", bg:"#1e1818", price:64.95, size:"10ml", badge:"Rare", image:"images/products/magnolia-white-champaca-eo.png", desc:"Heady, luminous and intoxicatingly floral with a warm, tea-like creaminess that is entirely its own. White champaca - Michelia alba - is one of the most revered florals in Asian perfumery, prized for its rich intensity and extraordinary tenacity in a blend. Organic, hexane-free extraction.", ingredients:"Michelia alba" },
+  { id:62, name:"Vanilla Oleoresin", category:"100% Pure Absolute", emoji:"🤍", bg:"#1e1810", price:24.95, size:"10ml", badge:"Rare", image:"images/products/vanilla-eo.png", desc:"Rich, creamy and deeply comforting - vanilla oleoresin is one of the most beloved base notes in natural perfumery. Solvent-extracted from Vanilla planifolia pods, it carries a warm, balsamic sweetness with subtle woody and floral undertones that develop slowly in a blend. A natural fixative that rounds, anchors and softens everything around it. Organic, hexane-free extraction.", ingredients:"Vanilla planifolia" },
   { id:63, name:"Elemi", category:"100% Pure Essential Oil", emoji:"🌿", bg:"#101a0e", price:13.95, size:"10ml", badge:null, image:"images/products/elemi-eo.png", desc:"Bright, resinous and refreshingly complex - elemi opens with a sharp citrus-green freshness reminiscent of frankincense before drying down to a soft, woody balsamic depth with a hint of spice. Steam-distilled from the oleo-resin of Canarium luzonicum - a member of the Burseraceae family alongside myrrh and frankincense. One of the most versatile top-to-heart transitions in natural perfumery.", ingredients:"Canarium luzonicum" },
   { id:64, name:"Benzoin", category:"100% Pure Resinoid", emoji:"🍯", bg:"#1a1408", price:16.95, size:"10ml", badge:null, image:"images/products/benzoin-res.png", desc:"Warm, sweet and richly balsamic with a distinctive vanilla-like creaminess and a subtle incense depth. A resinoid produced from the bark resin of Styrax benzoin - one of the oldest aromatic materials used in perfumery, medicine and sacred ritual. Exceptionally tenacious as a base note and natural fixative, it rounds and softens accords with a powdery, resinous warmth that lingers long after other notes have faded.", ingredients:"Styrax benzoin" },
   { id:65, name:"Cade", category:"100% Pure Essential Oil", emoji:"🪵", bg:"#181008", price:18.95, size:"10ml", badge:"Rare", image:"images/products/cade-eo.png", desc:"Smoky, tarry and intensely leathery - cade is one of the most arresting base notes in natural perfumery. Dry-distilled from the wood and twigs of Juniperus oxycedrus, it carries a dark, phenolic smokiness with burnt wood, tobacco and leather facets and a subtle sweet undertone. Used sparingly, it adds extraordinary depth and an almost primal character to woody, leather and fougère compositions.", ingredients:"Juniperus oxycedrus" },
-  { id:66, name:"Aussie Mint", category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1c10", price:13.95, size:"10ml", badge:null, auNative:true, image:"images/products/aussie-mint-eo.png", desc:"Clean, crisp and invigoratingly fresh with a bright, green mintiness that is distinctly softer and more herbal than peppermint. Steam-distilled from native Australian mint species, it carries a cool, clean openness with subtle earthy undertones that ground its freshness. A versatile top note that lifts and clarifies without overpowering. <img src=\"images/icons/australian-native.png\" style=\"width:13px;height:13px;object-fit:contain;vertical-align:middle;opacity:.8;\"> Australian Native.", ingredients:"Mentha australis" },
+  { id:66, name:"Aussie Mint", category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1c10", price:13.95, size:"10ml", badge:null, auNative:true, image:"images/products/aussie-mint-eo.png", desc:"Clean, crisp and invigoratingly fresh with a bright, green mintiness that is distinctly softer and more herbal than peppermint. Steam-distilled from native Australian mint species, it carries a cool, clean openness with subtle earthy undertones that ground its freshness. A versatile top note that lifts and clarifies without overpowering.", ingredients:"Mentha australis" },
   { id:67, name:"Lavandin Grosso", category:"100% Pure Essential Oil", emoji:"💜", bg:"#141020", price:12.95, size:"10ml", badge:null, image:"images/products/lavandin-grosso-eo.png", desc:"Bold, bright and deeply herbal with a clean, camphoraceous edge that sets it apart from true lavender. Lavandin Grosso is a naturally occurring hybrid of Lavandula angustifolia and Lavandula latifolia - larger in yield and more powerful in character than its parent species. Its scent opens with a sharp, fresh lavender clarity before softening to a warm, slightly woody herbaceous depth. A workhorse of natural perfumery and one of the most satisfying lavender materials available.", ingredients:"Lavandula x intermedia" },
   { id:68, name:"Virginian Cedarwood", category:"100% Pure Essential Oil", emoji:"🪵", bg:"#14100a", price:13.95, size:"10ml", badge:null, image:"images/products/virginian-cedarwood-eo.png", desc:"Dry, pencil-shaving cedarwood with a clean, almost transparent woody warmth. Steam-distilled from Juniperus virginiana - lighter and crisper than Atlas cedarwood with a subtle sweetness and excellent tenacity. A grounding base note that adds structure without heaviness.", ingredients:"Juniperus virginiana" },
   { id:69, name:"Mandarin", category:"100% Pure Essential Oil", emoji:"🍊", bg:"#1e1008", price:12.95, size:"10ml", badge:null, image:"images/products/mandarin-eo.png", desc:"Sweet, soft and warmly citrusy - cold-pressed mandarin is the gentlest and most rounded of the citrus top notes. Rich with a slightly floral, almost honeyed depth that sets it apart from orange or lime. Uplifting and approachable. Note - phototoxic when applied to skin exposed to direct sunlight. A patch test is recommended.", ingredients:"Citrus reticulata" },
   { id:70, name:"Oakmoss", category:"100% Pure Essential Oil", emoji:"🌿", bg:"#101a0c", price:38.95, size:"10ml", badge:"Rare", image:"images/products/oakmoss-eo.png", desc:"Dark, earthy and unmistakably wild - oakmoss is one of the most iconic base notes in classical perfumery. Steam-distilled from Evernia prunastri, it carries a deep, forest-floor earthiness with mossy, woody and slightly marine facets that ground and anchor any accord. Used in compliant concentrations - IFRA regulated for leave-on applications.", ingredients:"Evernia prunastri" },
-  { id:71, name:"Myrrh", category:"100% Pure Essential Oil", emoji:"🟤", bg:"#1a1008", price:34.95, size:"10ml", badge:"Rare", image:"images/products/myrrh-eo.png", desc:"Ancient, smoky and deeply resinous - myrrh has been prized for thousands of years as a sacred aromatic, medicine and perfumery ingredient. Steam-distilled from the oleo-resin of Commiphora myrrha, it carries a warm, bittersweet earthiness with smoky, slightly medicinal facets and a rich, balsamic depth that evolves beautifully on skin. One of the great base notes of natural perfumery.", ingredients:"Commiphora myrrha" },
+  { id:71, name:"Myrrh", category:"100% Pure Essential Oil", emoji:"🟤", bg:"#1a1008", price:34.95, size:"10ml", badge:"Rare", image:"images/products/myrrh-eo.png", desc:"Ancient, smoky and deeply resinous - myrrh has been prized for thousands of years as a sacred aromatic, medicine and perfumery ingredient. Steam-distilled from the oleo-resin of Commiphora myrrha, it carries a warm, bittersweet earthiness with smoky, slightly medicinal facets and a rich, balsamic depth that evolves beautifully in a blend. One of the great base notes of natural perfumery.", ingredients:"Commiphora myrrha" },
   { id:72, name:"Rosalina", category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1a10", price:16.00, size:"10ml", badge:null, auNative:true, image:"images/products/rosalina-eo.png", desc:"Soft, floral and gently medicinal - rosalina is a lesser-known Australian native with a character that sits beautifully between lavender and tea tree. Steam-distilled from the leaves of Melaleuca ericifolia, it carries a sweet, slightly camphorous freshness with a calm, rounded warmth. A versatile mid note that blends effortlessly across floral, herbal and woody accords.", ingredients:"Melaleuca ericifolia" },
 ];
 
@@ -3117,6 +3187,38 @@ function handleSearch(query) {
 }
 
 // ── TESTIMONIAL SUBMIT ──
+// ── TESTIMONIALS ──
+const testimonials = [
+  { text: "Pr-nfrt is the most beautiful thing I've ever worn. Warm, sweet and deeply feminine - like wrapping yourself in liquid amber and florals. I've never had so many compliments.", author: "Sarah M, Melbourne" },
+  { text: "The Hemp Eucalyptus soap is something else - the scent hits you the moment you open it. Fresh, clean and genuinely strong. It wakes you up in the shower like nothing else. My new daily staple.", author: "Priya L, Sydney" },
+  { text: "The Hemp Lavender soap has the most beautiful, strong scent - it fills the whole bathroom and lingers on your skin long after you've stepped out of the shower. Absolutely love it.", author: "Emma R, Brisbane" },
+  { text: "I couldn't believe Pr-nfr is actually made with real amber gemstone - I had to look it up. You can smell it the moment it hits your skin. Warm, resinous, comforting. It's become my daily wear without question.", author: "James K, Perth" },
+];
+
+function testiCardHTML(t) {
+  return `<div class="testimonial"><div class="testimonial-stars">★★★★★</div><p class="testimonial-text">${t.text}</p><span class="testimonial-author">- ${t.author}</span></div>`;
+}
+
+function initTestimonials() {
+  const randomIndex = Math.floor(Math.random() * testimonials.length);
+  const featured = testimonials[randomIndex];
+  const rest = testimonials.filter((_, i) => i !== randomIndex);
+  document.getElementById('testiGrid').innerHTML = testiCardHTML(featured);
+  document.getElementById('testiMoreGrid').innerHTML = rest.map(testiCardHTML).join('');
+  if (rest.length === 0) document.getElementById('testiSeeMore').style.display = 'none';
+}
+
+let testiMoreOpen = false;
+function toggleMoreTestimonials() {
+  testiMoreOpen = !testiMoreOpen;
+  const wrap = document.getElementById('testiMoreWrap');
+  const btn = document.getElementById('testiSeeMore');
+  wrap.style.display = testiMoreOpen ? 'block' : 'none';
+  btn.textContent = testiMoreOpen ? 'See Less' : 'See More';
+}
+
+initTestimonials();
+
 function openTestiModal() {
   document.getElementById('testiModalOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -3464,6 +3566,21 @@ function openModal(id) {
   modalImgEl.innerHTML = `${imgHTML}${badgeHTML}`;
   document.getElementById('modalName').innerHTML = d(p.name);
   document.getElementById('modalDesc').innerHTML = d(p.desc);
+  if (p.auNative) {
+    const auTag = document.createElement('span');
+    auTag.style.cssText = 'display:inline-flex;align-items:center;gap:4px;margin-left:4px;vertical-align:middle;';
+    auTag.innerHTML = '<img src="images/icons/australian-native.png" style="width:13px;height:13px;object-fit:contain;opacity:.8;"> <span style="font-size:.7em;letter-spacing:.1em;text-transform:uppercase;color:var(--green-lt);">Australian Native</span>';
+    document.getElementById('modalDesc').appendChild(auTag);
+  }
+  const existingSafetyNote = document.getElementById('modalSafetyNote');
+  if (existingSafetyNote) existingSafetyNote.remove();
+  if (p.category && /essential oil|absolute|resinoid/i.test(p.category)) {
+    const safetyNote = document.createElement('p');
+    safetyNote.id = 'modalSafetyNote';
+    safetyNote.style.cssText = 'margin-top:12px;font-size:.72rem;color:rgba(230,236,231,.4);letter-spacing:.03em;border-top:1px solid rgba(255,255,255,.06);padding-top:10px;';
+    safetyNote.textContent = 'Not for undiluted use on skin. Always dilute in a carrier oil or blend before topical application.';
+    document.getElementById('modalDesc').appendChild(safetyNote);
+  }
   // Mobile desc clamp
   const descEl = document.getElementById('modalDesc');
   const toggleEl = document.getElementById('modalDescToggle');
@@ -3549,6 +3666,15 @@ function toggleModalDesc() {
   }
 }
 
+function openContactModal() {
+  document.getElementById('contactOverlay').classList.add('open');
+  lockBodyScroll();
+}
+function closeContactModal() {
+  document.getElementById('contactOverlay').classList.remove('open');
+  unlockBodyScroll();
+}
+
 function openBalticAmberModal() {
   document.getElementById('balticAmberOverlay').classList.add('open');
   lockBodyScroll();
@@ -3607,6 +3733,7 @@ function openNotifyModal(id) {
   document.getElementById('notifyTitle').dataset.productId = id;
   document.getElementById('notifySub').textContent = 'This product is currently out of stock. Enter your email and I\'ll notify you the moment it\'s back.';
   document.getElementById('notifyEmail').value = '';
+  document.getElementById('notifyName').value = '';
   document.getElementById('notifyConfirm').classList.remove('show');
   requestAnimationFrame(() => {
     document.getElementById('notifyOverlay').classList.add('open');
@@ -3637,16 +3764,19 @@ async function submitNotify() {
     const res = await fetch('/.netlify/functions/notify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, productName, honeypot: document.getElementById('hp_notify').value }),
+      body: JSON.stringify({ email, name: document.getElementById('notifyName').value.trim(), productName, honeypot: document.getElementById('hp_notify').value }),
     });
     if (res.ok) {
       document.getElementById('notifyConfirm').classList.add('show');
       document.getElementById('notifyEmail').style.display = 'none';
+      document.getElementById('notifyName').style.display = 'none';
       btn.style.display = 'none';
       setTimeout(closeNotifyModalDirect, 2800);
       setTimeout(() => {
         document.getElementById('notifyEmail').style.display = '';
         document.getElementById('notifyEmail').value = '';
+        document.getElementById('notifyName').style.display = '';
+        document.getElementById('notifyName').value = '';
         btn.style.display = '';
         btn.textContent = 'Notify Me When Available';
         btn.disabled = false;

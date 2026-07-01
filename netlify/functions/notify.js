@@ -36,9 +36,9 @@ exports.handler = async (event) => {
     return { statusCode: 429, body: JSON.stringify({ error: 'Too many requests' }) };
   }
 
-  let email, productName, honeypot;
+  let email, productName, name, honeypot;
   try {
-    ({ email, productName, honeypot } = JSON.parse(event.body));
+    ({ email, productName, name, honeypot } = JSON.parse(event.body));
   } catch {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid request' }) };
   }
@@ -57,8 +57,10 @@ exports.handler = async (event) => {
   }
 
   // Escape both inputs before use in email HTML
-  const safeEmail = esc(email.trim());
-  const safeName  = esc(productName.trim());
+  const safeEmail   = esc(email.trim());
+  const safeName    = esc(productName.trim());
+  const safeCustomerName = name && typeof name === 'string' ? esc(name.trim()) : '';
+  const greeting    = safeCustomerName ? `Hi ${safeCustomerName},` : 'Hi,';
 
   const hosts = ['smtp.zoho.com.au', 'smtp.zoho.com'];
   let lastErr;
@@ -83,8 +85,8 @@ exports.handler = async (event) => {
         subject: `I'll notify you when ${safeName} is back`,
         html: `
           <div style="font-family:Georgia,serif;max-width:560px;margin:0 auto;color:#1a1a1a;">
-            <h2 style="font-weight:300;font-size:28px;margin-bottom:8px;">You're on the list</h2>
-            <p style="color:#555;line-height:1.7;">Interest in <strong>${safeName}</strong> has been noted. As soon as it's back in stock, you'll be the first to know.</p>
+            <h2 style="font-weight:300;font-size:28px;margin-bottom:8px;">${greeting}</h2>
+            <p style="color:#555;line-height:1.7;">You're on the list for <strong>${safeName}</strong>. As soon as it's back in stock, you'll be the first to know.</p>
             <p style="color:#555;line-height:1.7;">Thank you for your patience - good things are worth waiting for.</p>
             <p style="color:#555;margin-top:32px;">Profound Naturals</p>
           </div>
@@ -95,7 +97,7 @@ exports.handler = async (event) => {
         from: `"Profound Naturals" <${process.env.ZOHO_USER}>`,
         to: process.env.ZOHO_USER,
         subject: `Restock Request - ${safeName}`,
-        html: `<p><strong>${safeEmail}</strong> wants to be notified when <strong>${safeName}</strong> is back in stock.</p>`,
+        html: `<p><strong>${safeCustomerName ? safeCustomerName + ' - ' : ''}${safeEmail}</strong> wants to be notified when <strong>${safeName}</strong> is back in stock.</p>`,
       });
 
       return { statusCode: 200, body: JSON.stringify({ success: true }) };

@@ -590,11 +590,7 @@
     animation: iconAmberGlow 3.5s ease-in-out infinite;
   }
   .product-img img[src*="jazz-lounge"] {
-    animation: jazzGlow 4s ease-in-out infinite;
-  }
-  @keyframes jazzGlow {
-    0%,100% { filter: drop-shadow(0 0 6px rgba(216,58,0,.3)) drop-shadow(0 0 14px rgba(216,58,0,.15)); }
-    50%     { filter: drop-shadow(0 0 12px rgba(216,58,0,.6)) drop-shadow(0 0 28px rgba(216,58,0,.3)); }
+    object-position: center 70%;
   }
   @keyframes iconAmberGlow {
     0%,100% { filter: drop-shadow(0 0 4px rgba(212,160,23,0.45)) drop-shadow(0 0 10px rgba(212,160,23,0.25)); }
@@ -1764,7 +1760,7 @@
   .mobile-menu-close:hover { color:var(--white); }
 
   .mobile-menu-links {
-    list-style:none; padding:32px 0; flex:1;
+    list-style:none; padding:32px 0; flex:1; overflow-y:auto;
   }
   .mobile-menu-links li { border-bottom:1px solid var(--border-sub); }
   .mobile-menu-links a {
@@ -1780,8 +1776,10 @@
 
   .mobile-menu-footer {
     padding:28px;
+    padding-bottom:calc(28px + env(safe-area-inset-bottom));
     border-top:1px solid var(--border-sub);
     display:flex; flex-direction:column; gap:10px;
+    flex-shrink:0;
   }
   .mobile-menu-footer a {
     display:flex; align-items:center; justify-content:center; text-align:center;
@@ -2907,7 +2905,7 @@ function openInBrowser() {
 const products = [
   // ── Botanical Perfumes
   { id:1,  name:"Carrot Cake",      category:"Botanical Perfume", emoji:"🌾", bg:"#2a1e10", price:108.96, size:"50ml", badge:null,        desc:"A sweetly spiced opening of cinnamon bark and nutmeg sets the tone from the first breath, lingering through every stage of wear. Osmanthus and jasmine bring a velvety, gourmand softness to the heart while creamy benzoin, vanilla oleoresin and vanilla essential oil wrap everything in a rich, layered warmth. Sweet without being sugary, floral without being light - this is comfort in a bottle.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Organic Benzoin Resin (Styrax benzoin), Organic Vanilla Oleoresin (Vanilla planifolia), Organic Vanilla Essential Oil (Vanilla planifolia), Organic Jasmine Absolute (Jasminum grandiflorum), Organic Osmanthus Oil (Osmanthus fragrans), Organic Cinnamon Bark Oil (Cinnamomum zeylanicum), Organic Nutmeg Oil (Myristica fragrans)" },
-  { id:2,  name:"Velvet Forest",    category:"Botanical Perfume", emoji:"🌲", bg:"#0e1f12", price:79.80,  size:"50ml", badge:null,        desc:"Mediterranean cypress opens with a cool, green freshness before Australian native blue cypress deepens the accord with smoke and ancient earth. Baltic amber brings a warm, honeyed resin to the heart while creamy amyris sandalwood softens the base. Ambrette lingers as a velvety, pear-kissed musk - making Velvet Forest as close to living woodland as a bottle can hold.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Organic Baltic Amber (Pinus succinifera), Organic Cypress (Cupressus sempervirens), Organic Blue Cypress Oil (Callitris intratropica), Organic Sandalwood (Amyris balsamifera), Organic Ambrette Oil (Abelmoschus moschatus)" },
+  { id:2,  name:"Velvet Forest",    category:"Botanical Perfume", emoji:"🌲", bg:"#0e1f12", price:79.80,  size:"50ml", badge:null, image:"images/products/velvet-forest.png",        desc:"Mediterranean cypress opens with a cool, green freshness before Australian native blue cypress deepens the accord with smoke and ancient earth. Baltic amber brings a warm, honeyed resin to the heart while creamy amyris sandalwood softens the base. Ambrette lingers as a velvety, pear-kissed musk - making Velvet Forest as close to living woodland as a bottle can hold.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Organic Baltic Amber (Pinus succinifera), Organic Cypress (Cupressus sempervirens), Organic Blue Cypress Oil (Callitris intratropica), Organic Sandalwood (Amyris balsamifera), Organic Ambrette Oil (Abelmoschus moschatus)" },
   { id:3,  name:"Jazz Lounge",      category:"Botanical Perfume", emoji:"🎷", bg:"#1a1020", price:88.88,  size:"50ml", badge:"Bestseller", image:"images/products/jazz-lounge.png", desc:"A brooding, resinous accord where galbanum opens with wild green sharpness before davana weaves through the heart, bringing a boozy, fruity warmth with an animalic edge. Australian native blue cypress adds smoke and ancient wood, while labdanum and amber draw it to a dark, leathery close. Bold, sensual and completely unforgettable.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Davana, Blue Cypress (Australian Native - Callitris intratropica), Galbanum, Labdanum, Amber" },
   { id:4,  name:"Floral Fantasy",   category:"Botanical Perfume", emoji:"💐", bg:"#2a1828", price:98.00,  size:"50ml", badge:null,        desc:"A lush bouquet of living botanicals - neroli, ylang ylang and tuberose dancing over a soft musky base.", ingredients:"Neroli Absolute, Ylang Ylang, Tuberose, Rose Otto, White Musk" },
   { id:5,  name:"Pr-nfr",           category:"Botanical Perfume", emoji:"𓂀", bg:"#1c1a10", price:99.95,  size:"50ml", badge:"Rare", image:"images/icons/pr-nfr.svg", desc:"Inspired by the sacred embalming rooms of ancient Egypt, Pr-Nfr opens with an instant, clean forest freshness of black spruce before myrrh weaves a smoky, ceremonial earthiness into the heart - the same sacred resin used in ancient ritual and preservation. Warm Baltic amber and rich vanilla oleoresin settle into the base, drawing it to a deeply resinous, honeyed close. Simple in composition, profound in character - Pr-Nfr is a timeless, skin-warming fragrance that settles beautifully and lasts.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Organic Baltic Amber (Pinus succinifera), Organic Vanilla Oleoresin (Vanilla planifolia), Organic Myrrh EO, Organic Black Spruce Oil (Picea mariana)" },
@@ -2915,8 +2913,8 @@ const products = [
   // ── Natural Soaps
   { id:7,  name:"Hemp Soap - Lavender",         category:"Natural Soap", emoji:"💜", bg:"#1a1428", price:9.00,  size:"115g", badge:null, image:"images/products/lavender-hemp-soap.png", desc:"A gentle, conditioning soap bar crafted on a rich base of extra virgin olive oil, coconut oil and hemp seed oil. Lavandin Grosso - a bold, intense variety of lavender known for its lasting clean scent - fills every lather with a fresh, herbaceous calm. Sweet almond oil and castor oil add a creamy, skin-loving richness that soothes as it cleanses. Simple, pure and deeply satisfying.", ingredients:"Olive Oil (Grade A Extra Virgin), Sustainable Palm Oil, Coconut Oil, Safflower Oil, Glycerine (Vegetable Origin), Hemp Seed Oil (Unrefined), Purified Water, Sodium Hydroxide (Saponifying Agent), Sorbitol, Propylene Glycol (Vegetable Glycerine Derived), Sorbitan Oleate (Emulsifier), Oat Protein, Ricinus communis (Castor Oil), Prunus Amygdalus Dulcis (Organic Sweet Almond Oil), Lavandula Hybrida B (Lavandin Grosso) Essential Oil" },
   { id:8,  name:"Hemp Soap - Eucalyptus",       category:"Natural Soap", emoji:"🌿", bg:"#101e14", price:9.00,  size:"115g", badge:null, image:"images/products/euca-hemp-soap.png", desc:"A deeply cleansing botanical soap bar built on a nourishing base of extra virgin olive oil, coconut oil and hemp seed oil. Two varieties of eucalyptus - the sharp, clarifying Kochii and the softer, more rounded Radiata - create a full-spectrum eucalyptus experience that awakens the senses and leaves skin feeling clean and refreshed. Enriched with apricot kernel oil, oat protein and Abyssinian oil for a gentle, conditioning lather that never strips.", ingredients:"Olive Oil (Grade A Extra Virgin), Sustainable Palm Oil, Coconut Oil, Safflower Oil, Glycerine (Vegetable Origin), Hemp Seed Oil (Unrefined), Purified Water, Sodium Hydroxide (Saponifying Agent), Sorbitol, Propylene Glycol (Vegetable Glycerine Derived), Sorbitan Oleate (Emulsifier), Oat Protein, Crambe Abyssinica (Abyssinian Oil Refined), Prunus Armeniaca (Apricot Kernel Oil), Eucalyptus Kochii EO, Eucalyptus Radiata EO" },
-  { id:9,  name:"Black Soap - Lavender, Boronia & Daisy",  category:"Natural Soap", emoji:"🌼", bg:"#141414", price:14.00, size:"115g", badge:null, inStock:false, desc:"Built on a base of authentic African black soap from Ghana - a traditional deep-cleansing formulation made with plantain skin ash, palm kernel oil and shea butter that has been used for centuries across West Africa for its extraordinary skin-purifying properties. Activated charcoal amplifies the cleanse, drawing out impurities while leaving skin balanced and refreshed. The botanical heart is a trio of rare florals - boronia absolute from the wild heathlands of Western Australia brings a rich, earthy complexity; lavender adds a clean, herbal calm; and daisy lends a soft, cheerful brightness that lifts the whole accord. Deeply cleansing, beautifully fragrant and genuinely botanical.", ingredients:"African Black Soap (Ghana), Activated Charcoal, Boronia Absolute, Lavender Essential Oil, Daisy Extract, Coconut Oil, Shea Butter" },
-  { id:10, name:"Black Soap - Woody Eucalyptus",  category:"Natural Soap", emoji:"🖤", bg:"#0e160e", price:14.00, size:"115g", badge:null, inStock:false, desc:"Crafted with authentic African black soap from Ghana, this bar pairs traditional deep-cleansing properties with activated charcoal and a grounding woody eucalyptus blend - purifying, earthy and forest-fresh.", ingredients:"African Black Soap (Ghana), Activated Charcoal, Eucalyptus Essential Oil, Cedarwood, Vetiver, Coconut Oil" },
+  { id:9,  name:"Black Soap - Lavender, Boronia & Daisy",  category:"Natural Soap", emoji:"🌼", bg:"#141414", price:14.00, size:"115g", badge:null, inStock:false, image:"images/products/blacksoap-lbd.png", desc:"Built on a base of authentic African black soap from Ghana - a traditional deep-cleansing formulation made with plantain skin ash, palm kernel oil and shea butter that has been used for centuries across West Africa for its extraordinary skin-purifying properties. Activated charcoal amplifies the cleanse, drawing out impurities while leaving skin balanced and refreshed. The botanical heart is a trio of rare florals - boronia absolute from the wild heathlands of Western Australia brings a rich, earthy complexity; lavender adds a clean, herbal calm; and daisy lends a soft, cheerful brightness that lifts the whole accord. Deeply cleansing, beautifully fragrant and genuinely botanical.", ingredients:"African Black Soap (Ghana), Activated Charcoal, Boronia Absolute, Lavender Essential Oil, Daisy Extract, Coconut Oil, Shea Butter" },
+  { id:10, name:"Black Soap - Woody Eucalyptus",  category:"Natural Soap", emoji:"🖤", bg:"#0e160e", price:14.00, size:"115g", badge:null, inStock:false, image:"images/products/blacksoap-woodyeucalyptus.png", desc:"Crafted with authentic African black soap from Ghana, this bar pairs traditional deep-cleansing properties with activated charcoal and a grounding woody eucalyptus blend - purifying, earthy and forest-fresh.", ingredients:"African Black Soap (Ghana), Activated Charcoal, Eucalyptus Essential Oil, Cedarwood, Vetiver, Coconut Oil" },
   { id:25, name:"Hemp Soap - Peppermint",       category:"Natural Soap", emoji:"🌱", bg:"#0a1e14", price:9.00,  size:"115g", badge:null, image:"images/products/peppermint-hemp-soap.png", desc:"A refreshing, skin-loving soap bar built on a nourishing base of extra virgin olive oil, coconut oil and hemp seed oil. Peppermint essential oil delivers a powerful, long-lasting coolness that awakens the senses while golden jojoba and sweet almond oil leave skin soft and conditioned. Pure, simple and invigorating.\n\n⚠️ Not recommended for use on sensitive areas - the cooling effect is powerful and long-lasting.", ingredients:"Olive Oil (Grade A Extra Virgin), Sustainable Palm Oil, Coconut Oil, Safflower Oil, Glycerine (Vegetable Origin), Hemp Seed Oil (Unrefined), Purified Water, Sodium Hydroxide (Saponifying Agent), Sorbitol, Propylene Glycol (Vegetable Glycerine Derived), Sorbitan Oleate (Emulsifier), Oat Protein, Simmondsia chinensis (Golden Jojoba Oil), Prunus Amygdalus Dulcis (Organic Sweet Almond Oil), Mentha Arvensis (Peppermint EO)" },
   // ── Jewellery
   { id:11, name:"Aroma Necklaces", category:"Jewellery", emoji:"📿", bg:"#1e1c14", price:18.00, size:null, badge:"Bestseller", desc:"A hand-crafted diffuser necklace with a lava stone pendant - add a drop of your favourite essential oil and carry your scent all day.", ingredients:"Lava Stone, Essential Oil Compatible, Adjustable Chain, Hypoallergenic", variants:["Gold","Silver","Rose Gold"] },
@@ -3588,7 +3586,7 @@ function openModal(id) {
     ? `<span class="product-badge ${p.badge === 'Rare' ? 'rare' : 'bestseller'}" style="position:absolute;top:14px;left:14px;z-index:3;">${p.badge === 'Bestseller' ? 'Best-Seller' : p.badge}</span>`
     : '';
   modalImgEl.innerHTML = `${imgHTML}${badgeHTML}`;
-  document.getElementById('modalName').innerHTML = d(p.name);
+  document.getElementById('modalName').innerHTML = d(p.name) + (p.size ? `<br><span style="font-size:.55em;opacity:.5;font-family:var(--sans);font-variant-numeric:tabular-nums;font-weight:300;">${p.size}</span>` : '');
   document.getElementById('modalDesc').innerHTML = d(p.desc);
   if (p.auNative) {
     const auTag = document.createElement('span');
@@ -3626,7 +3624,7 @@ function openModal(id) {
     descEl.style.webkitLineClamp = '';
   }
   document.getElementById('modalIngredients').textContent = p.ingredients;
-  document.getElementById('modalPrice').textContent = `$${p.price.toFixed(2)}${p.size ? ' · ' + p.size : ''}`;
+  document.getElementById('modalPrice').textContent = `$${p.price.toFixed(2)}`;
   document.getElementById('modalAfterpay').textContent = `or 4 × $${(p.price/4).toFixed(2)} interest-free with Afterpay`;
 
   // Variants

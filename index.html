@@ -1697,27 +1697,27 @@
       display:flex; flex-direction:column;
     }
     .modal-img {
-      min-height:0; height:200px; flex-shrink:0;
+      min-height:0; height:175px; flex-shrink:0;
       font-size:4rem;
     }
     .modal-content {
-      padding:18px 20px 20px;
+      padding:16px 18px 16px;
       overflow-y:auto; flex:1;
       display:flex; flex-direction:column; gap:0;
     }
     .modal-category { font-size:.58rem; margin-bottom:2px; }
     .au-native-badge { margin-bottom:4px; padding:2px 6px 2px 4px; font-size:.54rem; }
-    .modal-name { font-size:1.3rem; margin-bottom:6px; }
-    .modal-desc { font-size:.78rem; line-height:1.6; margin-bottom:10px; }
-    .modal-desc.clamped { display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical; overflow:hidden; }
+    .modal-name { font-size:1.3rem; margin-bottom:4px; }
+    .modal-desc { font-size:.78rem; line-height:1.6; margin-bottom:8px; }
+    .modal-desc.clamped { display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; }
     .modal-desc-toggle { font-size:.68rem; color:var(--green-lt); letter-spacing:.1em; text-transform:uppercase; background:none; border:none; border-bottom:1px solid rgba(140,196,15,.3); padding:0 0 4px; cursor:pointer; display:none; margin-bottom:8px; align-self:flex-start; width:auto; -webkit-appearance:none; appearance:none; border-radius:0; box-shadow:none; }
     .modal-desc-toggle.visible { display:inline-block; }
-    .modal-ing-toggle { font-size:.62rem; padding:8px 0; }
+    .modal-ing-toggle { font-size:.62rem; padding:6px 0; }
     .modal-ingredients.open { max-height:400px; padding:8px 10px 12px; }
     .modal-price { font-size:1.4rem; margin-bottom:2px; }
-    .modal-afterpay { font-size:.65rem; margin-bottom:10px; }
+    .modal-afterpay { font-size:.65rem; margin-bottom:8px; }
     .modal-variants { margin:8px 0 2px; }
-    .modal-qty-row { margin-bottom:8px; }
+    .modal-qty-row { margin-bottom:6px; }
     .modal-add-btn { padding:13px; font-size:.7rem; margin-top:auto; }
     .product-card[data-badge="Rare"],
     .product-card[data-badge="Bestseller"] { animation:fadeUp .5s both; }
@@ -2961,7 +2961,7 @@ const products = [
   { id:58, name:"Cinnamon Bark", category:"100% Pure Essential Oil", emoji:"🟤", bg:"#1e1008", price:13.95, size:"10ml", badge:null, image:"images/products/cinnamon-bark-eo.png", desc:"Warm, spiced and sweetly enveloping. Steam-distilled from the bark of Cinnamomum zeylanicum - deeply rich and aromatic with an immediate intensity that anchors and elevates any blend. A natural fixative used in compliant concentrations for leave-on formulations.", ingredients:"Cinnamomum zeylanicum" },
   { id:59, name:"Black Spruce", category:"100% Pure Essential Oil", emoji:"🌲", bg:"#0e1810", price:13.95, size:"10ml", badge:null, image:"images/products/black-spruce-eo.png", desc:"Clean, crisp and deeply forested. Steam-distilled from the needles of Picea mariana - an instantly recognisable forest freshness with a resinous, slightly sweet depth. Grounding and invigorating in equal measure, it opens beautifully in both solo wear and complex botanical blends.", ingredients:"Picea mariana" },
   { id:60, name:"Blue Cypress", category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0a1a1e", price:28.95, size:"10ml", badge:"Rare", auNative:true, image:"images/products/blue-cypress-eo.png", desc:"Ancient, smoky and deeply grounding. Steam-distilled from the heartwood of Callitris intratropica - an extraordinary Australian native found only in the tropical woodlands of the Northern Territory. Rich, blue-toned and unmistakably earthy with a warm, resinous depth unlike any other cypress in the world. One of the most sought-after Australian native botanicals in perfumery.", ingredients:"Callitris intratropica" },
-  { id:61, name:"Boronia Absolute", category:"100% Pure Absolute", emoji:"🌿", bg:"#1a1018", price:89.95, size:"10ml", badge:"Rare", auNative:true, image:"images/products/boronia-ab.png", desc:"One of the rarest and most prized botanicals in natural perfumery. Solvent-extracted from the flowers of Boronia megastigma - a small flowering shrub native to the southwestern tip of Western Australia. Extraordinarily complex - rich, earthy and deeply floral with fresh fruity-sweet and tea-like facets, soft cinnamon and tobacco nuances, and a warm woody-sweet undertone that lingers beautifully in perfumery. Frequently adulterated elsewhere - Profound Naturals sources genuine.", ingredients:"Boronia megastigma" },
+  { id:61, name:"Boronia Absolute", category:"100% Pure Absolute", emoji:"🌿", bg:"#1a1018", price:89.95, size:"10ml", badge:"Rare", auNative:true, image:"images/products/borona-ab.png", desc:"One of the rarest and most prized botanicals in natural perfumery. Solvent-extracted from the flowers of Boronia megastigma - a small flowering shrub native to the southwestern tip of Western Australia. Extraordinarily complex - rich, earthy and deeply floral with fresh fruity-sweet and tea-like facets, soft cinnamon and tobacco nuances, and a warm woody-sweet undertone that lingers beautifully in perfumery. Frequently adulterated elsewhere - Profound Naturals sources genuine.", ingredients:"Boronia megastigma" },
   { id:55, name:"Galbanum",              category:"100% Pure Essential Oil", emoji:"🟢", bg:"#1a2010", price:16.95, size:"10ml", badge:"Rare", image:"images/products/galbanum-eo.png", desc:"One of the oldest aromatic ingredients known to humanity - galbanum was burned as sacred incense in ancient Egypt and mentioned in the Old Testament. Steam-distilled from the gum resin of Ferula galbaniflua, it opens with a sharply green, almost electric freshness before settling into a deep, resinous, woody earthiness that is completely unlike anything else. Rare, potent and unforgettable - a single drop transforms any accord.", ingredients:"Ferula galbaniflua" },
 
   // ── NEW ESSENTIAL OILS (ids 26–40) ──
@@ -3610,23 +3610,14 @@ function openModal(id) {
   selectedVariant = null;
 
   document.getElementById('modalQty').textContent = '1';
-  // Ingredients — auto-open if single ingredient, toggle if multiple
-  const singleIngredient = p.ingredients && !p.ingredients.includes(',');
+  // Ingredients — uniform: collapsed toggle for every product type
   const ingWrap = document.getElementById('modalIngredientsWrap');
   const ingToggle = document.getElementById('modalIngToggle');
-  if (singleIngredient) {
-    ingWrap.classList.add('open');
-    ingToggle.classList.add('open');
-    ingToggle.querySelector('.modal-ing-arrow').style.display = 'none';
-    ingToggle.style.cursor = 'default';
-    ingToggle.onclick = null;
-  } else {
-    ingWrap.classList.remove('open');
-    ingToggle.classList.remove('open');
-    ingToggle.querySelector('.modal-ing-arrow').style.display = '';
-    ingToggle.style.cursor = '';
-    ingToggle.onclick = toggleModalIngredients;
-  }
+  ingWrap.classList.remove('open');
+  ingToggle.classList.remove('open');
+  ingToggle.querySelector('.modal-ing-arrow').style.display = '';
+  ingToggle.style.cursor = '';
+  ingToggle.onclick = toggleModalIngredients;
   const modalImgEl = document.getElementById('modalImg');
   modalImgEl.style.background = p.bg;
   modalImgEl.className = 'modal-img';
@@ -3653,7 +3644,7 @@ function openModal(id) {
   if (p.category && /essential oil|absolute|resinoid/i.test(p.category)) {
     const safetyNote = document.createElement('p');
     safetyNote.id = 'modalSafetyNote';
-    safetyNote.style.cssText = 'margin-top:12px;font-size:.72rem;color:rgba(230,236,231,.4);letter-spacing:.03em;border-top:1px solid rgba(255,255,255,.06);padding-top:10px;';
+    safetyNote.style.cssText = 'margin-top:8px;font-size:.68rem;color:rgba(230,236,231,.4);letter-spacing:.03em;border-top:1px solid rgba(255,255,255,.06);padding-top:8px;';
     safetyNote.textContent = 'Not for undiluted use on skin. Always dilute in a carrier oil or blend before topical application.';
     document.getElementById('modalDesc').appendChild(safetyNote);
   }
@@ -3666,8 +3657,7 @@ function openModal(id) {
   if (window.innerWidth <= 900) {
     descEl.style.visibility = 'hidden';
     descEl.classList.add('clamped');
-    if (singleIngredient) descEl.style.webkitLineClamp = '3';
-    else descEl.style.webkitLineClamp = '';
+    descEl.style.webkitLineClamp = '';
     requestAnimationFrame(() => {
       const overflows = descEl.scrollHeight > descEl.clientHeight + 2;
       if (!overflows) descEl.classList.remove('clamped');

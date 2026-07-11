@@ -129,7 +129,7 @@
     display:flex; align-items:center; text-decoration:none;
     margin-left:0;
   }
-  .nav-logo img { height:52px; width:auto; display:block; }
+  .nav-logo img { height:47px; width:auto; flex-shrink:0; object-fit:contain; display:block; }
 
   .nav-links { display:flex; gap:28px; list-style:none; }
   .nav-links a {
@@ -843,8 +843,8 @@
   .contact-close:hover { color:rgba(255,80,80,1); text-shadow:0 0 16px rgba(255,80,80,.8); }
   .contact-body { padding:32px; display:flex; flex-direction:column; gap:20px; }
   .contact-item {
-    display:flex; align-items:center; gap:18px;
-    padding:18px 20px;
+    display:flex; align-items:center; gap:14px;
+    padding:18px 16px;
     border:1px solid var(--border-sub);
     background:var(--surface);
     text-decoration:none;
@@ -853,8 +853,9 @@
   .contact-item:hover { border-color:var(--green); background:var(--surface-2); }
   .contact-item-icon { width:36px; height:36px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
   .contact-item-icon img { width:32px; height:32px; object-fit:contain; }
+  .contact-item > div { min-width:0; flex:1 1 auto; }
   .contact-item-label { font-family:var(--sans); font-size:.62rem; letter-spacing:.18em; text-transform:uppercase; color:var(--white-dim); margin-bottom:3px; }
-  .contact-item-value { font-family:var(--serif); font-size:1.05rem; color:var(--white); }
+  .contact-item-value { font-family:var(--serif); font-size:1.05rem; color:var(--white); overflow-wrap:anywhere; }
   .why-natural-overlay {
     position:fixed; inset:0; background:rgba(0,0,0,.82);
     z-index:1000; display:flex; align-items:center; justify-content:center;
@@ -1585,7 +1586,7 @@
   @media(max-width:900px){
     nav { padding:0 16px 0 8px; height:60px; overflow:hidden; }
     .nav-logo { flex:1 1 0; min-width:0; max-width:calc(100% - 100px); overflow:hidden; margin-left:0; }
-    .nav-logo img { height:31px; width:auto; max-width:100%; display:block; object-fit:contain; }
+    .nav-logo img { height:31px; width:auto; max-width:100%; flex-shrink:1; display:block; object-fit:contain; }
     .nav-links { display:none; }
     .nav-search-wrap { display:none; }
     .nav-hamburger { display:flex; }
@@ -1993,6 +1994,13 @@
   .collection-modal-card-category { font-size:.55rem; letter-spacing:.18em; text-transform:uppercase; color:var(--green-lt); margin-bottom:6px; }
   .collection-modal-card-name { font-family:var(--serif); font-size:1.05rem; color:var(--white); margin-bottom:6px; line-height:1.2; }
   .collection-modal-card-price { font-size:.82rem; color:var(--white-dim); font-variant-numeric:tabular-nums; }
+
+  /* ── TABLET — portrait iPad band (768-900px). Isolated: min-width guard keeps it off phones, max-width keeps it off desktop/landscape-tablet ── */
+  @media (min-width:768px) and (max-width:900px) {
+    .products-grid { grid-template-columns:repeat(3,1fr); gap:2px; }
+    .values { grid-template-columns:1fr 1fr; padding:52px 40px; }
+    #testiMoreGrid { grid-template-columns:1fr 1fr; }
+  }
 </style>
 </head>
 <body>
@@ -2594,15 +2602,20 @@
       </a>
       <a class="contact-item" href="https://www.instagram.com/profound.naturals" target="_blank">
         <span class="contact-item-icon">
-          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="rgba(230,236,231,0.6)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-            <circle cx="12" cy="12" r="4"/>
-            <circle cx="17.5" cy="6.5" r=".8" fill="rgba(230,236,231,0.6)" stroke="none"/>
-          </svg>
+          <img src="images/icons/insta.png" alt="Instagram">
         </span>
         <div>
           <div class="contact-item-label">Instagram</div>
           <div class="contact-item-value">@profound.naturals</div>
+        </div>
+      </a>
+      <a class="contact-item" href="mailto:hello@profoundnaturals.com.au">
+        <span class="contact-item-icon">
+          <img src="images/icons/phone.png" alt="Phone">
+        </span>
+        <div>
+          <div class="contact-item-label">Phone</div>
+          <div class="contact-item-value">Coming soon <span style="font-size:.8rem; color:var(--white-dim);">(email for now)</span></div>
         </div>
       </a>
     </div>
@@ -2922,7 +2935,7 @@ const products = [
   { id:13, name:"Himalayan Cedarwood",    category:"100% Pure Essential Oil", emoji:"🏔️", bg:"#141c1a", price:9.95,  size:"10ml", badge:null, image:"images/products/himalayan-cedarwood-eo.png", desc:"A rich, balsamic cedarwood steam-distilled from the Himalayan region - deeper and more resinous than Virginian cedarwood, with a warm, woody sweetness. Prized in aromatherapy for its naturally grounding and calming character, it is traditionally used to quiet a busy mind, encourage restful relaxation and bring a sense of stability. Its warm, anchoring scent also makes it a natural fit for meditative and woody base-note blends.", ingredients:"Cedrus Deodara" },
   { id:16, name:"Jasmine",               category:"100% Pure Absolute",  emoji:"🌸", bg:"#2a1a20", price:59.95, size:"10ml", badge:"Rare", inStock:false, image:"images/products/jasmine-ab.png", desc:"One of nature's most prized florals - a rich, heady jasmine absolute with an intoxicating sweetness that lingers beautifully in a blend. Known as the queen of the night, jasmine is traditionally treasured for its naturally uplifting and comforting qualities, long used to soothe the mind, lift the spirits and inspire confidence and warmth. A single drop transforms any blend with its deep, sensual floral richness.", ingredients:"Jasminum Grandiflorum" },
   { id:17, name:"Bergamot",              category:"100% Pure Essential Oil", emoji:"🍋", bg:"#1a200e", price:16.95, size:"10ml", badge:null, image:"images/products/bergamot-eo.png", desc:"A bright, citrusy-floral oil cold-pressed from Italian bergamot rind - uplifting, balancing and a classic in fine perfumery. Long valued in aromatherapy for its naturally mood-lifting and calming qualities, it is traditionally used to ease tension and encourage a sense of relaxed wellbeing, while its fresh, clarifying character also makes it a favourite in natural skincare blends. Radiant, fragrant and quietly restorative.", ingredients:"Citrus Bergamia" },
-  { id:18, name:"Eucalyptus Blue Gum",   category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1c16", price:9.95,  size:"10ml", badge:"Bestseller", auNative:true, image:"images/products/euca-bluegum-eo.png", desc:"The classic Australian eucalyptus and the most recognisable of them all - sharp, camphorous and powerfully clarifying. Steam-distilled from Eucalyptus globulus, it is rich in 1,8-cineole, the compound prized for its naturally decongestant and air-purifying qualities. Traditionally valued to support clear breathing and ease tired muscles, it is the benchmark eucalyptus for diffusing, steam inhalation and invigorating blends. Bold, fresh and instantly recognisable.", ingredients:"Eucalyptus Globulus" },
+  { id:18, name:"Eucalyptus Blue Gum",   category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1c16", price:9.95,  size:"10ml", badge:"Bestseller", auNative:true, image:"images/products/euca-blue-gum-eo.png", desc:"The classic Australian eucalyptus and the most recognisable of them all - sharp, camphorous and powerfully clarifying. Steam-distilled from Eucalyptus globulus, it is rich in 1,8-cineole, the compound prized for its naturally decongestant and air-purifying qualities. Traditionally valued to support clear breathing and ease tired muscles, it is the benchmark eucalyptus for diffusing, steam inhalation and invigorating blends. Bold, fresh and instantly recognisable.", ingredients:"Eucalyptus Globulus" },
   { id:19, name:"Eucalyptus Radiata",    category:"100% Pure Essential Oil", emoji:"🌿", bg:"#101e18", price:11.95, size:"10ml", badge:null, image:"images/products/euca-radiata-eo.png", desc:"The gentlest member of the eucalyptus family - softer, smoother and less camphorous than Blue Gum, with a lighter, sweeter, crisper aroma. Steam-distilled from Eucalyptus radiata, it offers the same clarifying, respiratory-supporting and air-freshening benefits but in a far milder form, making it the preferred choice for everyday use, children's blends and direct skin application. Clean, fresh and easy to live with.", ingredients:"Eucalyptus Radiata" },
   { id:20, name:"Eucalyptus Kochii",     category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1a12", price:11.95, size:"10ml", badge:null, auNative:true, image:"images/products/euca-kochii-eo.png", desc:"A rare Western Australian eucalyptus with one of the highest natural 1,8-cineole contents of any species - exceptionally clean, medicinal and beautifully pure. Steam-distilled from Eucalyptus kochii, its remarkable purity makes it the most potent and penetrating of the eucalyptus oils, prized for strong decongestant and purifying blends where maximum clarifying power is wanted. Crisp, sharp and intensely fresh.", ingredients:"Eucalyptus Kochii" },
   { id:21, name:"Blue Tansy",            category:"100% Pure Essential Oil", emoji:"💙", bg:"#0e1020", price:44.95, size:"10ml", badge:"Rare", image:"images/products/blue-tansy-eo.png", desc:"A stunning deep blue oil steam-distilled from Moroccan blue tansy flowers - soothing, anti-inflammatory and deeply calming with a sweet, herbaceous aroma.", ingredients:"Tanacetum Annuum" },
@@ -2963,7 +2976,7 @@ const products = [
   { id:46, name:"Euca Blue Mallee",      category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1c14", price:11.95, size:"10ml", badge:null, auNative:true,  image:"images/products/euca-blue-mallee-eo.png", desc:"An Australian native with a high 1,8-cineole content and powerfully clarifying character. Steam-distilled from Eucalyptus polybractea - sharper and more penetrating than Blue Gum, with a clean, medicinal intensity from the mallee scrublands of Victoria and New South Wales.", ingredients:"Eucalyptus polybractea" },
   { id:47, name:"Geranium Bourbon",      category:"100% Pure Essential Oil", emoji:"🌸", bg:"#1e0e14", price:18.95, size:"10ml", badge:null, image:"images/products/geranium-bourbon-eo.png", desc:"The finest expression of geranium - steam-distilled from Pelargonium x asperum grown on the island of Reunion. Rich, rosy and green with a complexity that far exceeds common geranium. A backbone ingredient in classical and natural perfumery alike.", ingredients:"Pelargonium x asperum" },
   { id:48, name:"Rosemary (Spanish)",    category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1810", price:11.95, size:"10ml", badge:null, image:"images/products/rosemary-spanish-eo.png", desc:"Sharp, herbaceous and invigorating - steam-distilled from the flowering tops of Rosmarinus officinalis grown in Spain. Clean, clarifying and deeply familiar, Spanish rosemary has a particularly crisp, camphorous character with a resinous warmth that blends beautifully across a wide range of accords.", ingredients:"Rosmarinus officinalis" },
-  { id:49, name:"Euca Citriodora",       category:"100% Pure Essential Oil", emoji:"🌿", bg:"#141e0a", price:11.95, size:"10ml", badge:null, auNative:true,  desc:"An Australian native with a bright, lemon-fresh character quite unlike any other eucalyptus. Steam-distilled from Eucalyptus citriodora, it carries a clean citrusy lift with a distinctly airy, kerosene-like undertone characteristic of the species and beloved by those who know it. Widely used as a natural insect repellent - particularly effective against mosquitoes. Dries down soft and powdery with a lingering freshness.", ingredients:"Eucalyptus citriodora" },
+  { id:49, name:"Euca Citriodora",       category:"100% Pure Essential Oil", emoji:"🌿", bg:"#141e0a", price:11.95, size:"10ml", badge:null, auNative:true, image:"images/products/euca-citriodora-eo.png", desc:"An Australian native with a bright, lemon-fresh character quite unlike any other eucalyptus. Steam-distilled from Eucalyptus citriodora, it carries a clean citrusy lift with a distinctly airy, kerosene-like undertone characteristic of the species and beloved by those who know it. Widely used as a natural insect repellent - particularly effective against mosquitoes. Dries down soft and powdery with a lingering freshness.", ingredients:"Eucalyptus citriodora" },
   { id:50, name:"Tonka",                 category:"100% Pure Absolute",      emoji:"🤎", bg:"#1a1208", price:29.95, size:"10ml", badge:"Rare", image:"images/products/tonka-ab.png", desc:"Warm, sweet and richly coumarinic - tonka absolute carries a distinctive vanilla-like sweetness with hints of almond, hay and tobacco. Deeply comforting and tenacious, it anchors sweet accords with an almost edible warmth that lingers beautifully in a blend. Organic, hexane-free extraction.", ingredients:"Dipteryx odorata" },
   { id:51, name:"Tuberose",              category:"100% Pure Absolute",      emoji:"🤍", bg:"#1e1420", price:79.95, size:"10ml", badge:"Rare", image:"images/products/tuberose-ab.png", desc:"One of the most intensely floral botanicals in natural perfumery - rich, creamy and narcotic with a heady, waxy sweetness that deepens in a blend. Tuberose absolute is a statement ingredient; complex, bold and unforgettable at perfumery concentrations. Organic, hexane-free extraction.", ingredients:"Polianthes tuberosa" },
   { id:52, name:"Frangipani",            category:"100% Pure Absolute",      emoji:"🌺", bg:"#201420", price:59.95, size:"10ml", badge:"Rare", image:"images/products/frangipani-ab.png", desc:"Exotic, tropical and deeply floral - frangipani absolute carries the full warmth of the Plumeria flower with a creamy, slightly spiced sweetness. Evocative and sensual, it bridges florals and exotics with effortless grace. Organic, hexane-free extraction.", ingredients:"Plumeria alba" },
@@ -3129,7 +3142,7 @@ function updateCartUI() {
   const itemsEl = document.getElementById('cartItems');
   const footer  = document.getElementById('cartFooter');
   if (cart.length === 0) {
-    itemsEl.innerHTML = `<div class="cart-empty"><span class="cart-empty-icon">🌿</span><p class="cart-empty-text">Your bag is empty</p></div>`;
+    itemsEl.innerHTML = `<div class="cart-empty"><span class="cart-empty-icon"><img src="images/icons/shop-bag.png" alt="Empty cart" style="width:48px;height:48px;object-fit:contain;opacity:0.5;"></span><p class="cart-empty-text">Your bag is empty</p></div>`;
     footer.style.display = 'none';
   } else {
     itemsEl.innerHTML = cart.map(item => `

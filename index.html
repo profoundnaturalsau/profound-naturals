@@ -1256,7 +1256,7 @@
   .footer-brand-name { margin-bottom:14px; }
   .footer-brand-name img { height:400px; width:auto; display:block; }
   .footer-logo-link { cursor:default; display:block; }
-  .footer-tagline { font-size:.8rem; color:var(--white-dim); line-height:1.7; font-weight:300; max-width:240px; }
+  .footer-tagline { font-size:.8rem; color:var(--green); line-height:1.7; font-weight:300; max-width:240px; }
   .footer-col h4 { font-size:.64rem; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.35); margin-bottom:20px; font-weight:400; }
   .footer-col ul { list-style:none; }
   .footer-col ul li { margin-bottom:12px; }
@@ -1654,16 +1654,16 @@
     .payment-methods { display:flex; flex-direction:column; align-items:center; gap:12px; }
     .payment-methods-row { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; }
     .payment-pill { padding:12px 18px; }
-    .newsletter { grid-template-columns:1fr; padding:60px 24px; gap:28px; }
-    .newsletter-form { width:100%; }
-    .newsletter-form input { min-width:0; }
-    .newsletter-form button { white-space:nowrap; flex-shrink:0; }
+    .newsletter { grid-template-columns:1fr; padding:60px 24px; gap:28px; text-align:center; }
+    .newsletter-form { flex-direction:column; gap:12px; width:100%; max-width:380px; margin-left:auto; margin-right:auto; }
+    .newsletter-form input { width:100%; min-width:0; border-right:1px solid var(--border); text-align:left; }
+    .newsletter-form button { width:100%; white-space:nowrap; flex-shrink:0; }
     .testimonials-grid { grid-template-columns:1fr; }
     #testiMoreGrid { grid-template-columns:1fr; }
     .testimonials { padding:60px 24px; }
     .testimonials .section-title { font-size:clamp(1.8rem, 6vw, 2.4rem); text-align:center; }
     .testimonials .section-header { text-align:center; }
-    .footer-grid { grid-template-columns:1fr 1fr; gap:24px; }
+    .footer-grid { grid-template-columns:1fr 1fr; gap:32px 40px; }
     .footer-brand-name { padding-right:0; }
     .footer-brand-name img { height:180px; width:auto; max-width:100%; }
     .footer-logo-link { cursor:pointer; }
@@ -1994,6 +1994,19 @@
   .collection-modal-card-category { font-size:.55rem; letter-spacing:.18em; text-transform:uppercase; color:var(--green-lt); margin-bottom:6px; }
   .collection-modal-card-name { font-family:var(--serif); font-size:1.05rem; color:var(--white); margin-bottom:6px; line-height:1.2; }
   .collection-modal-card-price { font-size:.82rem; color:var(--white-dim); font-variant-numeric:tabular-nums; }
+
+  /* ── STAR RATINGS (data-driven; empty until reviews exist) ── */
+  .rating-stars { position:relative; display:inline-block; line-height:1; white-space:nowrap; font-family:var(--sans); }
+  .rating-stars::before { content:"★★★★★"; color:rgba(212,160,23,.22); letter-spacing:2px; }
+  .rating-stars-fill { position:absolute; top:0; left:0; height:100%; overflow:hidden; white-space:nowrap; }
+  .rating-stars-fill::before { content:"★★★★★"; color:var(--amber); letter-spacing:2px; }
+  .card-rating { display:flex; align-items:center; gap:6px; margin-top:6px; }
+  .card-rating-count { font-size:.62rem; color:var(--white-dim); font-variant-numeric:tabular-nums; }
+  .modal-rating-slot:empty { display:none; }
+  .modal-rating { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+  .modal-rating-meta { font-size:.72rem; color:var(--white-dim); letter-spacing:.04em; font-variant-numeric:tabular-nums; }
+  .modal-rating-cta { display:inline-block; background:none; border:none; padding:0; margin:0 0 10px; cursor:pointer; font-family:var(--sans); font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:var(--amber); opacity:.75; transition:opacity .2s; }
+  .modal-rating-cta:hover { opacity:1; }
 
   /* ── TABLET — portrait iPad band (768-900px). Isolated: min-width guard keeps it off phones, max-width keeps it off desktop/landscape-tablet ── */
   @media (min-width:768px) and (max-width:900px) {
@@ -2669,6 +2682,7 @@
       <p class="modal-category" id="modalCategory"></p>
       <span class="au-native-badge" id="modalAuNative" onclick="openAuNativeModal()" style="display:none;"><img src="images/icons/australian-native.png" alt="Australian Native">Australian Native</span>
       <h2 class="modal-name" id="modalName"></h2>
+      <div class="modal-rating-slot" id="modalRating"></div>
       <p class="modal-desc" id="modalDesc"></p>
       <button class="modal-desc-toggle" id="modalDescToggle" onclick="toggleModalDesc()">See more</button>
       <button class="modal-ing-toggle" id="modalIngToggle" onclick="toggleModalIngredients()">
@@ -3002,6 +3016,31 @@ function shuffled(arr) {
   const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a;
 }
 
+// ── PRODUCT RATINGS ──
+// Populated by the review backend later. Shape: { productId: { avg: 4.7, count: 12 } }
+// Empty for now, so cards show nothing and modals show "Be First to Review".
+const productRatings = {};
+
+function ratingStarsHTML(avg, size) {
+  const pct = Math.max(0, Math.min(100, (avg / 5) * 100));
+  const fs = size === 'lg' ? '1rem' : '.72rem';
+  return `<span class="rating-stars" style="font-size:${fs}"><span class="rating-stars-fill" style="width:${pct}%"></span></span>`;
+}
+
+function cardRatingHTML(id) {
+  const r = productRatings[id];
+  if (!r || !r.count) return '';
+  return `<div class="card-rating">${ratingStarsHTML(r.avg, 'sm')}<span class="card-rating-count">(${r.count})</span></div>`;
+}
+
+function modalRatingHTML(id) {
+  const r = productRatings[id];
+  if (!r || !r.count) {
+    return `<button type="button" class="modal-rating-cta" onclick="openTestiModal()">Be First to Review</button>`;
+  }
+  return `<div class="modal-rating">${ratingStarsHTML(r.avg, 'lg')}<span class="modal-rating-meta">${r.avg.toFixed(1)} · ${r.count} review${r.count === 1 ? '' : 's'}</span></div>`;
+}
+
 function productCardHTML(p, i) {
   const imgContent = p.image
     ? `<img src="${p.image}" alt="${p.name}" loading="lazy" style="color:transparent;">`
@@ -3016,6 +3055,7 @@ function productCardHTML(p, i) {
         <p class="product-category"><span style="white-space:nowrap">${d(p.category)}</span>${p.size ? `<br><span style="color:#ffffff;opacity:.5;font-weight:300;font-family:var(--sans);font-variant-numeric:tabular-nums;font-size:.9em;">${p.size}</span>` : ''}</p>
         ${p.auNative ? `<span class="au-native-badge" onclick="event.stopPropagation(); openAuNativeModal()"><img src="images/icons/australian-native.png" alt="Australian Native">Australian Native</span>` : ''}
         <h3 class="product-name">${d(p.name)}</h3>
+        ${cardRatingHTML(p.id)}
         <p class="product-desc">${d(p.desc)}</p>
         <div class="product-footer">
           <div class="product-price">
@@ -3227,7 +3267,7 @@ const testimonials = [
   { text: "Pr-nfrt is the most beautiful thing I've ever worn. Warm, sweet and deeply feminine - like wrapping yourself in liquid amber and florals. I've never had so many compliments.", author: "Sarah M, Melbourne" },
   { text: "The Hemp Eucalyptus soap is something else - the scent hits you the moment you open it. Fresh, clean and genuinely strong. It wakes you up in the shower like nothing else. My new daily staple.", author: "Priya L, Sydney" },
   { text: "The Hemp Lavender soap has the most beautiful, strong scent - it fills the whole bathroom and lingers on your skin long after you've stepped out of the shower. Absolutely love it.", author: "Emma R, Brisbane" },
-  { text: "I couldn't believe Pr-nfr is actually made with real amber gemstone - I had to look it up. You can smell it the moment it hits your skin. Warm, resinous, comforting. It's become my daily wear without question.", author: "James K, Perth" },
+  { text: "Layering Blue Cypress over the Amber resin has quietly become my signature. The cypress brings a smooth, woody calm and the amber sitting underneath is warm and resinous - grounding and quietly luxurious all at once. Nothing else in my collection comes close.", author: "Daniel T, Adelaide" },
 ];
 
 function testiCardHTML(t) {
@@ -3600,6 +3640,7 @@ function openModal(id) {
     : '';
   modalImgEl.innerHTML = `${imgHTML}${badgeHTML}`;
   document.getElementById('modalName').innerHTML = d(p.name) + (p.size ? `<br><span style="font-size:.55em;opacity:.5;font-family:var(--sans);font-variant-numeric:tabular-nums;font-weight:300;">${p.size}</span>` : '');
+  document.getElementById('modalRating').innerHTML = modalRatingHTML(p.id);
   document.getElementById('modalDesc').innerHTML = d(p.desc);
   if (p.auNative) {
     const auTag = document.createElement('span');

@@ -3976,8 +3976,28 @@ function cycleOutOfStockBadges() {
 setInterval(cycleOutOfStockBadges, 2000);
 
 // -- HERO CARD CYCLING --
-const featuredProducts = products.filter(p => p.badge === 'Bestseller' || p.badge === 'Rare').sort(() => Math.random() - 0.5);
-let heroIndex = Math.floor(Math.random() * featuredProducts.length);
+// Arrange featured so bestsellers are spread out — never two adjacent.
+// Rares are split into (bestsellers+1) random groups; one bestseller sits between each group.
+function arrangeHero(list) {
+  const best = shuffled(list.filter(p => p.badge === 'Bestseller'));
+  const rare = shuffled(list.filter(p => p.badge !== 'Bestseller'));
+  if (!best.length || !rare.length) return shuffled(list);
+  const groups = best.length + 1;
+  const base = Math.floor(rare.length / groups);
+  let extra = rare.length % groups;
+  const out = [];
+  let idx = 0;
+  for (let g = 0; g < groups; g++) {
+    let take = base + (extra > 0 ? 1 : 0);
+    if (extra > 0) extra--;
+    for (let k = 0; k < take; k++) out.push(rare[idx++]);
+    if (g < best.length) out.push(best[g]);
+  }
+  return out;
+}
+
+let featuredProducts = arrangeHero(products.filter(p => p.badge === 'Bestseller' || p.badge === 'Rare'));
+let heroIndex = 0;
 let heroTimer;
 
 function renderHero(p) {
@@ -4030,7 +4050,22 @@ function cycleHero(dir) {
   const fadeEls = ['heroIcon','heroCategory','heroName','heroPrice','heroBadge'].map(id => document.getElementById(id));
   fadeEls.forEach(el => el.classList.add('hero-card-fade'));
   setTimeout(function() {
-    heroIndex = (heroIndex + dir + featuredProducts.length) % featuredProducts.length;
+    const lastId = featuredProducts[heroIndex] ? featuredProducts[heroIndex].id : null;
+    const nextRaw = heroIndex + dir;
+    if (nextRaw >= featuredProducts.length) {
+      // Completed a forward loop — reshuffle for a fresh random order each pass
+      featuredProducts = arrangeHero(featuredProducts);
+      // Guard against the reshuffle repeating the card we just showed
+      if (featuredProducts.length > 1 && featuredProducts[0].id === lastId) {
+        const swap = 1 + Math.floor(Math.random() * (featuredProducts.length - 1));
+        [featuredProducts[0], featuredProducts[swap]] = [featuredProducts[swap], featuredProducts[0]];
+      }
+      heroIndex = 0;
+    } else if (nextRaw < 0) {
+      heroIndex = featuredProducts.length - 1;
+    } else {
+      heroIndex = nextRaw;
+    }
     renderHero(featuredProducts[heroIndex]);
     preloadHeroImage(heroIndex);
     fadeEls.forEach(el => el.classList.remove('hero-card-fade'));
@@ -4058,8 +4093,11 @@ if (featuredProducts.length) {
 
 // ── NEFERTEM MODAL ──
 const egyptKeywords = ['egypt', 'egyptian', 'nefertem', 'pr-nfr', 'pr-nfrt', 'cleopatra', 'papyrus', 'tomb', 'pyramid', 'embalm'];
+// Explicit members that belong in the collection but don't hit a keyword (avoids broad terms like "amber"/"resin" that sweep in wrong products)
+const nefertIncludeIds = [24]; // Baltic Amber
 
 function isNefertProduct(p) {
+  if (nefertIncludeIds.includes(p.id)) return true;
   const searchable = (p.name + ' ' + p.desc).toLowerCase();
   return egyptKeywords.some(kw => searchable.includes(kw));
 }

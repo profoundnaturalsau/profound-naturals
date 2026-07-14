@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://profoundnaturals.com.au/sitemap.xml

@@ -2060,6 +2060,38 @@
 
 /* Testimonial cards: green left line removed, subtle amber border all round (no glow) */
 .testimonial { border:1px solid rgba(212,160,23,0.4) !important; }
+
+/* ── SEARCH BANNER REFINEMENTS (added 15-07-26) ──
+   Desktop: banner docks directly under the nav search input (positioned by
+   JS). Bigger text; red + glow when no results (incl. the close X); amber
+   when there are results; clickable to jump to the results grid. Mobile
+   keeps the full-width strip with the same colours and size bump. */
+.search-banner {
+  font-size:.88rem !important;
+  padding:12px 18px !important;
+  cursor:pointer;
+}
+@media(min-width:901px){
+  .search-banner.show {
+    position:fixed !important;
+    width:auto !important; min-width:300px; max-width:440px;
+    border:1px solid var(--border-sub); border-top:none;
+    border-radius:0 0 12px 12px;
+    box-shadow:0 14px 34px rgba(0,0,0,.55);
+    z-index:1002;
+  }
+}
+.search-banner.no-results,
+.search-banner.no-results #searchBannerText {
+  color:#ff5c5c !important;
+  text-shadow:0 0 9px rgba(255,60,60,.65);
+}
+.search-banner.no-results { border-color:rgba(255,92,92,.5) !important; background:#170d0d !important; }
+.search-banner.no-results .search-banner-clear { color:#ff5c5c !important; opacity:1; text-shadow:0 0 9px rgba(255,60,60,.65); }
+.search-banner.has-results,
+.search-banner.has-results #searchBannerText { color:var(--amber) !important; text-shadow:none; }
+.search-banner.has-results { border-color:rgba(212,160,23,.45) !important; }
+.search-banner.has-results .search-banner-clear { color:var(--amber) !important; }
 </style>
 
 <!-- ═══════════ STRUCTURED DATA: Organization & WebSite (added 14-07-26, additive only) ═══════════ -->
@@ -3102,6 +3134,7 @@ const products = [
   { id:71, name:"Myrrh", category:"100% Pure Essential Oil", emoji:"🟤", bg:"#1a1008", price:34.95, size:"10ml", badge:"Rare", image:"images/products/myrrh-eo.png", desc:"Ancient, smoky and deeply resinous - myrrh has been prized for thousands of years as a sacred aromatic, medicine and perfumery ingredient. Steam-distilled from the oleo-resin of Commiphora myrrha, it carries a warm, bittersweet earthiness with smoky, slightly medicinal facets and a rich, balsamic depth that evolves beautifully in a blend. One of the great base notes of natural perfumery.", ingredients:"Commiphora myrrha" },
   { id:72, name:"Rosalina", category:"100% Pure Essential Oil", emoji:"🌿", bg:"#0e1a10", price:16.00, size:"10ml", badge:null, auNative:true, image:"images/products/rosalina-eo.png", desc:"Soft, floral and gently medicinal - rosalina is a lesser-known Australian native with a character that sits beautifully between lavender and tea tree. Steam-distilled from the leaves of Melaleuca ericifolia, it carries a sweet, slightly camphorous freshness with a calm, rounded warmth. A versatile mid note that blends effortlessly across floral, herbal and woody accords.", ingredients:"Melaleuca ericifolia" },
   { id:73, name:"Davana", category:"100% Pure Essential Oil", emoji:"🌼", bg:"#1a1408", price:34.95, size:"10ml", badge:"Rare", image:"images/products/davana-eo.png", desc:"One of the most extraordinary and coveted ingredients in natural perfumery. Steam-distilled from the flowering tops of Artemisia pallens - a small aromatic herb native to southern India, harvested at the precise moment of peak bloom. Davana has a quality unlike almost any other oil - warm, fruity and richly complex with a boozy, dried-fruit sweetness layered over soft woody and slightly herbaceous undertones. What makes it truly exceptional is its behaviour on the skin - in a blend, davana shifts and evolves differently on every person who wears it, taking on a uniquely individual character. Prized by perfumers worldwide and found in some of the most celebrated contemporary fragrances. Deeply grounding, emotionally balancing and quietly euphoric.", ingredients:"Artemisia pallens" },
+  { id:74, name:"Damask Rose (Bulgarian)", category:"100% Pure Absolute", emoji:"🌹", bg:"#1e1216", price:74.95, size:"10ml", badge:"Rare", image:"images/products/damask-rose-ab.png", variants:["10ml","5ml"], desc:"The queen of perfumery botanicals. Solvent-extracted from the petals of Rosa damascena grown in Bulgaria's famed Valley of Roses - thousands of hand-picked blooms in every millilitre. Deep, honeyed and richly rosy with spicy-sweet and softly waxy facets and a warm, lingering drydown - the definitive rose of fine natural perfumery. Available in 10ml and 5ml.", ingredients:"Rosa damascena" },
 ];
 
 let cart = [];
@@ -4235,6 +4268,125 @@ function closeNefertModalDirect() {
   </div>
 </div>
 
+
+<!-- ═══════════ SIZE VARIANTS (added 15-07-26) ═══════════
+  One visible card, two Stripe products. The 10ml sells as id 74 at the base
+  price; choosing the 5ml pill makes addToCart snapshot id 75 at $42.95, which
+  checkout.js prices server-side from products.json. No original functions are
+  edited - addToCart, selectVariant and openModal are wrapped below.
+  IMPORTANT: ids 74 AND 75 must both exist in netlify/functions/products.json. -->
+<script>
+(function(){
+  var SIZE_TWINS = { 74: { '5ml': { id: 75, price: 42.95 } } };
+
+  // pill accents so size pills don't show the default grey finish swatch
+  swatchColors['10ml'] = '#8cc40f';
+  swatchColors['5ml']  = '#d4a017';
+
+  var currentPid = null;
+
+  function basePrice(id){ var p = products.find(function(x){ return x.id === id; }); return p ? p.price : 0; }
+
+  function priceFor(id, v){
+    var t = SIZE_TWINS[id] && v && SIZE_TWINS[id][v];
+    return t ? t.price : basePrice(id);
+  }
+
+  function refreshModalPricing(){
+    if (!currentPid || !SIZE_TWINS[currentPid]) return;
+    var price = priceFor(currentPid, selectedVariant || null);
+    document.getElementById('modalPrice').textContent = '$' + price.toFixed(2);
+    document.getElementById('modalAfterpay').textContent =
+      'or 4 \u00d7 $' + (price / 4).toFixed(2) + ' interest-free with Afterpay';
+  }
+
+  function setVariantWording(isSize){
+    var label = document.querySelector('#modalVariants .modal-variants-label');
+    var hint  = document.getElementById('variantHint');
+    if (label) label.textContent = isSize ? 'Choose Size' : 'Choose Finish';
+    if (hint)  hint.textContent  = isSize ? 'Please select a size to continue' : 'Please select a finish to continue';
+  }
+
+  var _openModal = openModal;
+  openModal = function(id){
+    currentPid = id;
+    _openModal(id);
+    setVariantWording(!!SIZE_TWINS[id]);
+  };
+
+  var _selectVariant = selectVariant;
+  selectVariant = function(btn, v){
+    _selectVariant(btn, v);
+    refreshModalPricing();
+  };
+
+  var _addToCart = addToCart;
+  addToCart = function(id, variant, qty){
+    var twin = SIZE_TWINS[id] && variant && SIZE_TWINS[id][variant];
+    if (twin) {
+      var p = products.find(function(x){ return x.id === id; });
+      var keep = { id: p.id, price: p.price, size: p.size };
+      p.id = twin.id; p.price = twin.price; p.size = variant;
+      try { _addToCart(twin.id, variant, qty); }
+      finally { p.id = keep.id; p.price = keep.price; p.size = keep.size; }
+    } else {
+      _addToCart(id, variant, qty);
+    }
+  };
+})();
+</script>
+
+<!-- ═══════════ SEARCH UX (added 15-07-26): wraps handleSearch, no original code edited ═══════════ -->
+<script>
+(function(){
+  var scrollTimer = null;
+
+  function banner(){ return document.getElementById('searchBanner'); }
+
+  function scrollToResults(){
+    var el = document.getElementById('shop');
+    if (!el) return;
+    var y = el.getBoundingClientRect().top + window.pageYOffset - 120;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }
+
+  function dockBanner(){
+    var b = banner();
+    if (!b) return;
+    if (window.innerWidth <= 900) { b.style.left=''; b.style.top=''; b.style.right=''; return; }
+    var input = document.getElementById('navSearch');
+    if (!input) return;
+    var r = input.getBoundingClientRect();
+    b.style.top   = (r.bottom + 6) + 'px';
+    b.style.right = Math.max(12, window.innerWidth - r.right) + 'px';
+    b.style.left  = 'auto';
+  }
+
+  var _handleSearch = handleSearch;
+  handleSearch = function(query){
+    _handleSearch(query);
+    var b = banner(), txt = document.getElementById('searchBannerText');
+    if (!b || !txt) return;
+    var q = (query || '').trim();
+    var none = txt.textContent.indexOf('No results') === 0;
+    b.classList.toggle('no-results', !!q && none);
+    b.classList.toggle('has-results', !!q && !none);
+    if (q && !none && txt.textContent.indexOf('tap to view') === -1) {
+      txt.textContent += ' - tap to view \u2193';
+    }
+    dockBanner();
+    clearTimeout(scrollTimer);
+    if (q && !none) scrollTimer = setTimeout(scrollToResults, 550);
+  };
+
+  var b = banner();
+  if (b) b.addEventListener('click', function(e){
+    if (e.target.closest('.search-banner-clear')) return;
+    scrollToResults();
+  });
+  window.addEventListener('resize', dockBanner);
+})();
+</script>
 
 <!-- ═══════════ STRUCTURED DATA: Product schema, auto-generated from the products array (added 14-07-26) ═══════════ -->
 <script>

@@ -51,7 +51,7 @@ if (jsonPath) {
     if (Math.abs(s.price - p.price) > 0.001) errors.push(`"${p.name}": site shows $${p.price} but checkout charges $${s.price}`);
     delete srv[p.id];
   }
-  for (const id in srv) errors.push(`"${srv[id].name}" (id ${id}) is in products.json but not on the site (harmless, but tidy up)`);
+  for (const id in srv) console.warn(`  ! note: "${srv[id].name}" (id ${id}) is in products.json but not in the site array (expected for size-twin ids like 75)`);
   if (errors.length) {
     console.error('\nSYNC ERRORS between index.html and ' + path.basename(jsonPath) + ':');
     errors.forEach(e => console.error('  ✗ ' + e));

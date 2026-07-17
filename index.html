@@ -4328,7 +4328,7 @@ function closeNefertModalDirect() {
   edited - addToCart, selectVariant and openModal are wrapped below.
   IMPORTANT: ids 74 AND 75 must both exist in netlify/functions/products.json. -->
 <script>
-console.log('%cPN BUILD 15-07-J (pill)','color:#8cc40f;font-weight:bold');
+console.log('%cPN BUILD 15-07-K (pill-follow)','color:#8cc40f;font-weight:bold');
 (function(){
   var SIZE_TWINS = { 74: { '5ml': { id: 75, price: 42.95 } } };
 
@@ -4410,9 +4410,17 @@ console.log('%cPN BUILD 15-07-J (pill)','color:#8cc40f;font-weight:bold');
     var input = document.getElementById('navSearch');
     if (!input) return;
     var r = input.getBoundingClientRect();
-    b.style.top   = (r.bottom + 6) + 'px';
-    b.style.right = Math.max(12, window.innerWidth - r.right) + 'px';
-    b.style.left  = 'auto';
+    var inputVisible = r.width > 0 && r.bottom > 0 && r.top < window.innerHeight;
+    if (inputVisible) {
+      // dock directly under the search input
+      b.style.top   = (r.bottom + 6) + 'px';
+      b.style.right = Math.max(12, window.innerWidth - r.right) + 'px';
+    } else {
+      // input scrolled out of view - pin the pill to the top of the viewport
+      b.style.top   = '14px';
+      b.style.right = '16px';
+    }
+    b.style.left = 'auto';
   }
 
   var _handleSearch = handleSearch;
@@ -4438,6 +4446,9 @@ console.log('%cPN BUILD 15-07-J (pill)','color:#8cc40f;font-weight:bold');
     scrollToResults();
   });
   window.addEventListener('resize', dockBanner);
+  window.addEventListener('scroll', function(){
+    if (banner() && banner().classList.contains('show')) dockBanner();
+  }, { passive:true });
 })();
 </script>
 

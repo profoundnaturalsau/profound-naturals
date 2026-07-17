@@ -2020,6 +2020,26 @@
   }
 </style>
 
+<style id="mobile-viewport-fix">
+/* ── MOBILE VIEWPORT FIX (added 14-07-26) ──
+   vh units ignore the mobile browser URL bar, so 88-92vh modals overflow
+   the visible screen when the bar is showing: bottom hides behind the
+   toolbar and centred modals get their top cropped. dvh tracks the real
+   visible viewport (already used by the hero, so no new compat risk).
+   "safe center" stops flex centring from ever cropping the modal top;
+   browsers without it fall back to the current behaviour. */
+.modal            { max-height:90dvh; }
+.baltic-amber-modal, .sustain-modal, .why-natural-modal, .au-native-modal,
+.policy-modal, .badge-modal, .nefertem-modal, .collection-modal
+                  { max-height:88dvh; }
+.img-lightbox img { max-height:92dvh; }
+.modal-overlay, .notify-overlay, .badge-modal-overlay, .nefertem-overlay
+                  { align-items:center; align-items:safe center; }
+@media(max-width:900px){
+  .modal          { max-height:92dvh; }
+}
+</style>
+
 <!-- ═══════════ STRUCTURED DATA: Organization & WebSite (added 14-07-26, additive only) ═══════════ -->
 <script type="application/ld+json">
 {

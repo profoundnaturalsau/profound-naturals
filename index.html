@@ -2038,6 +2038,28 @@
 @media(max-width:900px){
   .modal          { max-height:92dvh; }
 }
+
+/* ── PRODUCT MODAL TWEAKS (added 15-07-26) ──
+   1) Ingredients always visible: the collapsed state is overridden and the
+      toggle becomes a plain label (arrow hidden, not clickable).
+   2) The full-height green border-left is replaced by a short 22px accent
+      drawn as a background strip, so the bar no longer stretches with the
+      ingredient list. */
+.modal-ingredients {
+  font-size:.72rem !important;
+  max-height:none !important;
+  padding:10px 14px 14px !important;
+  margin-bottom:16px !important;
+  background:
+    linear-gradient(var(--green), var(--green)) left 0 top 12px / 2px 22px no-repeat,
+    var(--green-pale) !important;
+  border-left:none !important;
+}
+.modal-ing-toggle { pointer-events:none; }
+.modal-ing-arrow  { display:none; }
+
+/* Testimonial cards: green left line removed, subtle amber border all round (no glow) */
+.testimonial { border:1px solid rgba(212,160,23,0.4) !important; }
 </style>
 
 <!-- ═══════════ STRUCTURED DATA: Organization & WebSite (added 14-07-26, additive only) ═══════════ -->
@@ -3339,7 +3361,7 @@ const testimonials = [
   { text: "Pr-nfrt is the most beautiful thing I've ever worn. Warm, sweet and deeply feminine - like wrapping yourself in liquid amber and florals. I've never had so many compliments.", author: "Sarah M, Melbourne" },
   { text: "The Hemp Eucalyptus soap is something else - the scent hits you the moment you open it. Fresh, clean and genuinely strong. It wakes you up in the shower like nothing else. My new daily staple.", author: "Priya L, Sydney" },
   { text: "The Hemp Lavender soap has the most beautiful, strong scent - it fills the whole bathroom and lingers on your skin long after you've stepped out of the shower. Absolutely love it.", author: "Emma R, Brisbane" },
-  { text: "Layering Blue Cypress over the Amber resin has quietly become my signature. The cypress brings a smooth, woody calm and the amber sitting underneath is warm and resinous - grounding and quietly luxurious all at once. Nothing else in my collection comes close.", author: "Daniel T, Adelaide" },
+  { text: "Layering Blue Cypress over the Amber resin has quietly become my signature. The cypress brings a soft, smoky woodiness and the amber sitting underneath is warm and resinous - grounding and quietly luxurious all at once. Nothing else in my collection comes close.", author: "Daniel T, Adelaide" },
 ];
 
 function testiCardHTML(t) {
@@ -3726,7 +3748,7 @@ function openModal(id) {
   toggleEl.textContent = 'See more';
   toggleEl.classList.remove('visible');
   descEl.classList.remove('clamped');
-  if (window.innerWidth <= 900) {
+  { // desc clamps at every width (was mobile-only) - toggle only shows if text overflows
     descEl.style.visibility = 'hidden';
     descEl.classList.add('clamped');
     descEl.style.webkitLineClamp = '';
@@ -3736,8 +3758,6 @@ function openModal(id) {
       else toggleEl.classList.add('visible');
       descEl.style.visibility = '';
     });
-  } else {
-    descEl.style.webkitLineClamp = '';
   }
   document.getElementById('modalIngredients').textContent = p.ingredients;
   document.getElementById('modalPrice').textContent = `$${p.price.toFixed(2)}`;

@@ -222,8 +222,169 @@ for (const p of products) {
 }
 console.log('Wrote ' + pages.length + ' pages to /products');
 
+/* ── 4b. INFO PAGES - extracted from the site's own modals at build time ──
+   Single source of truth: edit the modal content in index.html, re-run this
+   script, and the standalone page updates to match. */
+
+function extractBalancedDiv(html, openTagStart) {
+  // given index of a '<div', return [innerHTML, endIndex-after-close]
+  const openEnd = html.indexOf('>', openTagStart) + 1;
+  let depth = 1, i = openEnd;
+  const re = /<div\b|<\/div>/g;
+  re.lastIndex = openEnd;
+  let m;
+  while ((m = re.exec(html))) {
+    depth += m[0] === '</div>' ? -1 : 1;
+    if (depth === 0) return [html.slice(openEnd, m.index), re.lastIndex];
+  }
+  throw new Error('Unbalanced div during extraction');
+}
+
+function extractModalBody(containerNeedle, bodyClass) {
+  const ci = html.indexOf(containerNeedle);
+  if (ci === -1) throw new Error('Container not found: ' + containerNeedle);
+  const bi = html.indexOf('class="' + bodyClass + '"', ci);
+  if (bi === -1) throw new Error('Body class not found: ' + bodyClass);
+  const divStart = html.lastIndexOf('<div', bi);
+  return extractBalancedDiv(html, divStart)[0];
+}
+
+const INFO_PAGES = [
+  { slug: 'why-natural', label: 'Why Natural?', h1: 'Why <em>Natural?</em>',
+    container: 'class="why-natural-modal"', bodyClass: 'why-natural-body',
+    title: 'Why Natural? Synthetic Fragrance Concerns Explained',
+    desc: 'Endocrine disruptors, phthalates, synthetic musks and the transparency problem - why Profound Naturals uses only natural botanical ingredients.' },
+  { slug: 'baltic-amber', label: 'Baltic Amber', h1: 'Baltic Amber',
+    container: 'class="baltic-amber-modal"', bodyClass: 'baltic-amber-body',
+    title: 'Baltic Amber Essential Oil - History & Character',
+    desc: 'Steam-distilled from fossilised tree resin millions of years old - the history and character of Baltic Amber, from the Amber Road to Chinese medicine.' },
+  { slug: 'sustainability', label: 'Sustainability', h1: 'Sustainability',
+    container: 'class="sustain-modal"', bodyClass: 'sustain-body',
+    title: 'Sustainability - An Honest Commitment',
+    desc: 'Recycled protective wrap, amber glass bottles, refillable inhalers and an honest account of what is not perfect yet at Profound Naturals.' },
+  { slug: 'privacy-policy', label: 'Privacy Policy', h1: 'Privacy Policy',
+    container: 'id="privacyModal"', bodyClass: 'policy-modal-body',
+    title: 'Privacy Policy',
+    desc: 'How Profound Naturals collects, uses and protects personal information under the Privacy Act 1988 and the Australian Privacy Principles.' },
+  { slug: 'shipping-returns', label: 'Shipping & Returns', h1: 'Shipping &amp; Returns',
+    container: 'id="shippingModal"', bodyClass: 'policy-modal-body',
+    title: 'Shipping & Returns',
+    desc: 'Standard $8.95 (free over $85), Express $13.95 (free over $180). Australia-wide via Australia Post, hand-packed and dispatched in 1-3 business days.' },
+  { slug: 'returns-refunds', label: 'Returns & Refund Policy', h1: 'Returns &amp; Refund Policy',
+    container: 'id="returnsModal"', bodyClass: 'policy-modal-body',
+    title: 'Returns & Refund Policy',
+    desc: 'Refunds and replacements under Australian Consumer Law - consumer guarantees, how to make a claim, and what is not covered.' },
+  { slug: 'faq', label: 'FAQ', h1: 'Frequently Asked Questions',
+    container: 'id="faqModal"', bodyClass: 'policy-modal-body',
+    title: 'Frequently Asked Questions',
+    desc: 'Dispatch and delivery times, returns, oil purity, natural ingredients, free samples and perfume-making workshops - answered.' },
+  { slug: 'australian-native', label: 'Australian Native', h1: 'Australian Native Botanicals',
+    container: 'class="au-native-modal"', bodyClass: 'au-native-modal-body',
+    title: 'Australian Native Botanicals',
+    desc: 'Plants native to Australia, grown and harvested on Country - ethically and sustainably sourced native botanicals at Profound Naturals.' },
+];
+
+function renderInfoPage(pg, bodyHtml) {
+  const url = SITE + '/' + pg.slug + '.html';
+  const ld = { '@context':'https://schema.org', '@type':'WebPage', name: pg.title,
+    url: url, isPartOf: { '@id': SITE + '/#website' },
+    publisher: { '@id': SITE + '/#org' }, inLanguage: 'en-AU' };
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${pg.title} | Profound Naturals</title>
+<meta name="description" content="${esc(pg.desc)}">
+<link rel="canonical" href="${url}">
+<link rel="icon" type="image/png" href="/images/logo.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="${url}">
+<meta property="og:title" content="${esc(pg.title)} | Profound Naturals">
+<meta property="og:description" content="${esc(pg.desc)}">
+<meta property="og:image" content="${SITE}/images/pn-square.jpg">
+<meta property="og:locale" content="en_AU">
+<meta property="og:site_name" content="Profound Naturals">
+<script type="application/ld+json">${JSON.stringify(ld)}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#080d09;--surface:#0f1610;--surface-2:#141d15;--white:#e6ece7;--white-dim:rgba(230,236,231,.65);
+  --green:#8cc40f;--green-lt:#a0d916;--amber:#d4a017;--border:rgba(140,196,15,.22);
+  --serif:'Cormorant Garamond',Georgia,serif;--sans:'Jost',sans-serif;}
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--white);font-family:var(--sans);min-height:100dvh;padding:28px 16px}
+  .page{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  max-width:780px;margin:0 auto;padding:44px 36px 36px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+  .close{position:absolute;top:12px;right:14px;background:none;border:none;color:var(--white-dim);
+  font-size:24px;line-height:1;cursor:pointer;font-family:var(--sans);padding:8px}
+  .close:hover{color:var(--green-lt)}
+  .brand{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--green);margin-bottom:8px}
+  h1{font-family:'Cinzel',serif;font-weight:500;font-size:clamp(24px,5vw,32px);margin-bottom:22px}
+  h1 em{font-family:var(--serif);font-style:italic;color:var(--amber)}
+  .body{font-size:.86rem;line-height:1.75;color:var(--white-dim);font-weight:300}
+  .body h2,.body h3{font-family:'Cinzel',serif;font-weight:500;color:var(--amber);
+  font-size:.95rem;letter-spacing:.04em;margin:26px 0 10px}
+  .body p{margin-bottom:14px}
+  .body ul{margin:0 0 14px 20px}
+  .body li{margin-bottom:6px}
+  .body strong{color:var(--white);font-weight:500}
+  .body em{font-style:italic}
+  .body img{max-width:100%;height:auto}
+  .body a{color:var(--green-lt)}
+  .home{display:block;text-align:center;margin-top:26px;color:var(--white-dim);font-size:12px;
+  text-decoration:none;letter-spacing:.08em}
+  .home:hover{color:var(--green-lt)}
+  @media(max-width:600px){ .page{padding:36px 20px 26px} }
+</style>
+</head>
+<body>
+<main class="page">
+  <button class="close" onclick="goBack()" aria-label="Close">✕</button>
+  <div class="brand">Profound Naturals</div>
+  <h1>${pg.h1}</h1>
+  <div class="body">
+${bodyHtml}
+  </div>
+  <a class="home" href="/">Profound Naturals - Natural · Botanical · Handcrafted</a>
+</main>
+<script>
+function goBack(){
+  if (document.referrer && document.referrer.indexOf(location.origin) === 0 && history.length > 1) {
+    history.back();
+  } else {
+    location.href = '/';
+  }
+}
+</script>
+</body>
+</html>`;
+}
+
+const infoUrls = [];
+for (const pg of INFO_PAGES) {
+  const body = extractModalBody(pg.container, pg.bodyClass);
+  fs.writeFileSync(path.join(__dirname, pg.slug + '.html'), renderInfoPage(pg, body));
+  infoUrls.push(SITE + '/' + pg.slug + '.html');
+}
+// contact page - built directly (the contact modal is just links)
+const contactBody = `
+<p>Every enquiry lands directly with me - orders, custom scents, wholesale, workshops, or anything else.</p>
+<h3>Email</h3>
+<p><a href="mailto:hello@profoundnaturals.com.au"><strong>hello@profoundnaturals.com.au</strong></a><br>Typically answered within 1 business day.</p>
+<h3>Instagram</h3>
+<p><a href="https://www.instagram.com/profound.naturals" rel="me">@profound.naturals</a></p>
+<h3>Location</h3>
+<p>Canberra, ACT, Australia. Online store - shipping Australia-wide via Australia Post.</p>`;
+fs.writeFileSync(path.join(__dirname, 'contact.html'),
+  renderInfoPage({ slug:'contact', h1:'Get in Touch', title:'Contact',
+    desc:'Contact Profound Naturals - email hello@profoundnaturals.com.au or reach out on Instagram @profound.naturals. Canberra, Australia.' }, contactBody));
+infoUrls.push(SITE + '/contact.html');
+console.log('Wrote ' + infoUrls.length + ' info pages');
+
 /* ── 5. sitemap.xml + robots.txt ── */
-const urls = [SITE + '/'].concat(pages.map(p => p.url));
+const urls = [SITE + '/'].concat(pages.map(p => p.url)).concat(infoUrls);
 const sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n' +
   '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
   urls.map(u => '  <url><loc>' + u + '</loc><lastmod>' + TODAY + '</lastmod></url>').join('\n') +

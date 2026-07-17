@@ -2047,13 +2047,33 @@
       ingredient list. */
 .modal-ingredients {
   font-size:.72rem !important;
+  display:flex !important;
+  align-items:center;
+  gap:12px;
+  line-height:1.55;
   max-height:none !important;
-  padding:10px 14px 14px !important;
+  min-height:0;
+  overflow:visible !important;
+  opacity:1 !important;
+  padding:9px 14px 9px 12px !important;
   margin-bottom:16px !important;
-  background:
-    linear-gradient(var(--green), var(--green)) left 0 top calc(50% - 11px) / 2px 22px no-repeat,
-    var(--green-pale) !important;
+  background:var(--green-pale) !important;
   border-left:none !important;
+}
+/* Australian Made icon: the kangaroo's wide silhouette reads smaller than
+   the tall leaf/heart icons at equal size - bumps the existing 1.1 scale */
+.value-icon img[src*="australian-made"] { transform:scale(1.18) !important; }
+
+/* The bar is a flex item stretched to the text's own height: one line of
+   ingredients = a short centred bar; three lines = a bar spanning all three.
+   Fully dynamic, and the box hugs its content with no dead space. */
+.modal-ingredients::before {
+  content:'';
+  flex:0 0 2px;
+  align-self:stretch;
+  min-height:15px;
+  background:var(--green);
+  border-radius:1px;
 }
 .modal-ing-toggle { pointer-events:none; }
 .modal-ing-arrow  { display:none; }

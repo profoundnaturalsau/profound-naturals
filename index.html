@@ -2051,7 +2051,7 @@
   padding:10px 14px 14px !important;
   margin-bottom:16px !important;
   background:
-    linear-gradient(var(--green), var(--green)) left 0 top 12px / 2px 22px no-repeat,
+    linear-gradient(var(--green), var(--green)) left 0 top calc(50% - 11px) / 2px 22px no-repeat,
     var(--green-pale) !important;
   border-left:none !important;
 }
@@ -2060,6 +2060,17 @@
 
 /* Testimonial cards: green left line removed, subtle amber border all round (no glow) */
 .testimonial { border:1px solid rgba(212,160,23,0.4) !important; }
+
+/* Desktop desc clamp: the original .modal-desc.clamped rule lives inside the
+   max-width:900px media query, so desktop had no working clamp. This top-level
+   copy makes the universal clamp JS actually bite at every width. */
+.modal-desc.clamped {
+  display:-webkit-box !important;
+  -webkit-line-clamp:4;
+  line-clamp:4;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
 
 /* ── SEARCH BANNER REFINEMENTS (added 15-07-26) ──
    Desktop: banner docks directly under the nav search input (positioned by

@@ -2121,11 +2121,17 @@
   .search-banner.show {
     position:fixed !important;
     width:auto !important; min-width:300px; max-width:440px;
-    border:1px solid var(--border-sub); border-top:none;
-    border-radius:0 0 12px 12px;
+    border:1px solid var(--border-sub);
+    border-radius:999px;
+    padding:10px 20px !important;
     box-shadow:0 14px 34px rgba(0,0,0,.55);
     z-index:1002;
   }
+}
+/* Close X is red in every state */
+.search-banner .search-banner-clear {
+  color:#ff5c5c !important; opacity:1;
+  margin-left:10px;
 }
 .search-banner.no-results,
 .search-banner.no-results #searchBannerText {
@@ -2137,7 +2143,7 @@
 .search-banner.has-results,
 .search-banner.has-results #searchBannerText { color:var(--amber) !important; text-shadow:none; }
 .search-banner.has-results { border-color:rgba(212,160,23,.45) !important; }
-.search-banner.has-results .search-banner-clear { color:var(--amber) !important; }
+
 </style>
 
 <!-- ═══════════ STRUCTURED DATA: Organization & WebSite (added 14-07-26, additive only) ═══════════ -->
@@ -4322,7 +4328,7 @@ function closeNefertModalDirect() {
   edited - addToCart, selectVariant and openModal are wrapped below.
   IMPORTANT: ids 74 AND 75 must both exist in netlify/functions/products.json. -->
 <script>
-console.log('%cPN BUILD 15-07-I (fade)','color:#8cc40f;font-weight:bold');
+console.log('%cPN BUILD 15-07-J (pill)','color:#8cc40f;font-weight:bold');
 (function(){
   var SIZE_TWINS = { 74: { '5ml': { id: 75, price: 42.95 } } };
 

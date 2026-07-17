@@ -4328,7 +4328,7 @@ function closeNefertModalDirect() {
   edited - addToCart, selectVariant and openModal are wrapped below.
   IMPORTANT: ids 74 AND 75 must both exist in netlify/functions/products.json. -->
 <script>
-console.log('%cPN BUILD 15-07-K (pill-follow)','color:#8cc40f;font-weight:bold');
+console.log('%cPN BUILD 15-07-L (scroll-to-cards)','color:#8cc40f;font-weight:bold');
 (function(){
   var SIZE_TWINS = { 74: { '5ml': { id: 75, price: 42.95 } } };
 
@@ -4397,9 +4397,10 @@ console.log('%cPN BUILD 15-07-K (pill-follow)','color:#8cc40f;font-weight:bold')
   function banner(){ return document.getElementById('searchBanner'); }
 
   function scrollToResults(){
-    var el = document.getElementById('shop');
+    // land at the product cards themselves, skipping the collection heading
+    var el = document.getElementById('productsGrid') || document.getElementById('shop');
     if (!el) return;
-    var y = el.getBoundingClientRect().top + window.pageYOffset - 120;
+    var y = el.getBoundingClientRect().top + window.pageYOffset - 28;
     window.scrollTo({ top: y, behavior: 'smooth' });
   }
 

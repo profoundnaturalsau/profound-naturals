@@ -4328,7 +4328,7 @@ function closeNefertModalDirect() {
   edited - addToCart, selectVariant and openModal are wrapped below.
   IMPORTANT: ids 74 AND 75 must both exist in netlify/functions/products.json. -->
 <script>
-console.log('%cPN BUILD 15-07-L (scroll-to-cards)','color:#8cc40f;font-weight:bold');
+console.log('%cPN BUILD 15-07-M (smart-hint)','color:#8cc40f;font-weight:bold');
 (function(){
   var SIZE_TWINS = { 74: { '5ml': { id: 75, price: 42.95 } } };
 
@@ -4424,6 +4424,20 @@ console.log('%cPN BUILD 15-07-L (scroll-to-cards)','color:#8cc40f;font-weight:bo
     b.style.left = 'auto';
   }
 
+  function gridIsInView(){
+    var el = document.getElementById('productsGrid');
+    if (!el) return false;
+    return el.getBoundingClientRect().top < window.innerHeight * 0.45;
+  }
+
+  function refreshBannerHint(){
+    var txt = document.getElementById('searchBannerText');
+    var b = banner();
+    if (!txt || !b || !b.classList.contains('has-results')) return;
+    var base = txt.textContent.replace(/ - (tap to view \u2193|back to search \u2191)$/, '');
+    txt.textContent = base + (gridIsInView() ? ' - back to search \u2191' : ' - tap to view \u2193');
+  }
+
   var _handleSearch = handleSearch;
   handleSearch = function(query){
     _handleSearch(query);
@@ -4433,9 +4447,7 @@ console.log('%cPN BUILD 15-07-L (scroll-to-cards)','color:#8cc40f;font-weight:bo
     var none = txt.textContent.indexOf('No results') === 0;
     b.classList.toggle('no-results', !!q && none);
     b.classList.toggle('has-results', !!q && !none);
-    if (q && !none && txt.textContent.indexOf('tap to view') === -1) {
-      txt.textContent += ' - tap to view \u2193';
-    }
+    refreshBannerHint();
     dockBanner();
     clearTimeout(scrollTimer);
     if (q && !none) scrollTimer = setTimeout(scrollToResults, 550);
@@ -4444,11 +4456,18 @@ console.log('%cPN BUILD 15-07-L (scroll-to-cards)','color:#8cc40f;font-weight:bo
   var b = banner();
   if (b) b.addEventListener('click', function(e){
     if (e.target.closest('.search-banner-clear')) return;
-    scrollToResults();
+    if (gridIsInView()) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      var input = document.getElementById('navSearch');
+      if (input) setTimeout(function(){ input.focus(); }, 450);
+    } else {
+      scrollToResults();
+    }
   });
   window.addEventListener('resize', dockBanner);
   window.addEventListener('scroll', function(){
-    if (banner() && banner().classList.contains('show')) dockBanner();
+    var b = banner();
+    if (b && b.classList.contains('show')) { dockBanner(); refreshBannerHint(); }
   }, { passive:true });
 })();
 </script>

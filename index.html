@@ -2028,7 +2028,7 @@
    visible viewport (already used by the hero, so no new compat risk).
    "safe center" stops flex centring from ever cropping the modal top;
    browsers without it fall back to the current behaviour. */
-.modal            { max-height:90dvh; }
+.modal            { max-height:94dvh; }
 .baltic-amber-modal, .sustain-modal, .why-natural-modal, .au-native-modal,
 .policy-modal, .badge-modal, .nefertem-modal, .collection-modal
                   { max-height:88dvh; }
@@ -2036,7 +2036,7 @@
 .modal-overlay, .notify-overlay, .badge-modal-overlay, .nefertem-overlay
                   { align-items:center; align-items:safe center; }
 @media(max-width:900px){
-  .modal          { max-height:92dvh; }
+  .modal          { max-height:94dvh; }
 }
 
 /* ── PRODUCT MODAL TWEAKS (added 15-07-26) ──
@@ -2090,6 +2090,21 @@
   line-clamp:5;
   -webkit-box-orient:vertical;
   overflow:hidden;
+  margin-bottom:8px !important; /* the original 24px margin was the gap under the clamped text */
+  /* 4 clean lines + the 5th fading out into See more */
+  -webkit-mask-image:linear-gradient(180deg, #000 calc(100% - 1.8em), rgba(0,0,0,.45) calc(100% - .9em), transparent 100%);
+  mask-image:linear-gradient(180deg, #000 calc(100% - 1.8em), rgba(0,0,0,.45) calc(100% - .9em), transparent 100%);
+}
+.modal-desc-toggle.visible { margin-bottom:4px !important; }
+
+/* Desktop modal vertical diet: the right column carried 96px of padding plus
+   fat margins, forcing internal scroll even with the clamped description.
+   Desktop-scoped so the already-tight mobile spacing is untouched. */
+@media(min-width:901px){
+  .modal-content  { padding:30px 36px !important; }
+  .modal-name     { margin-bottom:12px !important; }
+  .modal-afterpay { margin-bottom:14px !important; }
+  .modal-qty-row  { margin-bottom:12px !important; }
 }
 
 /* ── SEARCH BANNER REFINEMENTS (added 15-07-26) ──
@@ -4307,6 +4322,7 @@ function closeNefertModalDirect() {
   edited - addToCart, selectVariant and openModal are wrapped below.
   IMPORTANT: ids 74 AND 75 must both exist in netlify/functions/products.json. -->
 <script>
+console.log('%cPN BUILD 15-07-I (fade)','color:#8cc40f;font-weight:bold');
 (function(){
   var SIZE_TWINS = { 74: { '5ml': { id: 75, price: 42.95 } } };
 

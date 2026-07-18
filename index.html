@@ -4372,7 +4372,7 @@ function closeNefertModalDirect() {
 })();
 </script>
 <script>
-console.log('%cPN BUILD 16-07-A (toast+search)','color:#8cc40f;font-weight:bold');
+console.log('PN BUILD 16-07-C');
 (function(){
   var SIZE_TWINS = { 74: { '5ml': { id: 75, price: 42.95 } } };
 
@@ -4482,9 +4482,33 @@ console.log('%cPN BUILD 16-07-A (toast+search)','color:#8cc40f;font-weight:bold'
     txt.textContent = base + (gridIsInView() ? ' - back to search \u2191' : ' - tap to view \u2193');
   }
 
+  // Short queries (1-2 chars) match name/category/badge only - description
+  // matching made single letters return the whole catalogue. Re-renders with
+  // the site's own productCardHTML, so result cards are identical.
+  function strictShortQuery(query){
+    var q = query.trim().toLowerCase();
+    if (!q || q.length > 2) return;
+    var hit = function(s){ return s && s.toLowerCase().includes(q); };
+    var nameM = products.filter(function(p){ return hit(p.name); });
+    var catM  = products.filter(function(p){ return !hit(p.name) && hit(p.category); });
+    var badM  = products.filter(function(p){ return !hit(p.name) && !hit(p.category) && hit(p.badge); });
+    var results = nameM.concat(catM, badM);
+    var grid = document.getElementById('productsGrid');
+    var txt = document.getElementById('searchBannerText');
+    if (!grid || !txt) return;
+    if (results.length === 0) {
+      grid.innerHTML = '<div style="grid-column:1/-1;padding:60px;text-align:center;color:var(--white-dim);font-size:.85rem;letter-spacing:.1em;">No products found for "<em style=\'color:var(--green-lt)\'>' + query + '</em>"</div>';
+      txt.textContent = 'No results for "' + query + '"';
+    } else {
+      grid.innerHTML = results.map(function(p, i){ return productCardHTML(p, i); }).join('');
+      txt.textContent = results.length + ' result' + (results.length > 1 ? 's' : '') + ' for "' + query + '"';
+    }
+  }
+
   var _handleSearch = handleSearch;
   handleSearch = function(query){
     _handleSearch(query);
+    strictShortQuery(query);
     var b = banner(), txt = document.getElementById('searchBannerText');
     if (!b || !txt) return;
     var q = (query || '').trim();

@@ -2128,6 +2128,33 @@
     z-index:1002;
   }
 }
+/* Bigger desktop search bar (plain width/padding/font - safe in all browsers) */
+@media(min-width:901px){
+  .nav-search {
+    width:280px !important;
+    padding:10px 38px 10px 16px !important;
+    font-size:.78rem !important;
+  }
+  .nav-search:focus { width:340px !important; }
+}
+
+/* Add-to-bag toast restyled to match the search pill: dark olive, amber
+   text and border, fully rounded. Clickable (opens the bag) only when it
+   announces an add - other toasts keep pointer-events off. Errors stay red. */
+.toast {
+  background:var(--green-pale) !important;
+  color:var(--amber) !important;
+  border:1px solid rgba(212,160,23,.45);
+  border-radius:999px;
+  box-shadow:0 14px 34px rgba(0,0,0,.55) !important;
+}
+.toast.clickable { pointer-events:auto; cursor:pointer; }
+.toast.error {
+  background:#170d0d !important; color:#ff5c5c !important;
+  border-color:rgba(255,92,92,.5);
+  text-shadow:0 0 9px rgba(255,60,60,.5);
+}
+
 /* Close X is red in every state */
 .search-banner .search-banner-clear {
   color:#ff5c5c !important; opacity:1;
@@ -4328,7 +4355,24 @@ function closeNefertModalDirect() {
   edited - addToCart, selectVariant and openModal are wrapped below.
   IMPORTANT: ids 74 AND 75 must both exist in netlify/functions/products.json. -->
 <script>
-console.log('%cPN BUILD 15-07-M (smart-hint)','color:#8cc40f;font-weight:bold');
+(function(){
+  var _showToast = showToast;
+  showToast = function(msg, type){
+    _showToast(msg, type);
+    var t = document.getElementById('toast');
+    if (!t) return;
+    t.classList.toggle('clickable', !type && / added to bag$/i.test(String(msg)));
+  };
+  var t = document.getElementById('toast');
+  if (t) t.addEventListener('click', function(){
+    if (!t.classList.contains('clickable')) return;
+    t.classList.remove('show', 'clickable');
+    toggleCart();
+  });
+})();
+</script>
+<script>
+console.log('%cPN BUILD 16-07-A (toast+search)','color:#8cc40f;font-weight:bold');
 (function(){
   var SIZE_TWINS = { 74: { '5ml': { id: 75, price: 42.95 } } };
 

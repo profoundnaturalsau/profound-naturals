@@ -98,7 +98,35 @@ function renderPage(p) {
       priceCurrency: 'AUD',
       availability: 'https://schema.org/InStock',
       url: url,
-      seller: { '@type': 'Organization', name: 'Profound Naturals', url: SITE }
+      seller: { '@type': 'Organization', name: 'Profound Naturals', url: SITE },
+      // Fixes Search Console "Missing field" warnings for Merchant listings.
+      // Values mirror the real /shipping-returns.html and /returns-refunds.html pages.
+      shippingDetails: {
+        '@type': 'OfferShippingDetails',
+        shippingRate: {
+          '@type': 'MonetaryAmount',
+          value: Number(p.price) >= 85 ? '0.00' : '8.95',
+          currency: 'AUD'
+        },
+        shippingDestination: {
+          '@type': 'DefinedRegion',
+          addressCountry: 'AU'
+        },
+        deliveryTime: {
+          '@type': 'ShippingDeliveryTime',
+          handlingTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 3, unitCode: 'DAY' },
+          transitTime: { '@type': 'QuantitativeValue', minValue: 2, maxValue: 7, unitCode: 'DAY' }
+        }
+      },
+      hasMerchantReturnPolicy: {
+        '@type': 'MerchantReturnPolicy',
+        applicableCountry: 'AU',
+        returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+        merchantReturnDays: 7,
+        returnMethod: 'https://schema.org/ReturnByMail',
+        returnFees: 'https://schema.org/ReturnShippingFees',
+        merchantReturnLink: SITE + '/returns-refunds.html'
+      }
     }
   };
 

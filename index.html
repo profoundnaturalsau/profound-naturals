@@ -4364,7 +4364,7 @@ function closeNefertModalDirect() {
 })();
 </script>
 <script>
-console.log('PN BUILD 16-07-D');
+console.log('PN BUILD 20-07-A');
 (function(){
   var SIZE_TWINS = { 74: { '5ml': { id: 75, price: 42.95 } } };
 
@@ -4555,9 +4555,37 @@ console.log('PN BUILD 16-07-D');
             "@type": "Offer",
             "price": Number(p.price).toFixed(2),
             "priceCurrency": "AUD",
-            "availability": "https://schema.org/InStock",
+            "availability": p.inStock === false ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
             "url": SITE + '/#shop',
-            "seller": { "@id": SITE + '/#org' }
+            "seller": { "@id": SITE + '/#org' },
+            // Merchant listings fields (20-07-26) - mirror generate-products.js + the real
+            // shipping/returns pages exactly. Keep all three sources in sync if policies change.
+            "shippingDetails": {
+              "@type": "OfferShippingDetails",
+              "shippingRate": {
+                "@type": "MonetaryAmount",
+                "value": Number(p.price) >= 85 ? "0.00" : "8.95",
+                "currency": "AUD"
+              },
+              "shippingDestination": {
+                "@type": "DefinedRegion",
+                "addressCountry": "AU"
+              },
+              "deliveryTime": {
+                "@type": "ShippingDeliveryTime",
+                "handlingTime": { "@type": "QuantitativeValue", "minValue": 1, "maxValue": 3, "unitCode": "DAY" },
+                "transitTime": { "@type": "QuantitativeValue", "minValue": 2, "maxValue": 7, "unitCode": "DAY" }
+              }
+            },
+            "hasMerchantReturnPolicy": {
+              "@type": "MerchantReturnPolicy",
+              "applicableCountry": "AU",
+              "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+              "merchantReturnDays": 7,
+              "returnMethod": "https://schema.org/ReturnByMail",
+              "returnFees": "https://schema.org/ReturnShippingFees",
+              "merchantReturnLink": SITE + '/returns-refunds.html'
+            }
           }
         }
       };

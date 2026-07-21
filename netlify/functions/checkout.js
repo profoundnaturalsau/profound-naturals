@@ -22,7 +22,7 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: 'No items provided' };
   }
 
-  // Resolve server-side prices — browser price is never trusted
+  // Resolve server-side prices - browser price is never trusted
   const resolvedItems = [];
   for (const item of items) {
     const serverPrice = priceMap[item.id];
@@ -35,7 +35,7 @@ exports.handler = async (event) => {
       category: item.category,
       variant:  item.variant || null,
       qty:      item.qty,
-      price:    serverPrice,   // server price only — never item.price
+      price:    serverPrice,   // server price only - never item.price
     });
   }
 
@@ -70,7 +70,7 @@ exports.handler = async (event) => {
         shipping_rate_data: {
           type: 'fixed_amount',
           fixed_amount: { amount: standardFree ? 0 : 895, currency: 'aud' },
-          display_name: standardFree ? 'Standard Shipping — Free' : 'Standard Shipping — $8.95',
+          display_name: standardFree ? 'Standard Shipping - Free' : 'Standard Shipping - $8.95',
           delivery_estimate: {
             minimum: { unit: 'business_day', value: 3 },
             maximum: { unit: 'business_day', value: 7 },
@@ -81,7 +81,7 @@ exports.handler = async (event) => {
         shipping_rate_data: {
           type: 'fixed_amount',
           fixed_amount: { amount: expressFree ? 0 : 1395, currency: 'aud' },
-          display_name: expressFree ? 'Express Shipping — Free' : 'Express Shipping — $13.95',
+          display_name: expressFree ? 'Express Shipping - Free' : 'Express Shipping - $13.95',
           delivery_estimate: {
             minimum: { unit: 'business_day', value: 1 },
             maximum: { unit: 'business_day', value: 3 },

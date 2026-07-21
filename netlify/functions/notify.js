@@ -43,7 +43,7 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid request' }) };
   }
 
-  // Honeypot — silent discard for bots
+  // Honeypot - silent discard for bots
   if (honeypot) return { statusCode: 200, body: JSON.stringify({ success: true }) };
 
   // Validate email
@@ -84,12 +84,31 @@ exports.handler = async (event) => {
         to: email.trim(),
         subject: `I'll notify you when ${safeName} is back`,
         html: `
-          <div style="font-family:Georgia,serif;max-width:560px;margin:0 auto;color:#1a1a1a;">
-            <h2 style="font-weight:300;font-size:28px;margin-bottom:8px;">${greeting}</h2>
-            <p style="color:#555;line-height:1.7;">You're on the list for <strong>${safeName}</strong>. As soon as it's back in stock, you'll be the first to know.</p>
-            <p style="color:#555;line-height:1.7;">Thank you for your patience - good things are worth waiting for.</p>
-            <p style="color:#555;margin-top:32px;">Profound Naturals</p>
-          </div>
+          <div style="font-family:'Georgia',serif; background:#080d09; padding:0; margin:0;">
+      <div style="max-width:560px; margin:0 auto; padding:48px 32px;">
+
+        <div style="text-align:center; margin-bottom:40px;">
+          <p style="font-family:'Arial',sans-serif; font-size:.8rem; letter-spacing:.32em; text-transform:uppercase; color:#8cc40f; margin:0 0 14px;">Profound Naturals</p>
+          <h1 style="font-family:'Georgia',serif; font-size:2.5rem; font-weight:300; color:#e6ece7; margin:0; line-height:1.2;">You're on the <em style="color:#d4a017;">List</em></h1>
+        </div>
+
+        <p style="font-family:'Arial',sans-serif; font-size:.85rem; color:rgba(230,236,231,0.7); line-height:1.7; margin-bottom:8px;">${greeting}</p>
+        <p style="font-family:'Arial',sans-serif; font-size:.85rem; color:rgba(230,236,231,0.7); line-height:1.7; margin-bottom:32px;">
+          You&#x27;re on the list for <strong style="color:#e6ece7;">${safeName}</strong>. As soon as it&#x27;s back in stock, you&#x27;ll be the first to know - good things are worth waiting for.
+        </p>
+
+        <div style="text-align:center; margin-bottom:32px;">
+          <a href="https://profoundnaturals.com.au" style="display:inline-block; background:transparent; color:#d4a017; border:1px solid rgba(212,160,23,0.6); padding:14px 32px; font-family:'Arial',sans-serif; font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; text-decoration:none;">Continue Shopping</a>
+        </div>
+        <p style="font-family:'Arial',sans-serif; font-size:.82rem; letter-spacing:.04em; color:#a0d916; line-height:1.7; text-align:center; margin:0 0 20px;">
+          Thanks for supporting a small Australian business&nbsp;<img src="https://profoundnaturals.com.au/images/icons/australian-native.png" width="17" height="17" alt="Australia" style="vertical-align:middle; margin-left:2px;">
+        </p>
+
+        <p style="font-family:'Arial',sans-serif; font-size:.68rem; color:rgba(230,236,231,0.3); text-align:center; margin-top:32px; padding-top:24px; border-top:1px solid rgba(255,255,255,0.06);">
+          profoundnaturals.com.au &nbsp;·&nbsp; Australian made botanical wellness
+        </p>
+      </div>
+    </div>
         `,
       });
 

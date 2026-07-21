@@ -54,9 +54,9 @@ exports.handler = async (event) => {
     return { statusCode: 429, body: JSON.stringify({ error: 'Too many requests' }) };
   }
 
-  let name, email, review, honeypot;
+  let name, email, review, product, honeypot;
   try {
-    ({ name, email, review, honeypot } = JSON.parse(event.body));
+    ({ name, email, review, product, honeypot } = JSON.parse(event.body));
   } catch {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid request' }) };
   }
@@ -80,18 +80,31 @@ exports.handler = async (event) => {
   const safeEmail  = esc(email.trim());
   const safeReview = esc(review.trim());
 
+  // Product is optional: a submission from a specific product's review slot carries the
+  // product name, while the general "Share Your Experience" button sends none. Newlines
+  // stripped so it's safe to drop into the email subject header.
+  const productRaw  = (product && typeof product === 'string')
+    ? product.trim().slice(0, 200).replace(/[\r\n]+/g, ' ')
+    : '';
+  const safeProduct = productRaw ? esc(productRaw) : '';
+
   try {
     await sendMail({
       from: `"Profound Naturals" <${process.env.ZOHO_USER}>`,
       to: process.env.ZOHO_USER,
       replyTo: email.trim(),
-      subject: `New Testimonial Submission`,
+      subject: productRaw ? `New Review - ${productRaw}` : `New Testimonial Submission`,
       html: `
         <div style="font-family:sans-serif; max-width:600px; margin:0 auto; padding:32px; background:#0f1610; color:#e6ece7;">
           <h2 style="color:#d4a017; font-size:1.2rem; margin-bottom:24px; letter-spacing:.1em; text-transform:uppercase;">
             New Testimonial Submission
           </h2>
           <table style="width:100%; border-collapse:collapse;">
+            ${safeProduct ? `
+            <tr>
+              <td style="padding:10px 0; color:#a0d916; font-size:.8rem; letter-spacing:.1em; text-transform:uppercase; width:120px;">Product</td>
+              <td style="padding:10px 0; color:#d4a017; font-weight:700;">${safeProduct}</td>
+            </tr>` : ''}
             <tr>
               <td style="padding:10px 0; color:#a0d916; font-size:.8rem; letter-spacing:.1em; text-transform:uppercase; width:120px;">Name</td>
               <td style="padding:10px 0; color:#e6ece7;">${safeName}</td>

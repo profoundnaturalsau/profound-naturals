@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Moderate Review - Profound Naturals</title>
+<style>
+  :root {
+    --bg:#080d09; --surface:#0f1610; --surface2:#141d15;
+    --green:#8cc40f; --green-lt:#a0d916; --amber:#d4a017; --text:#e6ece7; --red:#e0736b;
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:Arial,Helvetica,sans-serif; min-height:100dvh;
+    display:flex; align-items:flex-start; justify-content:center; padding:32px 16px;
+  }
+  .wrap { width:100%; max-width:560px; }
+  .eyebrow { color:var(--green); font-size:.72rem; letter-spacing:.28em; text-transform:uppercase; margin:0 0 10px; }
+  h1 { font-family:Georgia,serif; font-weight:300; font-size:1.9rem; margin:0 0 24px; }
+  h1 em { color:var(--amber); font-style:italic; }
+  .card { background:var(--surface); border:1px solid rgba(212,160,23,0.35); padding:24px; margin-bottom:24px; }
+  .row { display:flex; gap:14px; padding:9px 0; border-bottom:1px solid rgba(255,255,255,0.06); font-size:.92rem; }
+  .row:last-of-type { border-bottom:0; }
+  .label { color:var(--green-lt); text-transform:uppercase; letter-spacing:.08em; font-size:.7rem; width:78px; flex-shrink:0; padding-top:3px; }
+  .stars { color:var(--amber); font-size:1.15rem; letter-spacing:2px; }
+  .text { background:var(--surface2); border-left:3px solid var(--amber); padding:16px; margin-top:16px; font-style:italic; line-height:1.7; }
+  .text.empty { border-left-color:rgba(230,236,231,0.2); font-style:normal; color:rgba(230,236,231,0.45); }
+  .btns { display:flex; flex-direction:column; gap:12px; }
+  button {
+    font-family:inherit; font-size:.8rem; letter-spacing:.1em; text-transform:uppercase;
+    padding:16px; border:0; cursor:pointer; width:100%;
+  }
+  .approve { background:var(--amber); color:#0f1610; font-weight:700; }
+  .feature { background:transparent; color:var(--amber); border:1px solid rgba(212,160,23,0.6); }
+  .feature:disabled { opacity:.35; cursor:not-allowed; }
+  .reject { background:transparent; color:var(--red); border:1px solid rgba(224,115,107,0.5); }
+  .msg { text-align:center; padding:44px 16px; line-height:1.8; }
+  .muted { color:rgba(230,236,231,0.5); font-size:.85rem; }
+  .done { color:var(--green-lt); font-size:1.15rem; }
+  .err { color:var(--red); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="eyebrow">Profound Naturals</p>
+    <h1>Moderate <em>Review</em></h1>
+    <div id="app"><p class="msg muted">Loading...</p></div>
+  </div>
+<script>
+  var params = new URLSearchParams(location.search);
+  var id = params.get('id') || '';
+  var t  = params.get('t')  || '';
+  var app = document.getElementById('app');
+  var FN = '/.netlify/functions/moderate-review';
+
+  function esc(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#x27;'}[c];
+    });
+  }
+  function stars(n){ return '\u2605'.repeat(n) + '\u2606'.repeat(5 - n); }
+
+  function load(){
+    if(!id || !t){ app.innerHTML = '<p class="msg err">Missing or invalid link.</p>'; return; }
+    fetch(FN + '?id=' + encodeURIComponent(id) + '&t=' + encodeURIComponent(t))
+      .then(function(res){ return res.json().then(function(data){ return { ok: res.ok, data: data }; }); })
+      .then(function(r){
+        if(!r.ok){ app.innerHTML = '<p class="msg err">' + esc(r.data.error || 'Could not load this review.') + '</p>'; return; }
+        render(r.data.review);
+      })
+      .catch(function(){ app.innerHTML = '<p class="msg err">Network error. Please try again.</p>'; });
+  }
+
+  function render(rev){
+    var hasText = rev.text && rev.text.trim().length;
+    var statusNote = rev.status === 'pending' ? '' :
+      '<p class="muted" style="text-align:center;margin:0 0 16px;">Current status: <strong>' + esc(rev.status) + '</strong>' + (rev.featured ? ' &middot; featured' : '') + '</p>';
+
+    app.innerHTML =
+      statusNote +
+      '<div class="card">' +
+        '<div class="row"><span class="label">Product</span><span style="color:var(--amber);font-weight:700;">' + esc(rev.productName) + '</span></div>' +
+        '<div class="row"><span class="label">Rating</span><span class="stars">' + stars(rev.rating) + ' <span class="muted" style="font-size:.8rem;">(' + rev.rating + '/5)</span></span></div>' +
+        '<div class="row"><span class="label">Name</span><span>' + esc(rev.name) + '</span></div>' +
+        '<div class="row"><span class="label">Email</span><span>' + esc(rev.email) + '</span></div>' +
+        '<div class="text' + (hasText ? '' : ' empty') + '">' +
+          (hasText ? ('"' + esc(rev.text) + '"') : 'No written review - stars only. Counts toward the rating, but cannot be featured on the homepage.') +
+        '</div>' +
+      '</div>' +
+      '<div class="btns">' +
+        '<button class="approve" data-action="approve">Approve (publish)</button>' +
+        '<button class="feature" data-action="approve_feature"' + (hasText ? '' : ' disabled') + '>Approve + feature on homepage</button>' +
+        '<button class="reject" data-action="reject">Reject</button>' +
+      '</div>';
+
+    var btns = app.querySelectorAll('button[data-action]');
+    for (var i = 0; i < btns.length; i++) {
+      (function(btn){ btn.addEventListener('click', function(){ act(btn.getAttribute('data-action'), btn); }); })(btns[i]);
+    }
+  }
+
+  function act(action, btn){
+    var all = app.querySelectorAll('button');
+    for (var i = 0; i < all.length; i++) all[i].disabled = true;
+    btn.textContent = 'Working...';
+    fetch(FN, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: id, t: t, action: action })
+    })
+      .then(function(res){ return res.json().then(function(data){ return { ok: res.ok, data: data }; }); })
+      .then(function(r){
+        if(!r.ok){ app.innerHTML = '<p class="msg err">' + esc(r.data.error || 'Action failed.') + '</p>'; return; }
+        var word = r.data.status === 'rejected' ? 'Rejected' : (r.data.featured ? 'Approved and featured' : 'Approved');
+        app.innerHTML = '<p class="msg"><span class="done">' + word + '.</span><br><span class="muted">You can close this page.</span></p>';
+      })
+      .catch(function(){ app.innerHTML = '<p class="msg err">Network error. Please try again.</p>'; });
+  }
+
+  load();
+</script>
+</body>
+</html>

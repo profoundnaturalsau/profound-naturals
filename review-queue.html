@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Review Queue - Profound Naturals</title>
+<style>
+  :root {
+    --bg:#080d09; --surface:#0f1610; --surface2:#141d15;
+    --green:#8cc40f; --green-lt:#a0d916; --amber:#d4a017; --text:#e6ece7; --red:#e0736b;
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:Arial,Helvetica,sans-serif; min-height:100dvh; padding:32px 16px;
+  }
+  .wrap { width:100%; max-width:620px; margin:0 auto; }
+  .eyebrow { color:var(--green); font-size:.72rem; letter-spacing:.28em; text-transform:uppercase; margin:0 0 10px; }
+  h1 { font-family:Georgia,serif; font-weight:300; font-size:1.9rem; margin:0 0 24px; }
+  h1 em { color:var(--amber); font-style:italic; }
+  input[type=password] {
+    width:100%; padding:15px; background:var(--surface); border:1px solid rgba(212,160,23,0.4);
+    color:var(--text); font-size:1rem; margin-bottom:12px;
+  }
+  button { font-family:inherit; cursor:pointer; border:0; }
+  .unlock { width:100%; padding:15px; background:var(--amber); color:#0f1610; font-weight:700; font-size:.85rem; letter-spacing:.12em; text-transform:uppercase; }
+  .tabs { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
+  .tab { flex:1; min-width:120px; padding:11px 8px; background:var(--surface); color:rgba(230,236,231,0.7); border:1px solid rgba(255,255,255,0.08); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; }
+  .tab.active { background:var(--surface2); color:var(--amber); border-color:rgba(212,160,23,0.5); }
+  .tab .badge { color:var(--green-lt); font-weight:700; }
+  .card { background:var(--surface); border:1px solid rgba(255,255,255,0.08); padding:18px; margin-bottom:14px; }
+  .card.pending { border-left:3px solid var(--amber); }
+  .card.published { border-left:3px solid var(--green); }
+  .card.rejected { border-left:3px solid var(--red); opacity:.72; }
+  .meta { display:flex; justify-content:space-between; gap:12px; align-items:baseline; margin-bottom:8px; }
+  .prod { color:var(--amber); font-weight:700; font-size:.95rem; }
+  .stars { color:var(--amber); letter-spacing:1px; font-size:.95rem; }
+  .sub { color:rgba(230,236,231,0.55); font-size:.78rem; margin:0 0 10px; }
+  .sub .tag { color:var(--green-lt); }
+  .txt { line-height:1.6; font-style:italic; margin:0 0 14px; font-size:.92rem; }
+  .txt.empty { color:rgba(230,236,231,0.4); font-style:normal; }
+  .acts { display:flex; gap:8px; flex-wrap:wrap; }
+  .acts button { padding:10px 14px; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; }
+  .b-approve { background:var(--amber); color:#0f1610; font-weight:700; }
+  .b-feature { background:transparent; color:var(--amber); border:1px solid rgba(212,160,23,0.6); }
+  .b-unfeature { background:transparent; color:var(--green-lt); border:1px solid rgba(160,217,22,0.5); }
+  .b-reject { background:transparent; color:var(--red); border:1px solid rgba(224,115,107,0.5); }
+  .msg { text-align:center; padding:36px 16px; color:rgba(230,236,231,0.5); line-height:1.7; }
+  .err { color:var(--red); }
+  .hidden { display:none; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="eyebrow">Profound Naturals</p>
+    <h1>Review <em>Queue</em></h1>
+
+    <div id="gate">
+      <input id="pass" type="password" autocomplete="off" placeholder="Passcode" autofocus>
+      <button class="unlock" id="unlockBtn">Unlock</button>
+      <p id="gateErr" class="msg err hidden"></p>
+    </div>
+
+    <div id="panel" class="hidden">
+      <div class="tabs" id="tabs"></div>
+      <div id="list"><p class="msg">Loading...</p></div>
+    </div>
+  </div>
+<script>
+  var LIST = '/.netlify/functions/list-reviews';
+  var MOD  = '/.netlify/functions/moderate-review';
+  var PASS = '';              // held in memory only, never stored/URL'd
+  var STATUS = 'pending';
+  var COUNTS = { pending:0, published:0, rejected:0 };
+
+  var gate = document.getElementById('gate');
+  var gateErr = document.getElementById('gateErr');
+  var panel = document.getElementById('panel');
+  var listEl = document.getElementById('list');
+  var tabsEl = document.getElementById('tabs');
+
+  function esc(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#x27;'}[c];
+    });
+  }
+  function stars(n){ return '\u2605'.repeat(n) + '\u2606'.repeat(5 - n); }
+  function when(iso){ try { return new Date(iso).toLocaleDateString(); } catch(e){ return ''; } }
+
+  document.getElementById('unlockBtn').addEventListener('click', unlock);
+  document.getElementById('pass').addEventListener('keydown', function(e){ if(e.key === 'Enter') unlock(); });
+
+  function unlock(){
+    var v = document.getElementById('pass').value;
+    if(!v){ return; }
+    PASS = v;
+    gateErr.classList.add('hidden');
+    fetchList('pending');
+  }
+
+  function fetchList(status){
+    STATUS = status;
+    listEl.innerHTML = '<p class="msg">Loading...</p>';
+    fetch(LIST, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ passcode: PASS, status: status })
+    })
+    .then(function(res){ return res.json().then(function(d){ return { ok:res.ok, code:res.status, d:d }; }); })
+    .then(function(r){
+      if(r.code === 401){ PASS=''; panel.classList.add('hidden'); gate.classList.remove('hidden'); gateErr.textContent='Wrong passcode.'; gateErr.classList.remove('hidden'); return; }
+      if(r.code === 429){ gateErr.textContent='Too many attempts. Wait a minute.'; gateErr.classList.remove('hidden'); return; }
+      if(!r.ok){ listEl.innerHTML = '<p class="msg err">'+esc(r.d.error||'Could not load.')+'</p>'; return; }
+      gate.classList.add('hidden');
+      panel.classList.remove('hidden');
+      COUNTS = r.d.counts || COUNTS;
+      renderTabs();
+      renderList(r.d.reviews || []);
+    })
+    .catch(function(){ listEl.innerHTML = '<p class="msg err">Network error.</p>'; });
+  }
+
+  function renderTabs(){
+    var defs = [['pending','Pending'],['published','Published'],['rejected','Rejected'],['all','All']];
+    tabsEl.innerHTML = defs.map(function(d){
+      var badge = d[0]==='all' ? '' : ' <span class="badge">'+(COUNTS[d[0]]||0)+'</span>';
+      return '<button class="tab'+(STATUS===d[0]?' active':'')+'" data-s="'+d[0]+'">'+d[1]+badge+'</button>';
+    }).join('');
+    var btns = tabsEl.querySelectorAll('button');
+    for (var i=0;i<btns.length;i++){ (function(b){ b.addEventListener('click', function(){ fetchList(b.getAttribute('data-s')); }); })(btns[i]); }
+  }
+
+  function renderList(reviews){
+    if(!reviews.length){ listEl.innerHTML = '<p class="msg">Nothing here.</p>'; return; }
+    listEl.innerHTML = reviews.map(cardHTML).join('');
+    var cards = listEl.querySelectorAll('button[data-action]');
+    for (var i=0;i<cards.length;i++){
+      (function(btn){ btn.addEventListener('click', function(){ act(btn.getAttribute('data-id'), btn.getAttribute('data-token'), btn.getAttribute('data-action'), btn); }); })(cards[i]);
+    }
+  }
+
+  function cardHTML(rev){
+    var hasText = rev.text && rev.text.trim().length;
+    var acts = [];
+    if(rev.status === 'pending'){
+      acts.push(btn('approve', rev, 'b-approve', 'Approve'));
+      if(hasText) acts.push(btn('approve_feature', rev, 'b-feature', 'Approve + feature'));
+      acts.push(btn('reject', rev, 'b-reject', 'Reject'));
+    } else if(rev.status === 'published'){
+      if(rev.featured) acts.push(btn('unfeature', rev, 'b-unfeature', 'Unfeature'));
+      else if(hasText) acts.push(btn('approve_feature', rev, 'b-feature', 'Feature'));
+      acts.push(btn('reject', rev, 'b-reject', 'Reject (unpublish)'));
+    } else { // rejected
+      acts.push(btn('approve', rev, 'b-approve', 'Approve'));
+      if(hasText) acts.push(btn('approve_feature', rev, 'b-feature', 'Approve + feature'));
+    }
+    return '<div class="card '+esc(rev.status)+'">' +
+      '<div class="meta"><span class="prod">'+esc(rev.productName)+'</span><span class="stars">'+stars(rev.rating)+'</span></div>' +
+      '<p class="sub">'+esc(rev.name)+' &middot; '+esc(rev.email)+' &middot; '+when(rev.createdAt)+
+        (rev.featured?' &middot; <span class="tag">featured</span>':'')+'</p>' +
+      '<p class="txt'+(hasText?'':' empty')+'">'+(hasText?('"'+esc(rev.text)+'"'):'No written review (stars only).')+'</p>' +
+      '<div class="acts">'+acts.join('')+'</div>' +
+    '</div>';
+  }
+
+  function btn(action, rev, cls, label){
+    return '<button class="'+cls+'" data-action="'+action+'" data-id="'+esc(rev.id)+'" data-token="'+esc(rev.token)+'">'+label+'</button>';
+  }
+
+  function act(id, token, action, el){
+    var card = el.closest('.card');
+    var all = card.querySelectorAll('button');
+    for (var i=0;i<all.length;i++) all[i].disabled = true;
+    el.textContent = '...';
+    fetch(MOD, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ id:id, t:token, action:action })
+    })
+    .then(function(res){ return res.json().then(function(d){ return { ok:res.ok, d:d }; }); })
+    .then(function(r){
+      if(!r.ok){ alert(r.d.error || 'Action failed'); for (var i=0;i<all.length;i++) all[i].disabled=false; el.textContent='retry'; return; }
+      fetchList(STATUS); // refresh current tab + counts
+    })
+    .catch(function(){ alert('Network error'); for (var i=0;i<all.length;i++) all[i].disabled=false; });
+  }
+</script>
+</body>
+</html>

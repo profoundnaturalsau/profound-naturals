@@ -4,7 +4,7 @@
 
 [functions]
   node_bundler = "esbuild"
-  external_node_modules = ["nodemailer", "stripe"]
+  external_node_modules = ["nodemailer", "stripe", "@netlify/blobs"]
 
 [[headers]]
   for = "/*"
@@ -19,5 +19,5 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     # Restricts access to browser features
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(self)"
-    # Content Security Policy — allows fonts, Stripe, your own assets
+    # Content Security Policy - allows fonts, Stripe, your own assets
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://js.stripe.com https://fonts.googleapis.com https://gc.zgo.at; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://api.stripe.com https://api.anthropic.com https://profoundnaturals.goatcounter.com; frame-src https://js.stripe.com https://hooks.stripe.com; object-src 'none';"

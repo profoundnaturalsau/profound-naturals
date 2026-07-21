@@ -2215,6 +2215,11 @@
 <style id="review-styles">
 /* REVIEW SYSTEM (added 21-07) - additive */
 #reviewModalOverlay .testi-modal { max-height:92dvh; overflow-y:auto; }
+#reviewModalOverlay .testi-modal-close {
+  top:14px; right:14px; width:36px; height:36px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.7rem; line-height:1;
+}
 .rv-product-locked {
   font-size:.75rem; letter-spacing:.04em; color:var(--white-dim);
   background:var(--surface-3); border:1px solid var(--border); padding:10px 14px;
@@ -2230,10 +2235,15 @@ select.rv-select option { background:var(--surface); color:var(--white); }
 .rv-stars { display:flex; gap:6px; }
 .rv-star {
   background:none; border:none; padding:0; cursor:pointer; line-height:1;
-  font-size:1.95rem; color:rgba(212,160,23,.28); transition:color .12s, transform .12s;
+  font-size:1.95rem; color:rgba(212,160,23,.28); transition:color .12s, transform .12s, text-shadow .12s;
 }
-.rv-star:hover, .rv-star.on { color:var(--amber); }
-.rv-star:hover { transform:scale(1.08); }
+.rv-star.on, .rv-star.rv-prev { color:var(--amber); text-shadow:0 0 7px rgba(212,160,23,.7), 0 0 15px rgba(212,160,23,.32); }
+.rv-star:hover { transform:scale(1.14); }
+.rv-star.on { animation:rvTwinkle 2.6s ease-in-out infinite; }
+@keyframes rvTwinkle {
+  0%,100% { text-shadow:0 0 7px rgba(212,160,23,.6), 0 0 15px rgba(212,160,23,.28); }
+  50% { text-shadow:0 0 12px rgba(212,160,23,.95), 0 0 21px rgba(212,160,23,.5); }
+}
 .rv-stars-hint { font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--white-dim); margin:0; }
 .rv-stars-hint.rv-hint-warn { color:#e0736b; }
 @keyframes rvShake {
@@ -4442,7 +4452,7 @@ function closeNefertModalDirect() {
 })();
 </script>
 <script>
-console.log('PN BUILD 21-07-A');
+console.log('PN BUILD 21-07-B');
 (function(){
   var SIZE_TWINS = { 74: { '5ml': { id: 75, price: 42.95 } } };
 
@@ -4778,12 +4788,21 @@ console.log('PN BUILD 21-07-A');
   // Star + select handlers
   (function(){
     var w=document.getElementById('rvStars');
-    if(w) w.querySelectorAll('.rv-star').forEach(function(s){
-      s.addEventListener('click',function(){
-        rvRating=Number(s.dataset.v); renderRvStars(); w.classList.remove('rv-shake');
-        var h=document.getElementById('rvStarsHint'); h.textContent=rvRating+(rvRating===1?' star':' stars'); h.classList.remove('rv-hint-warn');
+    if(w){
+      w.querySelectorAll('.rv-star').forEach(function(s){
+        var v=Number(s.dataset.v);
+        s.addEventListener('click',function(){
+          rvRating=v; renderRvStars(); w.classList.remove('rv-shake');
+          var h=document.getElementById('rvStarsHint'); h.textContent=rvRating+(rvRating===1?' star':' stars'); h.classList.remove('rv-hint-warn');
+        });
+        s.addEventListener('mouseenter',function(){
+          w.querySelectorAll('.rv-star').forEach(function(o){ o.classList.toggle('rv-prev', Number(o.dataset.v)<=v); });
+        });
       });
-    });
+      w.addEventListener('mouseleave',function(){
+        w.querySelectorAll('.rv-star').forEach(function(o){ o.classList.remove('rv-prev'); });
+      });
+    }
     var sel=document.getElementById('rvProductSelect'); if(sel) sel.addEventListener('change',function(){ sel.style.borderColor=''; });
   })();
 

@@ -249,6 +249,127 @@ async function sendOrderEmail({ customerEmail, customerName, lineItems, subtotal
   });
 }
 
+// ── RESOLVE CUSTOMER FROM A CHARGE ──
+// A charge.refunded event carries a Charge object, which for Checkout-originated
+// payments usually does NOT hold the buyer email (Checkout collects it at the session
+// level). So: try the charge first, then fall back to the Checkout Session looked up by
+// payment_intent - the same source the order branch reads customer_details from.
+async function resolveChargeContext(charge) {
+  let email = charge.billing_details?.email || charge.receipt_email || null;
+  let name  = charge.billing_details?.name || null;
+  let isGiftCard = false;
+
+  const piId = typeof charge.payment_intent === 'string'
+    ? charge.payment_intent
+    : charge.payment_intent?.id;
+
+  if (piId) {
+    try {
+      const sessions = await stripe.checkout.sessions.list({ payment_intent: piId, limit: 1 });
+      const s = sessions.data?.[0];
+      if (s) {
+        email = email || s.customer_details?.email || null;
+        name  = name  || s.customer_details?.name  || null;
+        isGiftCard = (s.metadata?.type === 'gift_card');
+      }
+    } catch (e) {
+      console.error('Refund: checkout session lookup failed:', e.message);
+    }
+  }
+  return { email, name, isGiftCard };
+}
+
+// ── REFUND EMAIL ──
+// Same dark palette / fonts / SMTP as the order + gift-card emails. Handles full and
+// partial refunds (the wording and the eyebrow change; the Fraunces figure is the money
+// actually returned). Webhook-only: keep Stripe's built-in "Refunds" customer email OFF
+// so refunds don't send two emails (mirrors the "Successful payments" pattern).
+async function sendRefundEmail({ customerEmail, customerName, amount, isFull, orderRef, isGiftCard }) {
+  const money = (c) => '$' + (Number(c || 0) / 100).toFixed(2);
+  const safeName = esc(customerName || 'there');
+  const amt = money(amount);
+
+  const introLine = isFull
+    ? `Your order has been refunded. The amount below has been returned to your original payment method.`
+    : `A partial refund of ${amt} has been processed on your order. It has been returned to your original payment method.`;
+  const eyebrow = isFull ? 'Amount Refunded' : 'Partial Refund';
+
+  const html = `
+    <div style="font-family:'Georgia',serif; background:#080d09; padding:0; margin:0;">
+      <div style="max-width:560px; margin:0 auto; padding:48px 32px;">
+
+        <div style="text-align:center; margin-bottom:40px;">
+          <p style="font-family:'Arial',sans-serif; font-size:.8rem; letter-spacing:.32em; text-transform:uppercase; color:#8cc40f; margin:0 0 14px;">Profound Naturals</p>
+          <h1 style="font-family:'Georgia',serif; font-size:2.5rem; font-weight:300; color:#e6ece7; margin:0; line-height:1.2;">Refund <em style="color:#d4a017;">Processed</em></h1>
+          ${orderRef ? `<p style="font-family:'Courier New',monospace; font-size:1rem; letter-spacing:.18em; color:rgba(230,236,231,0.55); margin:14px 0 0;">${esc(orderRef)}</p>` : ''}
+        </div>
+
+        <p style="font-family:'Arial',sans-serif; font-size:.85rem; color:rgba(230,236,231,0.7); line-height:1.7; margin-bottom:8px;">
+          Dear ${safeName},
+        </p>
+        <p style="font-family:'Arial',sans-serif; font-size:.85rem; color:rgba(230,236,231,0.7); line-height:1.7; margin-bottom:32px;">
+          ${introLine}
+        </p>
+
+        <div style="border:1px solid rgba(212,160,23,0.5); padding:32px; text-align:center; margin-bottom:32px; background:#0f1610;">
+          <p style="font-family:'Arial',sans-serif; font-size:.65rem; letter-spacing:.25em; text-transform:uppercase; color:#d4a017; margin:0 0 12px;">${eyebrow}</p>
+          <p style="font-family:'Fraunces',Georgia,serif; font-size:3rem; font-weight:300; color:#e6ece7; margin:0;">${amt} <span style="font-size:.9rem; color:rgba(230,236,231,0.4);">AUD</span></p>
+        </div>
+
+        <p style="font-family:'Arial',sans-serif; font-size:.8rem; color:rgba(230,236,231,0.55); line-height:1.7; text-align:center; margin:0 0 32px;">
+          Refunds usually take 5-10 business days to appear on your statement, depending on your bank.
+        </p>
+
+        <div style="text-align:center; margin-bottom:32px;">
+          <a href="https://profoundnaturals.com.au" style="display:inline-block; background:transparent; color:#d4a017; border:1px solid rgba(212,160,23,0.6); padding:14px 32px; font-family:'Arial',sans-serif; font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; text-decoration:none;">Visit the Shop</a>
+        </div>
+
+        <p style="font-family:'Arial',sans-serif; font-size:.82rem; letter-spacing:.04em; color:#a0d916; line-height:1.7; text-align:center; margin:0 0 20px;">
+          Thanks for supporting a small Australian business&nbsp;<img src="https://profoundnaturals.com.au/images/icons/australian-native.png" width="17" height="17" alt="Australia" style="vertical-align:middle; margin-left:2px;">
+        </p>
+        <p style="font-family:'Arial',sans-serif; font-size:.75rem; color:rgba(230,236,231,0.45); line-height:1.7; text-align:center;">
+          Questions about your refund? Just reply to this email.
+        </p>
+        <p style="font-family:'Arial',sans-serif; font-size:.68rem; color:rgba(230,236,231,0.3); text-align:center; margin-top:32px; padding-top:24px; border-top:1px solid rgba(255,255,255,0.06);">
+          profoundnaturals.com.au &nbsp;·&nbsp; Australian made botanical wellness
+        </p>
+
+      </div>
+    </div>
+  `;
+
+  // Confirmation to customer
+  await sendMail({
+    from: `"Profound Naturals" <${process.env.ZOHO_USER}>`,
+    to: customerEmail,
+    replyTo: process.env.ZOHO_USER,
+    subject: isFull ? `Refund processed - Profound Naturals 🌿` : `Partial refund processed - Profound Naturals 🌿`,
+    html,
+  });
+
+  // Record to store owner
+  await sendMail({
+    from: `"Profound Naturals" <${process.env.ZOHO_USER}>`,
+    to: process.env.ZOHO_USER,
+    subject: `Refund issued - ${amt}${orderRef ? ` (${orderRef})` : ''}`,
+    html: `
+      <div style="font-family:sans-serif; padding:24px; background:#0f1610; color:#e6ece7; max-width:500px;">
+        <h2 style="color:#d4a017; margin-bottom:20px;">Refund Issued</h2>
+        <table style="width:100%; border-collapse:collapse;">
+          <tr><td style="padding:8px 0; color:#a0d916; width:140px;">Amount</td><td>${amt} (${isFull ? 'full' : 'partial'})</td></tr>
+          <tr><td style="padding:8px 0; color:#a0d916;">Customer</td><td>${safeName}</td></tr>
+          <tr><td style="padding:8px 0; color:#a0d916;">Email</td><td>${esc(customerEmail)}</td></tr>
+          ${orderRef ? `<tr><td style="padding:8px 0; color:#a0d916;">Ref</td><td style="font-family:monospace;">${esc(orderRef)}</td></tr>` : ''}
+        </table>
+        ${isGiftCard ? `<p style="margin-top:16px; font-size:.8rem; color:#d4a017; line-height:1.6;">Note: this was a gift-card purchase. The coupon code is NOT automatically voided - disable it in Stripe (Coupons) if the code should no longer be redeemable.</p>` : ''}
+        <p style="margin-top:20px; font-size:.75rem; color:rgba(230,236,231,0.4);">
+          Profound Naturals · profoundnaturals.com.au
+        </p>
+      </div>
+    `,
+  });
+}
+
 // ── WEBHOOK HANDLER ──
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -269,7 +390,44 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: `Webhook Error: ${err.message}` };
   }
 
-  // Only handle completed checkouts
+  // ── REFUND BRANCH (charge.refunded) ──
+  // Refunds arrive as charge.refunded, NOT checkout.session.completed, so this branch
+  // must sit BEFORE the completed-checkout guard below. REQUIRES a Stripe dashboard step:
+  // the existing webhook endpoint must be subscribed to charge.refunded or this never
+  // fires (no new endpoint / keys / DNS - one checkbox on the existing endpoint).
+  if (stripeEvent.type === 'charge.refunded') {
+    const charge = stripeEvent.data.object;
+    try {
+      const { email, name, isGiftCard } = await resolveChargeContext(charge);
+      if (!email) {
+        console.error('Refund webhook: could not resolve a customer email for charge', charge.id);
+        return { statusCode: 200, body: 'OK' };
+      }
+
+      // Full vs partial: after this refund, is the whole charge covered?
+      const isFull = (charge.amount_refunded || 0) >= (charge.amount || 0);
+      // Show the money actually returned: the full amount on a full refund, otherwise the
+      // most recent refund (refunds.data[0] is newest-first on the charge object).
+      const latest = charge.refunds?.data?.[0]?.amount;
+      const shownAmount = isFull ? charge.amount_refunded : (latest ?? charge.amount_refunded);
+      if (!shownAmount) {
+        console.error('Refund webhook: zero/unknown refund amount for charge', charge.id);
+        return { statusCode: 200, body: 'OK' };
+      }
+
+      // Same ref the customer saw on their order confirmation (built off payment_intent).
+      const orderRef = '#' + String(charge.payment_intent || charge.id).slice(-8).toUpperCase();
+
+      await sendRefundEmail({ customerEmail: email, customerName: name, amount: shownAmount, isFull, orderRef, isGiftCard });
+      console.log(`Refund email sent - charge ${charge.id} → ${email} (${isFull ? 'full' : 'partial'})`);
+    } catch (err) {
+      // 200 regardless - a non-200 makes Stripe retry, which would double-send.
+      console.error('Refund email failed:', err);
+    }
+    return { statusCode: 200, body: 'OK' };
+  }
+
+  // Only handle completed checkouts (order + gift-card branches below)
   if (stripeEvent.type !== 'checkout.session.completed') {
     return { statusCode: 200, body: 'Event ignored' };
   }

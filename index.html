@@ -2021,6 +2021,15 @@
 </style>
 
 <style id="mobile-viewport-fix">
+/* ── REVIEW MODAL: PRODUCT CATEGORY (added 22-07-26) ──
+   Shows the product type after the name, e.g. "Pr-nfr - Botanical Perfume".
+   Set to a lighter weight and dimmer tone so the product name still leads.
+   Additive: new class only, no original rules edited. */
+.rv-product-cat {
+  color: rgba(230,236,231,.55);
+  font-weight: 400;
+}
+
 /* ── JOURNAL NAV HIGHLIGHT (added 22-07-26) ──
    Draws the eye to the newly launched Journal section in the desktop nav.
    Scoped to .nav-links only, so the mobile menu (.mobile-menu-links) and
@@ -4424,7 +4433,7 @@ function closeNefertModalDirect() {
     <h2 class="testi-modal-title">Write a<br><em>review</em></h2>
     <p class="testi-modal-sub">Your review helps others discover these botanicals. Approved reviews appear on the product, and a favourite may be featured on the homepage.</p>
 
-    <div class="rv-product-locked" id="rvProductLocked" style="display:none;">Reviewing: <span id="rvProductName"></span></div>
+    <div class="rv-product-locked" id="rvProductLocked" style="display:none;">Reviewing: <span id="rvProductName"></span><span class="rv-product-cat" id="rvProductCat"></span></div>
     <select class="testi-field rv-select" id="rvProductSelect" style="display:none;" aria-label="Choose a product"><option value="">Choose a product...</option></select>
 
     <div class="rv-stars-wrap">
@@ -4439,7 +4448,7 @@ function closeNefertModalDirect() {
     </div>
 
     <div class="testi-row">
-      <input class="testi-field" id="rvName" type="text" placeholder="Your name">
+      <input class="testi-field" id="rvName" type="text" placeholder="Your name (e.g. Sarah M.)">
       <input class="testi-field" id="rvEmail" type="email" placeholder="Your email address">
     </div>
     <textarea class="testi-textarea" id="rvText" placeholder="Add a few words (optional) - what stood out?"></textarea>
@@ -4477,7 +4486,7 @@ function closeNefertModalDirect() {
 })();
 </script>
 <script>
-console.log('PN BUILD 22-07-B');
+console.log('PN BUILD 22-07-C');
 (function(){
   var SIZE_TWINS = { 74: { '5ml': { id: 75, price: 42.95 } } };
 
@@ -4751,9 +4760,12 @@ console.log('PN BUILD 22-07-B');
       rvProductId=Number(productId);
       var p=products.find(function(x){return x.id===rvProductId;});
       document.getElementById('rvProductName').textContent=p?p.name:'this product';
+      var catEl=document.getElementById('rvProductCat');
+      if(catEl) catEl.textContent=(p&&p.category)?(' - '+p.category):'';
       locked.style.display='block'; sel.style.display='none';
     } else {
       rvProductId=null; populateRvSelect(); sel.value=''; sel.style.borderColor='';
+      var catEl2=document.getElementById('rvProductCat'); if(catEl2) catEl2.textContent='';
       locked.style.display='none'; sel.style.display='block';
     }
     document.getElementById('reviewModalOverlay').classList.add('open'); lockBodyScroll();

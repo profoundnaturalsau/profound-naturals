@@ -2220,6 +2220,64 @@
   .collection-content .featured-title { font-size:1.65rem !important; }
   .collection-content .featured-desc { margin-bottom:20px !important; }
 }
+
+/* ── FOOTER (desktop) - bigger links, columns centred against the logo (23-07-B) ── */
+@media (min-width:901px){
+  .footer-grid { grid-template-columns:1.6fr 1fr 1fr 1fr !important; gap:40px 56px !important; align-items:center !important; }
+  .footer-brand-name img { height:300px !important; }
+  .footer-tagline { font-size:.86rem !important; max-width:270px !important; }
+  .footer-col h4 { font-size:.7rem !important; margin-bottom:22px !important; }
+  .footer-col ul li { margin-bottom:16px !important; }
+  .footer-col ul li a { font-size:.95rem !important; }
+}
+
+/* ── MOBILE: search chip now floats like desktop (23-07-D) ──
+   Sits UNDER the sticky 60px nav, not at the bottom: .toast lives at
+   bottom:30px and the restyled back-to-top chip lives in the footer, so a
+   bottom-anchored pill collided with both. z-index 99 keeps it below the
+   nav, mobile menu, cart and every modal, which all correctly cover it.
+   Cause of the bug: position:fixed lived only inside @media(min-width:901px),
+   so on mobile the banner stayed in normal flow and scrolled away. dockBanner()
+   already clears inline top/left/right below 900px, so CSS alone controls it. */
+@media(max-width:900px){
+  .search-banner.show {
+    position:fixed !important;
+    left:50% !important; right:auto !important;
+    transform:translateX(-50%);
+    bottom:auto !important; top:70px;
+    width:auto !important; max-width:calc(100vw - 28px);
+    border:1px solid var(--border-sub);
+    border-radius:999px;
+    padding:10px 18px !important;
+    font-size:.8rem !important;
+    box-shadow:0 14px 34px rgba(0,0,0,.55);
+    z-index:99;
+    justify-content:center; gap:4px;
+  }
+  .search-banner.show #searchBannerText {
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+}
+
+/* ── MOBILE: back-to-top moved above the payment row, restyled as a chip ── */
+@media(max-width:900px){
+  .footer-bottom .back-to-top { order:1 !important; }
+  .footer-bottom .footer-payments { order:2 !important; }
+  .footer-bottom .footer-copy { order:3 !important; }
+  .back-to-top {
+    background:var(--green-pale) !important;
+    border:1px solid rgba(140,196,15,.35) !important;
+    border-radius:999px !important;
+    color:var(--green-lt) !important;
+    font-size:.72rem !important;
+    letter-spacing:.16em !important;
+    padding:10px 22px !important;
+    box-shadow:0 10px 26px rgba(0,0,0,.45);
+  }
+  .back-to-top:hover, .back-to-top:active {
+    border-color:rgba(140,196,15,.8) !important; color:var(--green-lt) !important;
+  }
+}
 </style>
 
 <!-- ═══════════ STRUCTURED DATA: Organization & WebSite (added 14-07-26, additive only) ═══════════ -->
@@ -4501,7 +4559,7 @@ function closeNefertModalDirect() {
 })();
 </script>
 <script>
-console.log('PN BUILD 23-07-A');
+console.log('PN BUILD 23-07-D');
 (function(){
   var SIZE_TWINS = { 74: { '5ml': { id: 75, price: 42.95 } } };
 

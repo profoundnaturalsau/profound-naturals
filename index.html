@@ -2244,7 +2244,7 @@
     position:fixed !important;
     left:50% !important; right:auto !important;
     transform:translateX(-50%);
-    bottom:auto !important; top:70px;
+    bottom:auto !important; top:112px; /* fallback; JS below measures the real nav */
     width:auto !important; max-width:calc(100vw - 28px);
     border:1px solid var(--border-sub);
     border-radius:999px;
@@ -2266,16 +2266,18 @@
   .footer-bottom .footer-copy { order:3 !important; }
   .back-to-top {
     background:var(--green-pale) !important;
-    border:1px solid rgba(140,196,15,.35) !important;
+    border:1px solid rgba(212,160,23,.4) !important;
     border-radius:999px !important;
-    color:var(--green-lt) !important;
+    color:#d4a017 !important;
+    text-shadow:0 0 10px rgba(212,160,23,.45);
     font-size:.72rem !important;
     letter-spacing:.16em !important;
     padding:10px 22px !important;
     box-shadow:0 10px 26px rgba(0,0,0,.45);
   }
   .back-to-top:hover, .back-to-top:active {
-    border-color:rgba(140,196,15,.8) !important; color:var(--green-lt) !important;
+    border-color:rgba(212,160,23,.85) !important; color:#e8b830 !important;
+    text-shadow:0 0 14px rgba(212,160,23,.7);
   }
 }
 </style>
@@ -4559,7 +4561,7 @@ function closeNefertModalDirect() {
 })();
 </script>
 <script>
-console.log('PN BUILD 23-07-D');
+console.log('PN BUILD 23-07-F');
 (function(){
   var SIZE_TWINS = { 74: { '5ml': { id: 75, price: 42.95 } } };
 
@@ -4963,6 +4965,41 @@ console.log('PN BUILD 23-07-D');
     applyRatingsToDOM();
     renderHomepageTestimonials(data && data.reviews);
   }).catch(function(){});
+})();
+</script>
+
+<!-- ═══════════ MOBILE SEARCH CHIP OFFSET (23-07-E) ═══════════
+     The announcement bar is NOT sticky but the nav IS, so the nav's bottom
+     edge moves as you scroll. A fixed CSS offset is wrong in one state or the
+     other. This measures it. Registered after the original search script so it
+     runs last on scroll, overriding dockBanner's mobile reset. -->
+<script>
+(function(){
+  function place(){
+    var b = document.getElementById('searchBanner');
+    if (!b || !b.classList.contains('show')) return;
+    if (window.innerWidth > 900) { b.style.top=''; b.style.bottom=''; return; }
+    var nav = document.querySelector('nav');
+    var bottom = nav ? nav.getBoundingClientRect().bottom : 60;
+    b.style.top = Math.max(8, bottom + 8) + 'px';
+    b.style.bottom = 'auto';
+  }
+  // run before the browser paints, so the chip never shows at the fallback offset
+  function placeNow(){ requestAnimationFrame(place); }
+
+  window.addEventListener('scroll', place, { passive:true });
+  window.addEventListener('resize', place);
+  document.addEventListener('DOMContentLoaded', place);
+
+  var b = document.getElementById('searchBanner');
+  if (b) new MutationObserver(placeNow).observe(b, { attributes:true, attributeFilter:['class'] });
+
+  // also wrap handleSearch so placement is set the instant a search fires,
+  // not only on the following class-mutation tick
+  if (typeof handleSearch === 'function') {
+    var _hs = handleSearch;
+    handleSearch = function(q){ _hs(q); placeNow(); };
+  }
 })();
 </script>
 </body>

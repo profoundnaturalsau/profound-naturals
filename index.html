@@ -2021,6 +2021,31 @@
 </style>
 
 <style id="mobile-viewport-fix">
+/* ── JOURNAL NAV HIGHLIGHT (added 22-07-26) ──
+   Draws the eye to the newly launched Journal section in the desktop nav.
+   Scoped to .nav-links only, so the mobile menu (.mobile-menu-links) and
+   the footer list are untouched. Additive: no original rules edited.
+   Honours prefers-reduced-motion by falling back to a static amber. */
+.nav-links a[href="/journal/"] {
+  color: var(--amber, #d4a017);
+  animation: pnJournalTwinkle 3.4s ease-in-out infinite;
+}
+.nav-links a[href="/journal/"]:hover {
+  animation: none;
+  color: #e8b93a;
+  text-shadow: 0 0 14px rgba(212,160,23,.85), 0 0 26px rgba(212,160,23,.4);
+}
+@keyframes pnJournalTwinkle {
+  0%, 100% { text-shadow: 0 0 4px rgba(212,160,23,.20); }
+  50%      { text-shadow: 0 0 12px rgba(212,160,23,.75), 0 0 22px rgba(212,160,23,.35); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-links a[href="/journal/"] {
+    animation: none;
+    text-shadow: 0 0 8px rgba(212,160,23,.45);
+  }
+}
+
 /* ── MOBILE VIEWPORT FIX (added 14-07-26) ──
    vh units ignore the mobile browser URL bar, so 88-92vh modals overflow
    the visible screen when the bar is showing: bottom hides behind the
@@ -4452,7 +4477,7 @@ function closeNefertModalDirect() {
 })();
 </script>
 <script>
-console.log('PN BUILD 22-07-A');
+console.log('PN BUILD 22-07-B');
 (function(){
   var SIZE_TWINS = { 74: { '5ml': { id: 75, price: 42.95 } } };
 

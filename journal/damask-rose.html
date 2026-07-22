@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Damask Rose: a thousand blooms in every gram | Profound Naturals</title>
+<meta name="description" content="Picked before dawn and distilled the same morning, the damask rose behind the world's great perfumes has a history as concentrated as its oil.">
+<link rel="canonical" href="https://profoundnaturals.com.au/journal/damask-rose.html">
+<link rel="icon" type="image/png" href="/images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   Profound Naturals - Journal shared styles
+   Tokens and chrome are byte-matched to journal/index.html (the hub).
+   New here: category post-lists and long-form article prose,
+   all built from the same variables so nothing drifts.
+   Single stylesheet so a design tweak is one edit across the Journal.
+   ============================================================ */
+
+:root {
+  --bg:        #080d09;
+  --surface:   #0f1610;
+  --surface-2: #141d15;
+  --surface-3: #1a2419;
+  --white:     #e6ece7;
+  --white-dim: rgba(230,236,231,0.6);
+  --green:     #8cc40f;
+  --green-lt:  #a0d916;
+  --green-pale:#0f1f02;
+  --green-glow:rgba(140,196,15,0.18);
+  --amber:     #d4a017;
+  --border:    rgba(140,196,15,0.22);
+  --border-sub:rgba(255,255,255,0.06);
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans:  'Sora', sans-serif;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; overflow-x:hidden; max-width:100vw; }
+
+::-webkit-scrollbar { width:6px; height:6px; }
+::-webkit-scrollbar-track { background:var(--bg); }
+::-webkit-scrollbar-thumb { background:var(--green); border-radius:3px; }
+::-webkit-scrollbar-thumb:hover { background:var(--green-lt); }
+* { scrollbar-width:thin; scrollbar-color:var(--green) var(--bg); }
+
+a, button {
+  -webkit-tap-highlight-color: rgba(140,196,15,0.18);
+  outline: none;
+}
+a:focus-visible, button:focus-visible {
+  outline:2px solid var(--green-lt); outline-offset:3px;
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--white);
+  overflow-x: hidden;
+  max-width: 100vw;
+  position: relative;
+  min-height:100dvh;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* grain - identical to the main site */
+body::after {
+  content:'';
+  position:fixed; inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:50; opacity:.5;
+}
+
+/* ── modal-styled sheet ── */
+.sheet-wrap {
+  display:flex; justify-content:center;
+  padding:40px 20px 64px;
+  position:relative; z-index:1;
+}
+.sheet {
+  width:100%; max-width:1000px;
+  background:linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
+  border:1px solid var(--border);
+  box-shadow:0 40px 120px rgba(0,0,0,.6), 0 0 40px rgba(140,196,15,.04);
+  padding:0;
+  opacity:0; transform:translateY(14px);
+  animation:sheetIn .8s cubic-bezier(.2,.7,.2,1) forwards;
+}
+/* article pages read better a touch narrower */
+.sheet.sheet-article { max-width:800px; }
+@keyframes sheetIn { to { opacity:1; transform:translateY(0); } }
+
+/* ── top bar ── */
+.sheet-top {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:22px 32px; border-bottom:1px solid var(--border-sub);
+  position:sticky; top:0; z-index:5;
+  background:rgba(15,22,16,.86);
+  backdrop-filter:blur(10px);
+}
+.sheet-eyebrow {
+  font-size:1rem; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--green-lt); font-weight:600;
+}
+/* breadcrumb variant of the eyebrow, for category + article tops */
+.sheet-crumb {
+  font-size:.8rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--green-lt); font-weight:600;
+  display:inline-flex; align-items:center; gap:9px; flex-wrap:wrap;
+}
+.sheet-crumb a { color:var(--green-lt); text-decoration:none; transition:color .2s; }
+.sheet-crumb a:hover { color:var(--white); }
+.sheet-crumb .sep { color:var(--white-dim); font-weight:400; }
+.sheet-crumb .here { color:var(--white-dim); }
+.sheet-close {
+  flex:0 0 auto; display:flex; align-items:center; justify-content:center;
+  border:none; background:none;
+  color:#ff5a5a; text-decoration:none;
+  font-size:2rem; line-height:1; padding:2px 4px;
+  text-shadow:0 0 10px rgba(255,72,72,0.55);
+  transition:color .2s, text-shadow .2s, transform .2s;
+}
+.sheet-close:hover {
+  color:#ff7a7a; transform:scale(1.12);
+  text-shadow:0 0 18px rgba(255,72,72,0.95), 0 0 34px rgba(255,72,72,0.5);
+}
+
+/* ── hero (hub + category pages) ── */
+.journal-hero { padding:56px 44px 40px; text-align:center; }
+.journal-title {
+  font-family:var(--serif); font-weight:300; font-style:italic;
+  font-size:clamp(4.5rem,15vw,10rem); line-height:.95;
+  color:var(--amber); letter-spacing:.005em; margin-bottom:22px;
+}
+/* category pages use a slightly smaller title than the hub's "Journal" */
+.journal-title.cat-title { font-size:clamp(3rem,9vw,6rem); margin-bottom:18px; }
+.journal-kicker {
+  display:block; font-family:var(--sans);
+  font-size:.62rem; letter-spacing:.28em; text-transform:uppercase;
+  color:var(--green-lt); font-weight:600; margin-bottom:20px;
+}
+.journal-intro {
+  max-width:560px; margin:0 auto;
+  font-family:var(--sans);
+  font-size:1rem; font-weight:300; line-height:1.8; color:var(--white-dim);
+}
+.journal-rule {
+  display:flex; align-items:center; justify-content:center; gap:14px;
+  margin:30px auto 0;
+}
+.journal-rule::before, .journal-rule::after {
+  content:''; width:64px; height:1px;
+}
+.journal-rule::before { background:linear-gradient(90deg, transparent, rgba(140,196,15,.7)); }
+.journal-rule::after  { background:linear-gradient(90deg, rgba(212,160,23,.7), transparent); }
+.journal-rule span {
+  width:6px; height:6px; background:var(--amber);
+  transform:rotate(45deg);
+  box-shadow:0 0 9px rgba(212,160,23,.65);
+}
+
+/* ── category grid (hub) ── */
+.cat-grid {
+  display:grid; grid-template-columns:repeat(2,1fr); gap:16px;
+  padding:8px 44px 44px;
+}
+.cat-card {
+  display:flex; flex-direction:column; gap:12px;
+  background:var(--surface-2);
+  border:1px solid var(--border-sub);
+  padding:30px 30px 26px;
+  text-decoration:none; color:inherit;
+  position:relative; overflow:hidden;
+  transition:border-color .25s, transform .25s, box-shadow .25s, background .25s;
+}
+.cat-card:hover {
+  border-color:rgba(212,160,23,0.9);
+  background:var(--surface-3);
+  transform:translateY(-2px);
+  box-shadow:0 0 22px rgba(212,160,23,0.28), 0 18px 40px rgba(0,0,0,.5);
+}
+.cat-kind {
+  font-size:.58rem; letter-spacing:.24em; text-transform:uppercase;
+  color:var(--amber); font-weight:600;
+}
+.cat-name {
+  font-family:var(--serif); font-weight:400;
+  font-size:1.85rem; line-height:1.1; color:var(--white);
+}
+.cat-desc { font-size:.86rem; font-weight:300; line-height:1.65; color:var(--white-dim); }
+.cat-go {
+  margin-top:6px; font-size:.68rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--green-lt); font-weight:500;
+  display:inline-flex; align-items:center; gap:8px;
+  transition:gap .2s;
+}
+.cat-card:hover .cat-go { gap:14px; }
+.cat-suggested::after {
+  content:'suggested'; position:absolute; top:14px; right:14px;
+  font-size:.62rem; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--amber); background:rgba(8,13,9,0.5);
+  border:1px solid rgba(212,160,23,0.6);
+  padding:6px 14px; font-weight:600;
+  animation:tagAmberGlow 3s ease-in-out infinite; animation-delay:1.5s;
+}
+@keyframes tagAmberGlow {
+  0%,100% { box-shadow:0 0 10px rgba(212,160,23,0.2), 0 0 3px rgba(212,160,23,0.1); border-color:rgba(212,160,23,0.5); }
+  50%     { box-shadow:0 0 22px rgba(212,160,23,0.6), 0 0 8px rgba(212,160,23,0.3); border-color:rgba(212,160,23,1); }
+}
+
+/* ── post list (category pages) ── */
+.post-list {
+  display:flex; flex-direction:column; gap:14px;
+  padding:8px 44px 40px;
+}
+.post-list-label {
+  padding:0 44px; margin-bottom:2px;
+  font-size:.6rem; letter-spacing:.26em; text-transform:uppercase;
+  color:var(--white-dim); font-weight:600;
+}
+a.post-card {
+  display:flex; flex-direction:column; gap:9px;
+  background:var(--surface-2);
+  border:1px solid var(--border-sub);
+  padding:26px 30px;
+  text-decoration:none; color:inherit;
+  position:relative; overflow:hidden;
+  transition:border-color .25s, transform .25s, box-shadow .25s, background .25s;
+}
+a.post-card:hover {
+  border-color:rgba(212,160,23,0.9);
+  background:var(--surface-3);
+  transform:translateY(-2px);
+  box-shadow:0 0 22px rgba(212,160,23,0.28), 0 18px 40px rgba(0,0,0,.5);
+}
+.post-meta {
+  font-size:.58rem; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--amber); font-weight:600;
+  display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+}
+.post-meta .dot { width:3px; height:3px; background:var(--white-dim); border-radius:50%; }
+.post-title {
+  font-family:var(--serif); font-weight:400;
+  font-size:1.7rem; line-height:1.12; color:var(--white);
+}
+.post-excerpt { font-size:.9rem; font-weight:300; line-height:1.7; color:var(--white-dim); }
+.post-more {
+  margin-top:4px; font-size:.66rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--green-lt); font-weight:500;
+  display:inline-flex; align-items:center; gap:8px; transition:gap .2s;
+}
+a.post-card:hover .post-more { gap:14px; }
+
+/* coming-soon post - not a link, clearly a placeholder that reads as intentional */
+.post-card.soon {
+  display:flex; flex-direction:column; gap:9px;
+  background:linear-gradient(180deg, var(--surface-2), rgba(20,29,21,0.35));
+  border:1px dashed var(--border-sub);
+  padding:26px 30px; position:relative; overflow:hidden;
+  opacity:.72;
+}
+.post-card.soon .post-title { color:var(--white-dim); }
+.post-card.soon .soon-tag {
+  align-self:flex-start;
+  font-size:.56rem; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--white-dim); font-weight:600;
+  border:1px solid var(--border-sub); padding:5px 12px;
+}
+
+/* empty-state note where a category has no live posts yet */
+.post-empty {
+  margin:6px 44px 40px;
+  border:1px dashed var(--border-sub);
+  background:rgba(20,29,21,0.35);
+  padding:30px; text-align:center;
+}
+.post-empty .pe-title {
+  font-family:var(--serif); font-size:1.5rem; color:var(--white); margin-bottom:8px;
+}
+.post-empty p { font-size:.9rem; font-weight:300; line-height:1.7; color:var(--white-dim); max-width:460px; margin:0 auto; }
+
+/* ── long-form article ── */
+.article { padding:52px 56px 20px; }
+.article-kind {
+  font-size:.6rem; letter-spacing:.24em; text-transform:uppercase;
+  color:var(--amber); font-weight:600; display:block; margin-bottom:16px;
+}
+.article-title {
+  font-family:var(--serif); font-weight:400;
+  font-size:clamp(2.4rem,6vw,3.6rem); line-height:1.06;
+  color:var(--white); margin-bottom:18px;
+}
+.article-standfirst {
+  font-family: var(--sans); font-style:normal; font-weight:300;
+  font-size:1.08rem; line-height:1.7; color:var(--amber);
+  letter-spacing:.005em;
+  margin-bottom:22px;
+}
+.article-meta {
+  font-size:.62rem; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--white-dim); font-weight:500;
+  display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+  padding-bottom:26px; margin-bottom:34px;
+  border-bottom:1px solid var(--border-sub);
+}
+.article-meta .dot { width:3px; height:3px; background:var(--white-dim); border-radius:50%; }
+
+.article-body { }
+.article-body > * + * { margin-top:22px; }
+.article-body p {
+  font-size:1rem; font-weight:300; line-height:1.85; color:var(--white);
+}
+.article-body p.lead { font-size:1.08rem; }
+.article-body h2 {
+  font-family:var(--serif); font-weight:600;
+  font-size:1.9rem; line-height:1.2; color:var(--white);
+  margin-top:44px; letter-spacing:.01em;
+}
+.article-body h3 {
+  font-family:var(--sans); font-weight:600;
+  font-size:1rem; letter-spacing:.03em; color:var(--green-lt);
+  margin-top:32px;
+}
+.article-body a { color:var(--green-lt); text-decoration:underline; text-underline-offset:3px; text-decoration-color:rgba(160,217,22,.4); }
+.article-body a:hover { text-decoration-color:var(--green-lt); }
+.article-body strong { color:var(--white); font-weight:600; }
+.article-body em { font-style:italic; }
+.article-body ul, .article-body ol { padding-left:22px; }
+.article-body li {
+  font-size:1rem; font-weight:300; line-height:1.8; color:var(--white); margin-top:8px;
+}
+.article-body li::marker { color:var(--amber); }
+.article-body blockquote {
+  border-left:2px solid var(--amber);
+  padding:6px 0 6px 22px; margin-left:2px;
+  font-family:var(--serif); font-style:italic; font-weight:300;
+  font-size:1.4rem; line-height:1.5; color:var(--white-dim);
+}
+.article-hr {
+  display:flex; align-items:center; justify-content:center; gap:14px; margin:44px auto;
+}
+.article-hr::before, .article-hr::after { content:''; width:80px; height:1px; }
+.article-hr::before { background:linear-gradient(90deg, transparent, rgba(140,196,15,.6)); }
+.article-hr::after  { background:linear-gradient(90deg, rgba(212,160,23,.6), transparent); }
+.article-hr span { width:6px; height:6px; background:var(--amber); transform:rotate(45deg); box-shadow:0 0 9px rgba(212,160,23,.6); }
+
+/* pull-fact card, for the striking numbers (e.g. boronia yields) */
+.article-fact {
+  background:var(--surface-2); border:1px solid var(--border);
+  border-left:3px solid var(--amber);
+  padding:22px 26px; margin-top:30px;
+}
+.article-fact .fact-num {
+  font-family:var(--serif); font-size:2.4rem; line-height:1; color:var(--amber); font-weight:400;
+}
+.article-fact .fact-cap { font-size:.86rem; font-weight:300; line-height:1.6; color:var(--white-dim); margin-top:8px; }
+
+/* linked products strip at the foot of a post */
+.article-shop {
+  margin-top:40px; padding-top:28px; border-top:1px solid var(--border-sub);
+}
+.article-shop h3 {
+  font-family:var(--sans); font-weight:600; font-size:.66rem;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--white-dim); margin-bottom:14px;
+}
+.shop-links { display:flex; flex-wrap:wrap; gap:10px; }
+.shop-links a {
+  font-size:.8rem; letter-spacing:.04em; color:var(--white);
+  text-decoration:none; border:1px solid var(--border);
+  padding:9px 16px; transition:border-color .2s, color .2s, box-shadow .2s;
+}
+.shop-links a:hover { border-color:var(--amber); color:var(--amber); box-shadow:0 0 16px rgba(212,160,23,.2); }
+
+/* ── OWNER-INPUT FLAG - deliberately loud so it can never ship unnoticed ── */
+.owner-flag {
+  display:block; margin-top:22px;
+  border:1px dashed var(--amber);
+  background:rgba(212,160,23,0.07);
+  padding:16px 20px;
+  font-family:var(--sans); font-size:.9rem; font-weight:300; line-height:1.65;
+  color:var(--white);
+}
+.owner-flag::before {
+  content:'YOUR INPUT NEEDED';
+  display:block; font-size:.56rem; letter-spacing:.22em; font-weight:700;
+  color:var(--amber); margin-bottom:8px;
+}
+.owner-flag.inline { margin-top:0; display:inline; padding:2px 8px; border-style:solid; }
+.owner-flag.inline::before { content:none; }
+
+/* ── footer strip ── */
+.sheet-foot {
+  border-top:1px solid var(--border-sub);
+  padding:28px 44px 34px;
+  display:flex; flex-wrap:wrap; gap:16px 28px;
+  align-items:center; justify-content:space-between;
+}
+.foot-back {
+  font-size:.7rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--white-dim); text-decoration:none; font-weight:500;
+  display:inline-flex; align-items:center; gap:8px; transition:color .2s, gap .2s;
+}
+.foot-back:hover { color:var(--green-lt); gap:12px; }
+.foot-note { font-size:.78rem; font-weight:300; color:rgba(230,236,231,.4); }
+.foot-note a { color:var(--green-lt); text-decoration:none; }
+.foot-note a:hover { text-decoration:underline; }
+
+@media(max-width:640px){
+  .sheet-wrap { padding:20px 12px 40px; }
+  .sheet-top { padding:18px 20px; }
+  .sheet-eyebrow { font-size:.74rem; letter-spacing:.14em; }
+  .sheet-crumb { font-size:.68rem; letter-spacing:.1em; }
+  .journal-hero { padding:40px 22px 30px; }
+  .cat-grid { grid-template-columns:1fr; padding:6px 20px 30px; }
+  .cat-card { padding:24px 22px; }
+  .cat-name { font-size:1.6rem; }
+  .post-list, .post-list-label { padding-left:20px; padding-right:20px; }
+  .post-card, a.post-card, .post-card.soon { padding:22px 22px; }
+  .post-title { font-size:1.45rem; }
+  .post-empty { margin-left:20px; margin-right:20px; padding:24px; }
+  .article { padding:38px 24px 16px; }
+  .article-body p, .article-body li { font-size:.98rem; }
+  .article-body h2 { font-size:1.6rem; }
+  .article-standfirst { font-size:1rem; line-height:1.65; }
+  .sheet-foot { padding:24px 22px 28px; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .sheet { animation:none; opacity:1; transform:none; }
+  .cat-suggested::after { animation:none; }
+  * { transition:none !important; }
+}
+
+</style>
+</head>
+<body>
+  <main class="sheet-wrap">
+    <article class="sheet sheet-article">
+      <div class="sheet-top">
+        <span class="sheet-crumb"><a href="/journal/">Journal</a> <span class="sep">/</span> <a href="ingredient-history.html">Ingredient History</a></span>
+        <a href="/" class="sheet-close" aria-label="Return to shop">&times;</a>
+      </div>
+
+      <div class="article">
+        <span class="article-kind">Ingredient History</span>
+        <h1 class="article-title">Damask Rose: a thousand blooms in every gram</h1>
+        <p class="article-standfirst">Picked before dawn, distilled the same morning, and measured out drop by drop - the rose behind the world's great perfumes has a history as concentrated as its oil.</p>
+        <div class="article-meta">Ingredient History <span class="dot"></span> July 2026 <span class="dot"></span> 6 min read</div>
+
+        <div class="article-body">
+          <p class="lead">There are thousands of roses in the world, and almost none of them are the rose that perfumers mean. When someone in this trade says "rose", they usually mean one plant: <em>Rosa damascena</em>, the damask rose. It is not the showiest flower in the garden. Its gift is its scent, and it gives that scent up only reluctantly - which is the whole story of why it has been treasured for so long.</p>
+
+          <h2>An oil older than most countries</h2>
+
+          <p>The rose has been distilled for well over a thousand years. Rose water flowed through the ancient Persian world, and the great physician-philosopher Avicenna is often credited with refining the distillation that captured its scent more purely. From there the knowledge travelled - through the medieval Islamic world, into Mughal India, and across the Ottoman Empire, which carried damask rose cultivation into the Balkans where it still flourishes today.</p>
+
+          <p>One of the loveliest origin stories belongs to attar of roses - the pure rose oil. As it is told, a Mughal empress noticed an oily film gathering on the surface of rose water in the palace canals under the sun, skimmed it, and found the concentrated soul of the flower. Whether or not the tale is exact, it captures something true: rose oil is what happens when you patiently coax the scent out of an almost impossible number of petals.</p>
+
+          <h2>Why a few grams cost what they do</h2>
+
+          <p>Damask rose is one of the benchmark expensive naturals, and the arithmetic explains it. The flowers have to be hand-picked at first light, because the fragrant oil is at its peak in the cool early morning and begins to disperse as the sun climbs. Pickers work fast, and the harvest is rushed to the still the same day, because a picked rose does not keep.</p>
+
+          <div class="article-fact">
+            <div class="fact-num">3 to 4 tonnes</div>
+            <div class="fact-cap">The weight of hand-picked petals it typically takes to distil a single kilogram of rose otto - somewhere around 1.5 million individual flowers. The oil yield works out at roughly three hundredths of one percent.</div>
+          </div>
+
+          <p>There are two main forms you will meet. Rose <strong>otto</strong> is the steam-distilled oil - the classic attar, prone to turning semi-solid in the cold and melting clear in the hand. Rose <strong>absolute</strong> is drawn out with solvents instead, giving a deeper, richer, more true-to-the-fresh-flower scent that perfumers love for its warmth. Same flower, two different souls.</p>
+
+          <p>The rose I carry is a Bulgarian <strong>absolute</strong>. That is a deliberate choice. Where the otto leans bright and slightly green, the absolute holds on to more of what the living flower actually smells like - fuller, warmer, a little honeyed, closer to burying your face in the bloom. It is the form most perfumers reach for when they want the rose to feel present rather than polite.</p>
+
+          <h2>The valley of roses</h2>
+
+          <p>If damask rose has a modern capital, it is the Rose Valley of Bulgaria, around Kazanlak, where the plant has been grown for the perfume trade since the seventeenth century. The cool nights, morning mist and sheltered ground there suit the flower perfectly, and each spring the harvest is still a whole-community event. Turkey is the other great producer, and historically the rose fields of Persia and the south of France carried the craft too.</p>
+
+          <blockquote>A rose picked at noon is just a flower. A rose picked at dawn, and distilled by lunch, is perfume.</blockquote>
+
+          <h2>Why I keep it in the range</h2>
+
+          <p>Rose is one of those materials that quietly teaches you what "natural" is worth. The synthetic versions are competent and cheap, and they will never be mistaken for the real thing by anyone who has smelled both side by side. A true damask rose has a depth and a soft, honeyed complexity that comes from hundreds of trace compounds working together - the sort of thing that only a living flower, grown in the right place and caught at the right hour, knows how to make.</p>
+
+          <div class="article-hr"><span></span></div>
+
+          <div class="article-shop">
+            <h3>In the range</h3>
+            <div class="shop-links">
+              <a href="/products/damask-rose-bulgarian.html">Damask Rose, Bulgarian</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="sheet-foot">
+        <a href="ingredient-history.html" class="foot-back">&larr; More Ingredient History</a>
+        <p class="foot-note">New notes each season. <a href="/#newsletter">Join the list</a> to hear first.</p>
+      </footer>
+    </article>
+  </main>
+</body>
+</html>

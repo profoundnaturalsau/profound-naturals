@@ -2276,7 +2276,7 @@ button.rv-nudge-skip {
     <li><a href="#shop">Shop</a></li>
     <li><a href="#collections">Collections</a></li>
     <li><a href="#about">About</a></li>
-    <li><a href="#journal">Journal</a></li>
+    <li><a href="/journal/">Journal</a></li>
     <li><a href="#" onclick="event.preventDefault(); openContactModal()">Contact</a></li>
   </ul>
   <div style="display:flex;align-items:center;gap:14px;">
@@ -2307,7 +2307,7 @@ button.rv-nudge-skip {
     <li><a href="#shop" onclick="toggleMobileMenu()">Shop</a></li>
     <li><a href="#collections" onclick="toggleMobileMenu()">Collections</a></li>
     <li><a href="#about" onclick="toggleMobileMenu()">About</a></li>
-    <li><a href="#journal" onclick="toggleMobileMenu()">Journal</a></li>
+    <li><a href="/journal/" onclick="toggleMobileMenu()">Journal</a></li>
     <li><a href="#" onclick="event.preventDefault(); toggleMobileMenu(); setTimeout(openContactModal, 300)">Contact</a></li>
     <li><a href="#" onclick="event.preventDefault(); toggleMobileMenu(); setTimeout(openWhyNaturalModal, 300)">Why Natural?</a></li>
   </ul>
@@ -2553,7 +2553,7 @@ button.rv-nudge-skip {
 </div>
 
 <!-- NEWSLETTER -->
-<div class="newsletter">
+<div class="newsletter" id="newsletter">
   <div>
     <h2 class="newsletter-title">Join the<br><em>Profound Naturals</em> community</h2>
     <p class="newsletter-sub">Seasonal stories, new arrivals, rare botanical finds - and 10% off your first order. No noise, just nature.</p>
@@ -2596,7 +2596,7 @@ button.rv-nudge-skip {
         <li><a href="#" onclick="event.preventDefault(); const o=document.getElementById('sustainabilityOverlay'); o.classList.add('open'); lockBodyScroll();">Sustainability</a></li>
         <li><a href="#" class="footer-link-amber" onclick="event.preventDefault(); openBalticAmberModal()">Baltic Amber</a></li>
         <li><a href="#">Ingredients</a></li>
-        <li><a href="#">Journal</a></li>
+        <li><a href="/journal/">Journal</a></li>
         <li><a href="https://profoundnaturals.online" target="_blank" class="footer-link-teal">Custom Scent</a></li>
       </ul>
     </div>
@@ -4452,7 +4452,7 @@ function closeNefertModalDirect() {
 })();
 </script>
 <script>
-console.log('PN BUILD 21-07-B');
+console.log('PN BUILD 22-07-A');
 (function(){
   var SIZE_TWINS = { 74: { '5ml': { id: 75, price: 42.95 } } };
 

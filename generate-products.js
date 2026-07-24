@@ -412,7 +412,28 @@ infoUrls.push(SITE + '/contact.html');
 console.log('Wrote ' + infoUrls.length + ' info pages');
 
 /* ── 5. sitemap.xml + robots.txt ── */
-const urls = [SITE + '/'].concat(pages.map(p => p.url)).concat(infoUrls);
+
+/* JOURNAL URLS - scanned, not hardcoded.
+   The journal is hand-built, not generated, so this script knew nothing
+   about it and rebuilt sitemap.xml from products + info pages only. That
+   silently deleted every /journal/ URL on each run (102 -> 81).
+   Scanning the folder means adding a post needs no sitemap edit and no
+   change here: drop the HTML in journal/, re-run, done. If the folder is
+   absent (running outside the repo) it contributes nothing and the rest
+   still works. journal/index.html maps to the directory URL /journal/. */
+const journalUrls = (() => {
+  const dir = path.join(__dirname, 'journal');
+  if (!fs.existsSync(dir)) {
+    console.log('Note: journal/ not found - no journal URLs added to sitemap');
+    return [];
+  }
+  return fs.readdirSync(dir)
+    .filter(f => f.endsWith('.html'))
+    .sort()
+    .map(f => f === 'index.html' ? SITE + '/journal/' : SITE + '/journal/' + f);
+})();
+
+const urls = [SITE + '/'].concat(pages.map(p => p.url)).concat(infoUrls).concat(journalUrls);
 const sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n' +
   '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
   urls.map(u => '  <url><loc>' + u + '</loc><lastmod>' + TODAY + '</lastmod></url>').join('\n') +
@@ -420,4 +441,4 @@ const sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n' +
 fs.writeFileSync(path.join(__dirname, 'sitemap.xml'), sitemap);
 fs.writeFileSync(path.join(__dirname, 'robots.txt'),
   'User-agent: *\nAllow: /\n\nSitemap: ' + SITE + '/sitemap.xml\n');
-console.log('Wrote sitemap.xml (' + urls.length + ' URLs) and robots.txt');
+console.log('Wrote sitemap.xml (' + urls.length + ' URLs, incl ' + journalUrls.length + ' journal) and robots.txt');

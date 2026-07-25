@@ -2405,6 +2405,27 @@
   .product-badge.out-of-stock { border-radius:0 8px 0 8px !important; }
   .product-badge.out-of-stock:active { border-radius:0 5px 0 5px !important; }
 }
+
+/* ── MOBILE MENU: fit all six links without clipping (25-07-B) ──
+   "Why Natural?" was already in the markup but .mobile-menu-links is
+   flex:1 + overflow-y:auto, and six items at 18px vertical padding
+   overflowed the available height, so the last row was cut off mid-item
+   and read as an empty strip above the search box. Tightening the row
+   padding and the list padding recovers ~64px, enough for the sixth row
+   while keeping every tap target at 44px. */
+.mobile-menu-links { padding:18px 0 !important; }
+.mobile-menu-links a { padding:15px 28px !important; }
+
+/* ── NAV HAMBURGER: 10% smaller (25-07-B) ──
+   22px -> 19.8px bars, 5px -> 4.5px gap. The .open transforms are
+   geometry, not decoration: they equal bar height + gap (centre to
+   centre), so 6.5px must become 6px or the X arms will not meet.
+   Bar height stays 1.5px - it is already a hairline and 1.35px would
+   round inconsistently across devices. */
+.nav-hamburger { gap:4.5px !important; }
+.nav-hamburger span { width:19.8px !important; }
+.nav-hamburger.open span:nth-child(1) { transform:translateY(6px) rotate(45deg) !important; }
+.nav-hamburger.open span:nth-child(3) { transform:translateY(-6px) rotate(-45deg) !important; }
 </style>
 
 <!-- ═══════════ STRUCTURED DATA: Organization & WebSite (added 14-07-26, additive only) ═══════════ -->
@@ -4686,7 +4707,7 @@ function closeNefertModalDirect() {
 })();
 </script>
 <script>
-console.log('PN BUILD 25-07-A');
+console.log('PN BUILD 25-07-B');
 (function(){
   var SIZE_TWINS = { 74: { '5ml': { id: 75, price: 42.95 } } };
 

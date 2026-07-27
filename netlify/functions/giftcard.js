@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const Stripe = require('stripe');
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -18,12 +19,17 @@ function isRateLimited(ip) {
 
 // ── GENERATE READABLE GIFT CARD CODE ──
 // Format: PN-XXXX-XXXX (no O,0,I,1 to avoid confusion)
+// crypto.randomInt, NOT Math.random: V8's Math.random state can be recovered
+// from observed outputs, and every legitimately bought gift card hands its
+// buyer 8 consecutive outputs. Coupons are minted at session creation (before
+// payment), so a predictable generator would let someone derive live codes.
+// crypto.randomInt makes every code independently unguessable.
 function generateCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let code = 'PN-';
-  for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  for (let i = 0; i < 4; i++) code += chars[crypto.randomInt(chars.length)];
   code += '-';
-  for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  for (let i = 0; i < 4; i++) code += chars[crypto.randomInt(chars.length)];
   return code;
 }
 

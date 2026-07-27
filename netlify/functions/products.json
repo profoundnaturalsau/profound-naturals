@@ -3,362 +3,449 @@
     {
       "id": 1,
       "name": "Carrot Cake",
-      "price": 108.96
+      "price": 108.96,
+      "category": "Botanical Perfume"
     },
     {
       "id": 2,
       "name": "Velvet Forest",
-      "price": 79.8
+      "price": 79.8,
+      "category": "Botanical Perfume"
     },
     {
       "id": 3,
       "name": "Jazz Lounge",
-      "price": 88.88
+      "price": 88.88,
+      "category": "Botanical Perfume"
     },
     {
       "id": 4,
       "name": "Floral Fantasy",
-      "price": 98.0
+      "price": 98,
+      "category": "Botanical Perfume"
     },
     {
       "id": 5,
       "name": "Pr-nfr",
-      "price": 99.95
+      "price": 99.95,
+      "category": "Botanical Perfume"
     },
     {
       "id": 6,
       "name": "Pr-nfrt",
-      "price": 118.76
+      "price": 118.76,
+      "category": "Botanical Perfume",
+      "inStock": false
     },
     {
       "id": 7,
       "name": "Hemp Soap - Lavender",
-      "price": 9.0
+      "price": 9,
+      "category": "Natural Soap"
     },
     {
       "id": 8,
       "name": "Hemp Soap - Eucalyptus",
-      "price": 9.0
+      "price": 9,
+      "category": "Natural Soap"
     },
     {
       "id": 9,
       "name": "Black Soap - Lavender, Boronia & Daisy",
-      "price": 14.0
+      "price": 14,
+      "category": "Natural Soap",
+      "inStock": false
     },
     {
       "id": 10,
       "name": "Black Soap - Woody Eucalyptus",
-      "price": 14.0
+      "price": 14,
+      "category": "Natural Soap",
+      "inStock": false
     },
     {
       "id": 11,
       "name": "Aroma Necklaces",
-      "price": 18.0
+      "price": 18,
+      "category": "Jewellery",
+      "variants": [
+        "Gold",
+        "Silver",
+        "Rose Gold"
+      ]
     },
     {
       "id": 13,
       "name": "Himalayan Cedarwood",
-      "price": 9.95
+      "price": 9.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 16,
       "name": "Jasmine",
-      "price": 59.95
+      "price": 59.95,
+      "category": "100% Pure Absolute",
+      "inStock": false
     },
     {
       "id": 17,
       "name": "Bergamot",
-      "price": 16.95
+      "price": 16.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 18,
       "name": "Eucalyptus Blue Gum",
-      "price": 9.95
+      "price": 9.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 19,
       "name": "Eucalyptus Radiata",
-      "price": 11.95
+      "price": 11.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 20,
       "name": "Eucalyptus Kochii",
-      "price": 11.95
+      "price": 11.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 21,
       "name": "Blue Tansy",
-      "price": 44.95
+      "price": 44.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 22,
       "name": "Tea Tree",
-      "price": 9.95
+      "price": 9.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 23,
       "name": "Sandalwood",
-      "price": 39.95
+      "price": 39.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 24,
       "name": "Baltic Amber",
-      "price": 49.95
+      "price": 49.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 25,
       "name": "Hemp Soap - Peppermint",
-      "price": 9.0
+      "price": 9,
+      "category": "Natural Soap"
     },
     {
       "id": 26,
       "name": "Clary Sage",
-      "price": 14.95
+      "price": 14.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 27,
       "name": "Ginger",
-      "price": 12.95
+      "price": 12.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 28,
       "name": "Nerolina",
-      "price": 16.95
+      "price": 16.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 29,
       "name": "Pink Grapefruit",
-      "price": 9.95
+      "price": 9.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 30,
       "name": "Clove Bud",
-      "price": 9.95
+      "price": 9.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 31,
       "name": "Rose Geranium",
-      "price": 16.95
+      "price": 16.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 32,
       "name": "Lime Distilled",
-      "price": 9.95
+      "price": 9.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 33,
       "name": "Ho Wood",
-      "price": 14.95
+      "price": 14.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 34,
       "name": "Sweet Orange",
-      "price": 8.95
+      "price": 8.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 35,
       "name": "Kunzea",
-      "price": 18.95
+      "price": 18.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 36,
       "name": "Scots Pine",
-      "price": 11.95
+      "price": 11.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 37,
       "name": "Nutmeg",
-      "price": 12.95
+      "price": 12.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 38,
       "name": "Ambrette Seed",
-      "price": 44.95
+      "price": 44.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 39,
       "name": "Cocoa",
-      "price": 34.95
+      "price": 34.95,
+      "category": "100% Pure Absolute"
     },
     {
       "id": 40,
       "name": "Agarwood (Indian Oud)",
-      "price": 89.95
+      "price": 89.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 41,
       "name": "Ylang Ylang 1st",
-      "price": 14.95
+      "price": 14.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 42,
       "name": "Ylang Ylang 3rd",
-      "price": 12.95
+      "price": 12.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 43,
       "name": "Ylang Ylang Complete",
-      "price": 13.95
+      "price": 13.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 44,
       "name": "Cypress",
-      "price": 13.95
+      "price": 13.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 45,
       "name": "May Chang",
-      "price": 11.95
+      "price": 11.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 46,
       "name": "Euca Blue Mallee",
-      "price": 11.95
+      "price": 11.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 47,
       "name": "Geranium Bourbon",
-      "price": 18.95
+      "price": 18.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 48,
       "name": "Rosemary (Spanish)",
-      "price": 11.95
+      "price": 11.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 49,
       "name": "Euca Citriodora",
-      "price": 11.95
+      "price": 11.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 50,
       "name": "Tonka",
-      "price": 29.95
+      "price": 29.95,
+      "category": "100% Pure Absolute"
     },
     {
       "id": 51,
       "name": "Tuberose",
-      "price": 79.95
+      "price": 79.95,
+      "category": "100% Pure Absolute"
     },
     {
       "id": 52,
       "name": "Frangipani",
-      "price": 59.95
+      "price": 59.95,
+      "category": "100% Pure Absolute"
     },
     {
       "id": 53,
       "name": "Osmanthus",
-      "price": 49.95
+      "price": 49.95,
+      "category": "100% Pure Absolute"
     },
     {
       "id": 54,
       "name": "Magnolia (White Champaca)",
-      "price": 64.95
+      "price": 64.95,
+      "category": "100% Pure Absolute"
     },
     {
       "id": 55,
       "name": "Galbanum",
-      "price": 16.95
+      "price": 16.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 56,
       "name": "Honeysuckle",
-      "price": 37.95
+      "price": 37.95,
+      "category": "100% Pure Absolute"
     },
     {
       "id": 57,
       "name": "Lemon",
-      "price": 11.95
+      "price": 11.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 58,
       "name": "Cinnamon Bark",
-      "price": 13.95
+      "price": 13.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 59,
       "name": "Black Spruce",
-      "price": 13.95
+      "price": 13.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 60,
       "name": "Blue Cypress",
-      "price": 28.95
+      "price": 28.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 61,
       "name": "Boronia Absolute",
-      "price": 89.95
+      "price": 89.95,
+      "category": "100% Pure Absolute"
     },
     {
       "id": 62,
       "name": "Vanilla Oleoresin",
-      "price": 24.95
+      "price": 24.95,
+      "category": "100% Pure Absolute"
     },
     {
       "id": 63,
       "name": "Elemi",
-      "price": 13.95
+      "price": 13.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 64,
       "name": "Benzoin",
-      "price": 16.95
+      "price": 16.95,
+      "category": "100% Pure Resinoid"
     },
     {
       "id": 65,
       "name": "Cade",
-      "price": 18.95
+      "price": 18.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 66,
       "name": "Peppermint",
-      "price": 13.95
+      "price": 13.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 67,
       "name": "Lavandin Grosso",
-      "price": 12.95
+      "price": 12.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 68,
       "name": "Virginian Cedarwood",
-      "price": 13.95
+      "price": 13.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 69,
       "name": "Mandarin",
-      "price": 12.95
+      "price": 12.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 70,
       "name": "Oakmoss",
-      "price": 38.95
+      "price": 38.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 71,
       "name": "Myrrh",
-      "price": 34.95
+      "price": 34.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 72,
       "name": "Rosalina",
-      "price": 16.0
+      "price": 16,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 73,
       "name": "Davana",
-      "price": 34.95
+      "price": 34.95,
+      "category": "100% Pure Essential Oil"
     },
     {
       "id": 74,
       "name": "Damask Rose (Bulgarian)",
-      "price": 74.95
+      "price": 74.95,
+      "category": "100% Pure Absolute",
+      "variants": [
+        "10ml"
+      ]
     },
     {
       "id": 75,
       "name": "Damask Rose (Bulgarian)",
-      "price": 42.95
+      "price": 42.95,
+      "category": "100% Pure Absolute",
+      "variants": [
+        "5ml"
+      ]
     }
   ]
 }

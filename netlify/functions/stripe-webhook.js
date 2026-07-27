@@ -1,6 +1,7 @@
 // netlify/functions/stripe-webhook.js - Profound Naturals MAIN SITE
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const nodemailer = require('nodemailer');
+const { getStore, connectLambda } = require('@netlify/blobs');
 
 // ── ZOHO SMTP ──
 function makeTransporter(host) {
@@ -9,7 +10,6 @@ function makeTransporter(host) {
     port: 465,
     secure: true,
     auth: { user: process.env.ZOHO_USER, pass: process.env.ZOHO_PASS },
-    tls: { rejectUnauthorized: false },
   });
 }
 
@@ -376,12 +376,18 @@ exports.handler = async (event) => {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
-  // Verify Stripe signature - rejects anything not from Stripe
+  // Verify Stripe signature - rejects anything not from Stripe.
+  // The signature is an HMAC over the raw bytes Stripe sent, so if the platform
+  // ever delivers the body base64-encoded, it must be decoded back to the raw
+  // payload first or verification fails closed (annoying, not exploitable).
+  const rawBody = event.isBase64Encoded
+    ? Buffer.from(event.body, 'base64').toString('utf8')
+    : event.body;
   const sig = event.headers['stripe-signature'];
   let stripeEvent;
   try {
     stripeEvent = stripe.webhooks.constructEvent(
-      event.body,
+      rawBody,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET
     );
@@ -390,10 +396,35 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: `Webhook Error: ${err.message}` };
   }
 
+  // Acknowledge anything we don't handle before touching the dedupe store, so
+  // ignored event types never write a blob.
+  const HANDLED = ['checkout.session.completed', 'charge.refunded'];
+  if (!HANDLED.includes(stripeEvent.type)) {
+    return { statusCode: 200, body: 'Event ignored' };
+  }
+
+  // ── IDEMPOTENCY ──
+  // Stripe retries any event it considers undelivered (timeouts included), and a
+  // retried event replays every email below. Claim the event id in Blobs BEFORE
+  // processing: seen id -> acknowledge and stop. Claim-first matches the existing
+  // "200 regardless" philosophy - one attempt per event, never a duplicate send.
+  // Blobs failure falls through to processing (emails matter more than dedupe).
+  // The store grows by one tiny blob per order/refund; it can be purged any time.
+  try {
+    connectLambda(event);
+    const seen = getStore('webhook-events');
+    if (await seen.get(stripeEvent.id)) {
+      return { statusCode: 200, body: 'Duplicate event ignored' };
+    }
+    await seen.set(stripeEvent.id, new Date().toISOString());
+  } catch (err) {
+    console.error('Webhook dedupe store unavailable, processing anyway:', err.message);
+  }
+
   // ── REFUND BRANCH (charge.refunded) ──
-  // Refunds arrive as charge.refunded, NOT checkout.session.completed, so this branch
-  // must sit BEFORE the completed-checkout guard below. REQUIRES a Stripe dashboard step:
-  // the existing webhook endpoint must be subscribed to charge.refunded or this never
+  // Refunds arrive as charge.refunded, NOT checkout.session.completed - both are
+  // admitted by the HANDLED gate above. REQUIRES a Stripe dashboard step: the
+  // existing webhook endpoint must be subscribed to charge.refunded or this never
   // fires (no new endpoint / keys / DNS - one checkbox on the existing endpoint).
   if (stripeEvent.type === 'charge.refunded') {
     const charge = stripeEvent.data.object;
@@ -427,10 +458,6 @@ exports.handler = async (event) => {
     return { statusCode: 200, body: 'OK' };
   }
 
-  // Only handle completed checkouts (order + gift-card branches below)
-  if (stripeEvent.type !== 'checkout.session.completed') {
-    return { statusCode: 200, body: 'Event ignored' };
-  }
 
   const session  = stripeEvent.data.object;
   const metadata = session.metadata || {};

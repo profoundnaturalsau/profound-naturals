@@ -2,59 +2,139 @@ const Stripe = require('stripe');
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const PRODUCTS = require('./products.json');
 
-// Build a lookup map: id -> price
-const priceMap = {};
-PRODUCTS.products.forEach(p => { priceMap[p.id] = p.price; });
+// Full server-side catalogue: id -> { name, price, category, inStock, variants }
+// The browser sends IDs and quantities. Nothing else it sends is used.
+const CATALOGUE = {};
+PRODUCTS.products.forEach(p => { CATALOGUE[p.id] = p; });
+
+const MAX_QTY_PER_LINE = 99;
+const MAX_LINES        = 50;    // Stripe caps checkout sessions at 100 line items
+const MAX_ORDER_TOTAL  = 10000; // AUD sanity ceiling before anything reaches Stripe
+
+// ── RATE LIMITER (in-memory; resets on cold start) ──
+// Generous for humans (a checkout retry loop never hits 12/hr), tight enough to
+// stop a script minting thousands of Stripe sessions under this account.
+const rateMap = {};
+const RATE_LIMIT = 12;
+const RATE_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+function isRateLimited(ip) {
+  const now = Date.now();
+  // Bound the map: a scanner cycling spoofed IPs must not grow warm-instance
+  // memory without limit. Sweep expired windows first; if still oversized,
+  // reset (worst case a few extra requests slip through one window).
+  const keys = Object.keys(rateMap);
+  if (keys.length > 5000) {
+    for (const k of keys) if (now - rateMap[k].start > RATE_WINDOW_MS) delete rateMap[k];
+    if (Object.keys(rateMap).length > 5000) for (const k in rateMap) delete rateMap[k];
+  }
+  if (!rateMap[ip] || now - rateMap[ip].start > RATE_WINDOW_MS) {
+    rateMap[ip] = { count: 1, start: now };
+    return false;
+  }
+  rateMap[ip].count++;
+  return rateMap[ip].count > RATE_LIMIT;
+}
+
+const bad = (msg, code = 400) => ({
+  statusCode: code,
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ error: msg }),
+});
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
+  const ip = (event.headers || {})['x-forwarded-for']?.split(',')[0].trim() || 'unknown';
+  if (isRateLimited(ip)) {
+    return bad('Too many requests - please wait a moment and try again', 429);
+  }
+
   let items, couponCode;
   try {
     ({ items, couponCode } = JSON.parse(event.body));
   } catch {
-    return { statusCode: 400, body: 'Invalid request body' };
+    return bad('Invalid request body');
   }
 
-  if (!items || !items.length) {
-    return { statusCode: 400, body: 'No items provided' };
-  }
+  if (!Array.isArray(items) || items.length === 0) return bad('No items provided');
+  if (items.length > MAX_LINES) return bad('Too many items');
 
-  // Resolve server-side prices - browser price is never trusted
-  const resolvedItems = [];
+  // Resolve everything from the server catalogue. The browser is treated as a
+  // source of intent (which product, how many) and never as a source of fact
+  // (what it costs, what it is called, whether it can be sold at all).
+  const lines = new Map();
+
   for (const item of items) {
-    const serverPrice = priceMap[item.id];
-    if (!serverPrice) {
-      return { statusCode: 400, body: 'Invalid product' };
+    if (!item || typeof item !== 'object') return bad('Invalid item');
+
+    // ID must be a real integer key, not a prototype key like "constructor".
+    const id = Number(item.id);
+    if (!Number.isInteger(id)) return bad('Invalid product');
+    if (!Object.prototype.hasOwnProperty.call(CATALOGUE, id)) return bad('Invalid product');
+
+    const product = CATALOGUE[id];
+
+    // Existence, not truthiness - a $0.00 product must not read as "not found".
+    if (typeof product.price !== 'number' || !isFinite(product.price) || product.price < 0) {
+      return bad('Invalid product');
     }
-    resolvedItems.push({
-      id:       item.id,
-      name:     item.name,
-      category: item.category,
-      variant:  item.variant || null,
-      qty:      item.qty,
-      price:    serverPrice,   // server price only - never item.price
-    });
+
+    // Stock is enforced here, not just hidden in the UI.
+    if (product.inStock === false) return bad('One or more items are out of stock');
+
+    // Quantity: integer, at least 1, capped. This feeds the free shipping
+    // thresholds below, so it cannot be a float or a numeric string.
+    const qty = Number(item.qty);
+    if (!Number.isInteger(qty) || qty < 1 || qty > MAX_QTY_PER_LINE) {
+      return bad('Invalid quantity');
+    }
+
+    // Variant must be one the server actually offers for this exact ID.
+    // ids 74 and 75 are size twins and each accepts one size only, so
+    // id 74 + "5ml" cannot be sold at the 10ml price.
+    let variant = null;
+    if (Array.isArray(product.variants) && product.variants.length) {
+      if (typeof item.variant !== 'string') return bad('Please choose an option');
+      variant = product.variants.find(v => v === item.variant) || null;
+      if (!variant) return bad('Please choose an option');
+    }
+
+    // Merge duplicate lines rather than letting the browser pad the line count.
+    const key = variant ? `${id}::${variant}` : `${id}`;
+    const existing = lines.get(key);
+    if (existing) {
+      existing.qty = Math.min(MAX_QTY_PER_LINE, existing.qty + qty);
+    } else {
+      lines.set(key, { product, variant, qty });
+    }
   }
 
-  // Calculate subtotal from server-side prices to determine free shipping thresholds
-  const subtotal = resolvedItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  const resolved = [...lines.values()];
+
+  // Subtotal from server prices only - this is what decides free shipping.
+  const subtotal = resolved.reduce((sum, l) => sum + l.product.price * l.qty, 0);
+  if (!isFinite(subtotal) || subtotal <= 0 || subtotal > MAX_ORDER_TOTAL) {
+    return bad('Invalid order total');
+  }
+
   const standardFree = subtotal >= 85;
   const expressFree  = subtotal >= 180;
 
-  // Build line items for Stripe
-  const lineItems = resolvedItems.map(item => ({
+  // Names and descriptions come from the catalogue, so a crafted request cannot
+  // rewrite what appears on the Stripe receipt, in the dashboard, or in the
+  // order confirmation email the webhook builds out of these line items.
+  const lineItems = resolved.map(l => ({
     price_data: {
       currency: 'aud',
-      unit_amount: Math.round(item.price * 100),
+      unit_amount: Math.round(l.product.price * 100),
       product_data: {
-        name: item.variant ? `${item.name} (${item.variant})` : item.name,
-        description: item.category || undefined,
+        name: l.variant ? `${l.product.name} (${l.variant})` : l.product.name,
+        description: l.product.category || undefined,
       },
     },
-    quantity: item.qty,
+    quantity: l.qty,
   }));
 
   const baseUrl = process.env.URL || 'https://profoundnaturals.com.au';
@@ -93,12 +173,18 @@ exports.handler = async (event) => {
     allow_promotion_codes: true,
   };
 
-  // Apply gift card coupon if provided and valid format
-  if (couponCode && /^PN-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(couponCode.toUpperCase())) {
+  // Gift card coupon - format checked, then verified against Stripe itself.
+  if (typeof couponCode === 'string' && /^PN-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(couponCode.toUpperCase())) {
+    const code = couponCode.toUpperCase();
     try {
-      const coupon = await stripe.coupons.retrieve(couponCode.toUpperCase());
-      if (coupon.valid && coupon.times_redeemed < coupon.max_redemptions && coupon.metadata?.type === 'gift_card') {
-        sessionParams.discounts = [{ coupon: couponCode.toUpperCase() }];
+      const coupon = await stripe.coupons.retrieve(code);
+      if (
+        coupon.valid &&
+        typeof coupon.max_redemptions === 'number' &&
+        coupon.times_redeemed < coupon.max_redemptions &&
+        coupon.metadata?.type === 'gift_card'
+      ) {
+        sessionParams.discounts = [{ coupon: code }];
         delete sessionParams.allow_promotion_codes;
       }
     } catch (err) {
@@ -110,12 +196,14 @@ exports.handler = async (event) => {
     const session = await stripe.checkout.sessions.create(sessionParams);
     return {
       statusCode: 200,
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ url: session.url }),
     };
   } catch (err) {
     console.error('Stripe checkout error:', err);
     return {
       statusCode: 500,
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ error: 'Checkout unavailable' }),
     };
   }

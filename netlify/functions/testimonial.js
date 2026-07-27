@@ -31,7 +31,6 @@ function makeTransporter(host) {
     port: 465,
     secure: true,
     auth: { user: process.env.ZOHO_USER, pass: process.env.ZOHO_PASS },
-    tls: { rejectUnauthorized: false },
   });
 }
 

@@ -59,10 +59,10 @@
   /* Scrollbar styling — Chrome, Edge, Safari */
   ::-webkit-scrollbar { width:6px; height:6px; }
   ::-webkit-scrollbar-track { background:var(--bg); }
-  ::-webkit-scrollbar-thumb { background:var(--green); border-radius:3px; }
+  ::-webkit-scrollbar-thumb { background:var(--amber); border-radius:3px; }
   ::-webkit-scrollbar-thumb:hover { background:var(--green-lt); }
   /* Firefox */
-  * { scrollbar-width:thin; scrollbar-color:var(--green) var(--bg); }
+  * { scrollbar-width:thin; scrollbar-color:var(--amber) var(--bg); }
 
   /* Green tap highlight + no blue outline on all interactive elements */
   a, button, [onclick], [role="button"],
@@ -1364,18 +1364,9 @@
   .modal-ing-toggle:hover { color:var(--green); }
   .modal-ing-arrow { transition:transform .25s; display:inline-block; font-size:.8rem; }
   .modal-ing-toggle.open .modal-ing-arrow { transform:rotate(180deg); }
-  .modal-ingredients {
-    font-size:.62rem; color:var(--white-dim); line-height:1.7;
-    margin-bottom:0; padding:0 0 0 0;
-    background:none; border-left:none; opacity:.7;
-    max-height:0; overflow:hidden;
-    transition:max-height .35s ease, padding .35s ease, margin .35s ease;
-  }
-  .modal-ingredients.open {
-    max-height:300px; padding:10px 14px 16px;
-    background:var(--green-pale); border-left:2px solid var(--green);
-    margin-bottom:16px;
-  }
+  /* .modal-ingredients styling is defined authoritatively in the top-level
+     block (search "SINGLE SOURCE OF TRUTH for the modal ingredients box").
+     The former rules here were superseded by the single/multi split. */
 
   /* ── POLICY MODAL ── */
   .policy-overlay {
@@ -1717,7 +1708,7 @@
     .modal-desc-toggle { font-size:.68rem; color:var(--green-lt); letter-spacing:.1em; text-transform:uppercase; background:none; border:none; border-bottom:1px solid rgba(140,196,15,.3); padding:0 0 4px; cursor:pointer; display:none; margin-bottom:8px; align-self:flex-start; width:auto; -webkit-appearance:none; appearance:none; border-radius:0; box-shadow:none; }
     .modal-desc-toggle.visible { display:inline-block; }
     .modal-ing-toggle { font-size:.62rem; padding:6px 0; }
-    .modal-ingredients.open { max-height:400px; padding:8px 10px 12px; }
+    /* .modal-ingredients open/closed handled by the top-level authoritative block */
     .modal-price { font-size:1.4rem; margin-bottom:2px; }
     .modal-afterpay { font-size:.65rem; margin-bottom:8px; }
     .modal-variants { margin:8px 0 2px; }
@@ -2079,38 +2070,62 @@
    2) The full-height green border-left is replaced by a short 22px accent
       drawn as a background strip, so the bar no longer stretches with the
       ingredient list. */
+/* Base ingredients box look (both single and multi share the green zone drawn
+   by the box's OWN border + background - never a stretch pseudo, so it always
+   tracks real height and cannot fall out of place when the desc expands).
+
+   This block is the SINGLE SOURCE OF TRUTH for the modal ingredients box at
+   every width. The original rules live in breakpoint media queries
+   (@media min-width:901px and max-width:900px) and set overlapping values with
+   no !important, so every visual property here is marked !important to keep the
+   cascade deterministic - the box must never depend on which breakpoint's
+   legacy rule happens to win. Two modes:
+     .single        -> pure oils etc: always open, no toggle (toggle hidden by JS)
+     :not(.single)  -> perfumes/soaps: collapses; closed shows nothing at all */
 .modal-ingredients {
   font-size:.72rem !important;
-  display:flex !important;
-  align-items:center;
-  gap:12px;
-  line-height:1.55;
+  display:block !important;
+  line-height:1.55 !important;
+  min-height:0 !important;
+  color:var(--white-dim) !important;
+  transition:max-height .35s ease, padding .35s ease, margin .35s ease !important;
+}
+/* SINGLE ingredient: always visible, no collapse. */
+.modal-ingredients.single {
   max-height:none !important;
-  min-height:0;
   overflow:visible !important;
   opacity:1 !important;
   padding:9px 14px 9px 12px !important;
   margin-bottom:16px !important;
   background:var(--green-pale) !important;
+  border-left:2px solid var(--green) !important;
+}
+/* MULTI ingredient, CLOSED: zero footprint - no height, padding, border or
+   background - so nothing shows above the price until the toggle is opened. */
+.modal-ingredients:not(.single) {
+  max-height:0 !important;
+  overflow:hidden !important;
+  opacity:1 !important;
+  padding:0 14px !important;
+  margin-bottom:0 !important;
+  background:transparent !important;
   border-left:none !important;
 }
+/* MULTI ingredient, OPEN: the full green box. */
+.modal-ingredients:not(.single).open {
+  max-height:400px !important;
+  padding:9px 14px !important;
+  margin-bottom:16px !important;
+  background:var(--green-pale) !important;
+  border-left:2px solid var(--green) !important;
+}
+/* Toggle is interactive for multi-ingredient; JS hides it entirely for the
+   single case, so these only ever affect the collapsible boxes. */
+.modal-ing-toggle { pointer-events:auto !important; }
+.modal-ing-arrow  { display:inline-block !important; }
 /* Australian Made icon: the kangaroo's wide silhouette reads smaller than
    the tall leaf/heart icons at equal size - bumps the existing 1.1 scale */
 .value-icon img[src*="australian-made"] { transform:scale(1.18) !important; }
-
-/* The bar is a flex item stretched to the text's own height: one line of
-   ingredients = a short centred bar; three lines = a bar spanning all three.
-   Fully dynamic, and the box hugs its content with no dead space. */
-.modal-ingredients::before {
-  content:'';
-  flex:0 0 2px;
-  align-self:stretch;
-  min-height:15px;
-  background:var(--green);
-  border-radius:1px;
-}
-.modal-ing-toggle { pointer-events:none; }
-.modal-ing-arrow  { display:none; }
 
 /* Testimonial cards: green left line removed, subtle amber border all round (no glow) */
 .testimonial { border:1px solid rgba(212,160,23,0.4) !important; }
@@ -3303,10 +3318,10 @@ button.rv-nudge-skip {
       <button class="baltic-amber-close" onclick="closeBalticAmberModalDirect()">✕</button>
     </div>
     <div class="baltic-amber-body">
-      <p class="baltic-amber-lead">Baltic Amber essential oil is one of the world's most extraordinary aromatics - distilled not from living plant material, but from ancient fossilised tree sap. A gemstone in aromatic form.</p>
+      <p class="baltic-amber-lead">Baltic Amber oil is one of the world's most extraordinary aromatics - drawn not from living plant material, but from ancient fossilised tree resin. A gemstone in aromatic form.</p>
       <div class="baltic-amber-divider"></div>
       <h3 class="baltic-amber-section-title">What It Is</h3>
-      <p>Unlike every other essential oil, Baltic Amber is steam-distilled directly from the amber gemstone - fossilised resin from ancient coniferous forests, millions of years in the making. The result is a warm, resinous, deeply complex oil with an earthy sweetness and a character that exists nowhere else in nature.</p>
+      <p>Unlike a true essential oil, Baltic Amber cannot be steam-distilled - the fossilised resin has hardened over millions of years and will not surrender its aroma to water and gentle heat. Instead it is produced by <em>dry distillation</em>: the amber is crushed and taken to high heat until a thick, aromatic oil is drawn from the resin itself. The result is a warm, smoky, deeply resinous oil - viscous and dark, with an earthy sweetness and a leathery, balsamic character that exists nowhere else in nature.</p>
       <div class="baltic-amber-divider"></div>
       <h3 class="baltic-amber-section-title">Ancient Civilisations</h3>
       <p>Ancient Greeks and Egyptians called it the "sun stone," prizing it for its golden light and therapeutic warmth. It was used in healing remedies for rheumatism, fever and digestive conditions, and burned as sacred incense in temples and burial rites.</p>
@@ -3316,6 +3331,26 @@ button.rv-nudge-skip {
       <p>From as early as 8000 BC, Baltic Amber was one of the most valuable traded commodities on Earth - carried along the famous Amber Road connecting the Baltic Sea to the Mediterranean, exchanged weight-for-weight with gold and precious metals.</p>
       <h3 class="baltic-amber-section-title">Traditional Chinese Medicine</h3>
       <p>Known as <em>Hu Po</em>, Baltic Amber has been used in Chinese medicine for centuries to calm the mind, ease anxiety and support the nervous system. It is considered a grounding, settling material - anchoring restless energy and promoting clarity.</p>
+      <div class="baltic-amber-divider"></div>
+      <h3 class="baltic-amber-section-title">The Name: Succinite</h3>
+      <p>The formal mineralogical name for Baltic amber is <em>succinite</em>, from the Latin <em>succinum</em>, meaning amber. It was Albert the Great - the 13th-century philosopher and naturalist - who recorded the name <em>Succinium</em>, and the term has anchored the material's identity ever since. The same root gives us <strong>succinic acid</strong>, the compound most closely associated with genuine Baltic amber and the marker used to distinguish it from other fossil resins and imitations.</p>
+      <div class="baltic-amber-divider"></div>
+      <h3 class="baltic-amber-section-title">What It's Made Of</h3>
+      <p>Baltic amber is not a single substance but a complex fossil material built up over 35 to 50 million years. Genuine Baltic amber is uniquely rich in <strong>succinic acid</strong> - between roughly 3% and 8%, concentrated most heavily in the outer crust of the stone. This succinic acid content is the defining chemical signature of true Baltic amber; other world ambers contain far less or none at all.</p>
+      <p>Alongside succinic acid, analysis has identified a wide spectrum of naturally occurring compounds - terpenes and sesquiterpenes, diterpenoid resin acids such as abietic and agathic acid, and various volatile aromatics. It is this dense, layered chemistry - laid down by ancient coniferous forests and transformed by deep geological time - that gives the distilled oil its extraordinary depth and its warm, resinous, faintly smoky character.</p>
+      <div class="baltic-amber-divider"></div>
+      <h3 class="baltic-amber-section-title">Why It Is So Rare</h3>
+      <p>Baltic amber is not simply fossilised sap. Only a small fraction of ancient resin ever survives the tens of millions of years required to polymerise into true amber - most degrades or is lost entirely. What remains is gathered slowly: washed from the seabed onto Baltic shores by winter storms, or mined from deep deposits in a narrow region of northern Europe that holds the overwhelming majority of the world's supply.</p>
+      <p>Turning that stone into an aromatic oil is rarer still. Because the fossil resin has fully hardened, it will not yield to gentle steam. Only dry distillation at very high heat draws the oil out - and the yield is famously low, often under 1% of the material by weight. Between the scarcity of the raw stone and the difficulty of extraction, genuine Baltic amber oil remains one of the least common natural aromatics a perfumer can work with.</p>
+      <div class="baltic-amber-divider"></div>
+      <h3 class="baltic-amber-section-title">A Master Fixative</h3>
+      <p>In perfumery, Baltic amber's most prized quality is its power as a <strong>fixative</strong> - a base material that slows the evaporation of a fragrance and binds its other notes together, holding the composition on the skin for far longer. Historically, only a handful of natural materials could do this well - ambergris from the sperm whale foremost among them. Baltic amber offers a plant-and-fossil-derived alternative: deep, tenacious and animalic-adjacent, without the cost or the ethical weight of ambergris.</p>
+      <p>Its scent is unmistakable once known - warm and honeyed, resinous and balsamic, with a dry, smoky, almost leathery undertone. Even in trace amounts it lends a fragrance remarkable staying power and a sense of ancient, sunlit depth. At Profound Naturals it anchors the base of several botanical perfumes, and is offered as a rare single aromatic in its own right.</p>
+      <div class="baltic-amber-divider"></div>
+      <h3 class="baltic-amber-section-title">Curious Properties</h3>
+      <p>Amber has fascinated natural philosophers for millennia. Rubbed against cloth it builds a static charge and attracts light objects - the Greek word for amber, <em>elektron</em>, is the direct root of the word <strong>electricity</strong>. It is warm to the touch rather than cold like glass or stone, and light enough to float in salt water while sinking in fresh. Soft as gemstones go - around 2 to 2.5 on the Mohs scale - it can be carved, warmed and worked in ways a true mineral never could, which is part of why it has been treasured as both ornament and material since the Stone Age.</p>
+      <div class="baltic-amber-divider"></div>
+      <p style="font-size:.72rem;color:rgba(230,236,231,.45);line-height:1.7;">Historical and traditional uses are described here for cultural and educational interest only. Nothing here is intended as medical advice or as a claim of therapeutic benefit. Baltic amber oil is a concentrated aromatic for perfumery and fragrance use - always dilute appropriately and patch test before applying to skin.</p>
     </div>
   </div>
 </div>
@@ -3440,7 +3475,7 @@ const products = [
   { id:3,  name:"Jazz Lounge",      category:"Botanical Perfume", emoji:"🎷", bg:"#1a1020", price:88.88,  size:"50ml", badge:"Bestseller", image:"images/products/jazz-lounge.png", desc:"A brooding, resinous accord where galbanum opens with wild green sharpness before davana weaves through the heart, bringing a boozy, fruity warmth with an animalic edge. Australian native blue cypress adds smoke and ancient wood, while labdanum and amber draw it to a dark, leathery close. Bold, sensual and completely unforgettable.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Davana, Blue Cypress (Australian Native - Callitris intratropica), Galbanum, Labdanum, Amber" },
   { id:4,  name:"Floral Fantasy",   category:"Botanical Perfume", emoji:"💐", bg:"#2a1828", price:98.00,  size:"50ml", badge:null,        desc:"A lush bouquet of living botanicals - neroli, ylang ylang and tuberose dancing over a soft musky base.", ingredients:"Neroli Absolute, Ylang Ylang, Tuberose, Rose Otto, White Musk" },
   { id:5,  name:"Pr-nfr",           category:"Botanical Perfume", emoji:"𓂀", bg:"#1c1a10", price:99.95,  size:"50ml", badge:"Rare", image:"images/icons/pr-nfr.svg", desc:"Inspired by the sacred embalming rooms of ancient Egypt, Pr-Nfr opens with an instant, clean forest freshness of black spruce before myrrh weaves a smoky, ceremonial earthiness into the heart - the same sacred resin used in ancient ritual and preservation. Warm Baltic amber and rich vanilla oleoresin settle into the base, drawing it to a deeply resinous, honeyed close. Simple in composition, profound in character - Pr-Nfr is a timeless, skin-warming fragrance that settles beautifully and lasts.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Organic Baltic Amber (Pinus succinifera), Organic Vanilla Oleoresin (Vanilla planifolia), Organic Myrrh EO, Organic Black Spruce Oil (Picea mariana)" },
-  { id:6,  name:"Pr-nfrt",          category:"Botanical Perfume", emoji:"𓁿", bg:"#20101a", price:118.76, size:"50ml", badge:"Bestseller", inStock:false, image:"images/icons/pr-nfrt.svg", desc:"A radiant floral amber and the feminine counterpart to Pr-nfr. Rose and jasmine bloom over a heart of blue lotus, while davana lends a soft, fruity warmth that turns uniquely with the skin. A base of amber and sandalwood grounds the bouquet in golden, lingering warmth. Named for beauty itself - luminous, sensual and quietly profound.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Rose Absolute, Jasmine Sambac, Blue Lotus, Davana, Amber Accord, Sandalwood" },
+  { id:6,  name:"Pr-nfrt",          category:"Botanical Perfume", emoji:"𓁿", bg:"#20101a", price:118.76, size:"50ml", badge:"Bestseller", inStock:false, image:"images/icons/pr-nfrt.svg", desc:"A radiant floral amber and the feminine counterpart to Pr-nfr. Rose and jasmine bloom at the heart, lifted by a breath of green galbanum, while davana lends a soft, fruity warmth that turns uniquely with the skin. A base of Baltic amber and sandalwood grounds the bouquet in golden, lingering warmth. Named for beauty itself - luminous, sensual and quietly profound.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Rose Absolute, Jasmine Sambac, Galbanum, Davana, Baltic Amber (Pinus succinifera), Sandalwood" },
   // ── Natural Soaps
   { id:7,  name:"Hemp Soap - Lavender",         category:"Natural Soap", emoji:"💜", bg:"#1a1428", price:9.00,  size:"115g", badge:null, image:"images/products/lavender-hemp-soap.png", desc:"A gentle, conditioning soap bar crafted on a rich base of extra virgin olive oil, coconut oil and hemp seed oil. Lavandin Grosso - a bold, intense variety of lavender known for its lasting clean scent - fills every lather with a fresh, herbaceous calm. Sweet almond oil and castor oil add a creamy, skin-loving richness that soothes as it cleanses. Simple, pure and deeply satisfying.", ingredients:"Olive Oil (Grade A Extra Virgin), Sustainable Palm Oil, Coconut Oil, Safflower Oil, Glycerine (Vegetable Origin), Hemp Seed Oil (Unrefined), Purified Water, Sodium Hydroxide (Saponifying Agent), Sorbitol, Propylene Glycol (Vegetable Glycerine Derived), Sorbitan Oleate (Emulsifier), Oat Protein, Ricinus communis (Castor Oil), Prunus Amygdalus Dulcis (Organic Sweet Almond Oil), Lavandula Hybrida B (Lavandin Grosso) Essential Oil" },
   { id:8,  name:"Hemp Soap - Eucalyptus",       category:"Natural Soap", emoji:"🌿", bg:"#101e14", price:9.00,  size:"115g", badge:null, image:"images/products/euca-hemp-soap.png", desc:"A deeply cleansing botanical soap bar built on a nourishing base of extra virgin olive oil, coconut oil and hemp seed oil. Two varieties of eucalyptus - the sharp, clarifying Kochii and the softer, more rounded Radiata - create a full-spectrum eucalyptus experience that awakens the senses and leaves skin feeling clean and refreshed. Enriched with apricot kernel oil, oat protein and Abyssinian oil for a gentle, conditioning lather that never strips.", ingredients:"Olive Oil (Grade A Extra Virgin), Sustainable Palm Oil, Coconut Oil, Safflower Oil, Glycerine (Vegetable Origin), Hemp Seed Oil (Unrefined), Purified Water, Sodium Hydroxide (Saponifying Agent), Sorbitol, Propylene Glycol (Vegetable Glycerine Derived), Sorbitan Oleate (Emulsifier), Oat Protein, Crambe Abyssinica (Abyssinian Oil Refined), Prunus Armeniaca (Apricot Kernel Oil), Eucalyptus Kochii EO, Eucalyptus Radiata EO" },
@@ -4115,14 +4150,29 @@ function openModal(id) {
   selectedVariant = null;
 
   document.getElementById('modalQty').textContent = '1';
-  // Ingredients — uniform: collapsed toggle for every product type
+  // Ingredients: a single-ingredient product (e.g. a pure essential oil) shows
+  // its ingredient always-visible with no toggle; multi-ingredient products
+  // (perfumes, soaps) collapse behind the Ingredients toggle, starting closed.
+  // Every class is set explicitly in both branches so no state leaks when the
+  // same modal is reused for the next product.
   const ingWrap = document.getElementById('modalIngredientsWrap');
   const ingToggle = document.getElementById('modalIngToggle');
-  ingWrap.classList.remove('open');
+  const isSingleIngredient = String(p.ingredients || '').split(',').filter(s => s.trim()).length <= 1;
   ingToggle.classList.remove('open');
   ingToggle.querySelector('.modal-ing-arrow').style.display = '';
   ingToggle.style.cursor = '';
   ingToggle.onclick = toggleModalIngredients;
+  if (isSingleIngredient) {
+    // Always-visible: box open, toggle hidden.
+    ingWrap.classList.add('single');
+    ingWrap.classList.add('open');
+    ingToggle.style.display = 'none';
+  } else {
+    // Collapsible: box starts closed, toggle shown.
+    ingWrap.classList.remove('single');
+    ingWrap.classList.remove('open');
+    ingToggle.style.display = '';
+  }
   const modalImgEl = document.getElementById('modalImg');
   modalImgEl.style.background = p.bg;
   modalImgEl.className = 'modal-img';
@@ -4707,7 +4757,7 @@ function closeNefertModalDirect() {
 })();
 </script>
 <script>
-console.log('PN BUILD 25-07-B');
+console.log('PN BUILD 25-07-G');
 (function(){
   var SIZE_TWINS = { 74: { '5ml': { id: 75, price: 42.95 } } };
 

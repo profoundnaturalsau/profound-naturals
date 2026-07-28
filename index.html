@@ -51,6 +51,9 @@
     --border-sub:rgba(255,255,255,0.06);
     --serif: 'Cormorant Garamond', Georgia, serif;
     --sans:  'Jost', sans-serif;
+    /* Single source of truth for nav height. Used by the anchor scroll-margin
+       rule so jump links never land underneath the sticky toolbar. */
+    --nav-h: 76px;
   }
 
   *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
@@ -77,7 +80,10 @@
     font-family: var(--sans);
     background: var(--bg);
     color: var(--white);
+    /* clip, not hidden - see the note on #page-wrap. hidden on body makes it a
+       scroll container and breaks position:sticky on the nav. */
     overflow-x: hidden;
+    overflow-x: clip;
     max-width: 100vw;
     position: relative;
   }
@@ -1579,6 +1585,7 @@
 
   /* ── RESPONSIVE ── */
   @media(max-width:900px){
+    :root { --nav-h: 60px; }
     nav { padding:0 16px 0 8px; height:60px; overflow:hidden; }
     .nav-logo { flex:1 1 0; min-width:0; max-width:calc(100% - 100px); overflow:hidden; margin-left:0; }
     .nav-logo img { height:31px; width:auto; max-width:100%; flex-shrink:1; display:block; object-fit:contain; }
@@ -2221,6 +2228,58 @@
 .search-banner.has-results { border-color:rgba(212,160,23,.45) !important; }
 
 
+/* ── ANCHOR OFFSETS FOR THE STICKY TOOLBAR (28-07) ──
+   With the nav genuinely sticking, every jump link lands with its target
+   tucked under the toolbar unless the target reserves room for it. #shop
+   previously carried a hardcoded inline 70px, which was 6px short of the
+   76px desktop nav and 10px too much on mobile - now driven by --nav-h so
+   both breakpoints stay correct automatically. */
+#shop, #collections, #gc-section, #newsletter, #about {
+  scroll-margin-top: calc(var(--nav-h) + 16px);
+}
+
+/* ── SEARCH RESULT COUNT: inline on desktop, floating chip on mobile (28-07) ──
+   Desktop already shows the query and a clear ✕ in the always-visible nav
+   search input, so the floating pill duplicated it. The one thing it uniquely
+   carried - the result count - now sits above the grid instead. Below 901px
+   .nav-search-wrap is display:none, so the chip stays: it is the only thing
+   telling a mobile user why the catalogue is filtered. */
+@media(min-width:901px){
+  .search-banner.show { display:none !important; }
+}
+.shop-result-note {
+  display:none;
+  align-items:center; justify-content:center; gap:12px;
+  margin:0 auto 26px; width:fit-content; max-width:calc(100% - 40px);
+  padding:10px 20px;
+  background:var(--green-pale);
+  border:1px solid rgba(212,160,23,.45);
+  border-radius:999px;
+  font-size:.88rem; letter-spacing:.06em;
+  color:var(--amber);
+}
+.shop-result-note.show { display:flex; }
+.shop-result-note #shopResultNoteText {
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.shop-result-note-clear {
+  background:none; border:none; color:#ff5c5c;
+  font-size:1rem; line-height:1; cursor:pointer;
+  padding:0 2px; flex-shrink:0;
+  transition:transform .2s, text-shadow .2s;
+}
+.shop-result-note-clear:hover {
+  transform:scale(1.15);
+  text-shadow:0 0 10px rgba(255,60,60,.7);
+}
+.shop-result-note.no-results {
+  background:#170d0d; border-color:rgba(255,92,92,.5);
+  color:#ff5c5c; text-shadow:0 0 9px rgba(255,60,60,.65);
+}
+@media(max-width:900px){
+  .shop-result-note { display:none !important; }
+}
+
 /* ── COLLECTION CARDS - reduce card height, desktop + mobile (23-07-A) ── */
 /* min-height is a floor only, so a card still grows if its copy needs the room */
 @media (min-width:901px){
@@ -2536,7 +2595,12 @@ button.rv-nudge-skip {
 </style>
 </head>
 <body>
-<div id="page-wrap" style="overflow-x:hidden;width:100%;max-width:100vw;position:relative;">
+<!-- overflow-x:clip (with hidden as the old-browser fallback) is deliberate.
+     overflow-x:hidden here made #page-wrap a scroll container, and a sticky
+     child sticks to its nearest scrolling ancestor - so the nav was sticking
+     to a box that never scrolls, i.e. not sticking at all. clip stops the same
+     horizontal overflow without creating that scroll container. -->
+<div id="page-wrap" style="overflow-x:hidden;overflow-x:clip;width:100%;max-width:100vw;position:relative;">
 
 <div class="announcement"><span class="ship-line">Free Shipping On Orders Over $85</span><span class="ship-sep">&nbsp;·&nbsp;</span><span class="announce-sep"><img src="images/icons/australian-native.png" alt="" aria-hidden="true"></span><span class="ship-line">Free Express Shipping On Orders Over $180</span><span class="announce-sep"><img src="images/icons/australian-native.png" alt="" aria-hidden="true"></span><span class="ship-line announce-offer">10% Off Your First Order - Subscribe Below</span></div>
 
@@ -2650,11 +2714,19 @@ button.rv-nudge-skip {
 </div>
 
 <!-- SHOP -->
-<div id="shop" style="scroll-margin-top:70px">
+<div id="shop">
   <div class="section-header">
     <span class="section-label">The Collection</span>
     <h2 class="section-title">Crafted with <em>intention</em></h2>
     <span class="section-subtitle"><em>Curated</em> with purpose</span>
+  </div>
+  <!-- Desktop search result count. Lives in normal flow directly above the
+       grid it describes, so it needs no fixed positioning and no scroll
+       measuring. Hidden below 901px, where the floating chip takes over
+       because the nav search input is not on screen there. -->
+  <div class="shop-result-note" id="shopResultNote" role="status" aria-live="polite">
+    <span id="shopResultNoteText"></span>
+    <button class="shop-result-note-clear" onclick="clearSearch()" aria-label="Clear search">✕</button>
   </div>
   <div class="products">
     <div class="products-grid" id="productsGrid"></div>
@@ -4829,14 +4901,33 @@ console.log('PN BUILD 25-07-G');
     // land at the product cards themselves, skipping the collection heading
     var el = document.getElementById('productsGrid') || document.getElementById('shop');
     if (!el) return;
-    var y = el.getBoundingClientRect().top + window.pageYOffset - 28;
-    window.scrollTo({ top: y, behavior: 'smooth' });
+    // Clear the sticky toolbar. Measured rather than hardcoded because the nav
+    // is 76px on desktop and 60px on mobile; a fixed offset buried the first
+    // row of results under the bar on one breakpoint or the other.
+    var nav = document.querySelector('nav');
+    var navH = nav ? nav.getBoundingClientRect().height : 76;
+    // On mobile the floating chip sits just below the nav, so it has to be
+    // cleared too or it covers the first row of results it just announced.
+    var chip = document.getElementById('searchBanner');
+    var chipBottom = 0;
+    if (chip && chip.classList.contains('show') && window.innerWidth <= 900) {
+      var cr = chip.getBoundingClientRect();
+      if (cr.height > 0) chipBottom = cr.bottom;
+    }
+    var clearance = Math.max(navH, chipBottom) + 20;
+    var y = el.getBoundingClientRect().top + window.pageYOffset - clearance;
+    window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
   }
 
   function dockBanner(){
     var b = banner();
     if (!b) return;
     if (window.innerWidth <= 900) { b.style.left=''; b.style.top=''; b.style.right=''; return; }
+    // Desktop no longer renders the chip (the count moved inline above the
+    // grid), so there is nothing to position - skip the per-scroll measuring.
+    b.style.left=''; b.style.top=''; b.style.right='';
+    return;
+    /* eslint-disable no-unreachable */
     var input = document.getElementById('navSearch');
     if (!input) return;
     var r = input.getBoundingClientRect();
@@ -4851,6 +4942,7 @@ console.log('PN BUILD 25-07-G');
       b.style.right = '16px';
     }
     b.style.left = 'auto';
+    /* eslint-enable no-unreachable */
   }
 
   function gridIsInView(){
@@ -5201,6 +5293,55 @@ console.log('PN BUILD 25-07-G');
     var _hs = handleSearch;
     handleSearch = function(q){ _hs(q); placeNow(); };
   }
+})();
+</script>
+
+<!-- ═══════════ INLINE SEARCH RESULT COUNT (28-07) ═══════════
+     Registered last so it wraps the already-wrapped handleSearch and reads the
+     final banner text after strictShortQuery and refreshBannerHint have run.
+     It mirrors that text into the in-flow note above the grid and strips the
+     " - tap to view ↓" / " - back to search ↑" hint, which only makes sense on
+     a floating chip. No positioning, no scroll listener: the note is in normal
+     flow, so it simply moves with the page. -->
+<script>
+(function(){
+  var HINT = / - (tap to view \u2193|back to search \u2191)$/;
+
+  function sync(){
+    var note = document.getElementById('shopResultNote');
+    var noteTxt = document.getElementById('shopResultNoteText');
+    var src = document.getElementById('searchBannerText');
+    var banner = document.getElementById('searchBanner');
+    if (!note || !noteTxt || !src || !banner) return;
+
+    var active = banner.classList.contains('show');
+    var text = (src.textContent || '').replace(HINT, '');
+
+    if (!active || !text) {
+      note.classList.remove('show', 'no-results');
+      noteTxt.textContent = '';
+      return;
+    }
+    noteTxt.textContent = text;
+    note.classList.toggle('no-results', text.indexOf('No results') === 0);
+    note.classList.add('show');
+  }
+
+  if (typeof handleSearch === 'function') {
+    var _hs = handleSearch;
+    handleSearch = function(q){ _hs(q); sync(); };
+  }
+
+  // Catches any state change that does not route through handleSearch.
+  var banner = document.getElementById('searchBanner');
+  if (banner) {
+    new MutationObserver(sync).observe(banner, {
+      attributes: true, attributeFilter: ['class'], subtree: true, childList: true, characterData: true
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', sync);
+  sync();
 })();
 </script>
 </body>

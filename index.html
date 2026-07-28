@@ -530,8 +530,8 @@
   .section-label { font-size:.67rem; letter-spacing:.26em; text-transform:uppercase; color:var(--green-lt); margin-bottom:14px; display:block; }
   .section-title { font-family:var(--serif); font-size:clamp(2rem,3vw,3.2rem); font-weight:300; line-height:1.15; color:var(--white); }
   .section-title em { font-style:italic; color:var(--green-lt); }
-  .section-subtitle { font-family:var(--serif); font-size:clamp(1.2rem,2vw,1.85rem); font-weight:300; line-height:1.3; color:var(--green-lt); margin-top:12px; display:block; }
-  .section-subtitle em { font-style:italic; color:var(--white); }
+  .section-subtitle { font-family:var(--serif); font-size:clamp(1.2rem,2vw,1.85rem); font-weight:300; line-height:1.3; color:var(--white); margin-top:12px; display:block; }
+  .section-subtitle em { font-style:italic; color:var(--green-lt); }
 
   /* ── PRODUCTS ── */
   .products { padding:0 48px 80px; }
@@ -1276,10 +1276,12 @@
   .footer-col ul li { margin-bottom:12px; }
   .footer-col ul li a { font-size:.83rem; color:var(--white-dim); text-decoration:none; font-weight:300; transition:color .2s; }
   .footer-col ul li a:hover { color:var(--green-lt); }
-  .footer-link-amber { color:#d4a017; text-shadow:0 0 10px rgba(212,160,23,.4); }
-  .footer-link-amber:hover { color:#e8b830 !important; }
-  .footer-link-teal { color:#35b8d4; text-shadow:0 0 10px rgba(53,184,212,.4); }
-  .footer-link-teal:hover { color:#5fd4ec !important; }
+  /* .footer-link-amber / .footer-link-teal now live in the 28-07-B/C block
+     lower down, scoped as ".footer-col ul li a.<class>" so the RESTING colour
+     actually wins. The old hover rules here carried !important, which beats
+     any non-important declaration regardless of specificity - so they were
+     still overriding the scoped hover colours. Removed rather than edited:
+     one source of truth, no !important anywhere in this pair. */
   .footer-bottom { border-top:1px solid var(--border-sub); padding-top:28px; display:flex; justify-content:space-between; align-items:center; }
   .footer-copy { font-size:.71rem; color:rgba(255,255,255,.25); font-weight:300; }
   .footer-payments { display:flex; gap:12px; font-size:.64rem; letter-spacing:.1em; color:rgba(255,255,255,.2); }
@@ -2301,6 +2303,24 @@
   text-shadow:0 0 12px rgba(212,160,23,.85), 0 0 30px rgba(212,160,23,.45);
 }
 
+/* ── FOOTER: Custom Scent - identical bug, identical fix (28-07-C) ──
+   .footer-link-teal is (0,1,0) and lost its resting colour to
+   ".footer-col ul li a" the same way. The reason this one read as "blue
+   only on click" is that .footer-link-teal:hover carries !important while
+   the resting rule does not - so the link sat dim white with a teal halo
+   and snapped to blue the moment it was hovered or tapped. Scoping the
+   resting rule to (0,1,4) means the colour holds at rest, and the hover no
+   longer needs !important to beat anything. */
+.footer-col ul li a.footer-link-teal {
+  color:#35b8d4;
+  text-shadow:0 0 10px rgba(53,184,212,.45), 0 0 22px rgba(53,184,212,.25);
+  transition:color .2s, text-shadow .25s;
+}
+.footer-col ul li a.footer-link-teal:hover {
+  color:#5fd4ec;
+  text-shadow:0 0 12px rgba(53,184,212,.85), 0 0 30px rgba(53,184,212,.45);
+}
+
 /* ── SEARCH CLEAR ✕: glowing red, matching the other close controls (28-07-B) ── */
 .nav-search-clear {
   color:#ff5c5c;
@@ -2377,6 +2397,70 @@
 .baltic-amber-modal,
 .why-natural-modal {
   scrollbar-color:var(--amber) var(--bg);
+}
+
+/* ── BAG SUGGESTIONS (28-07-D) ──
+   Sits between the item list and the totals footer. The list above it is the
+   flex:1 scroll area, so this strip must not grow - flex:0 0 auto keeps it
+   pinned above the footer while the items scroll behind it. */
+.cart-suggest {
+  flex:0 0 auto;
+  border-top:1px solid var(--border-sub);
+  padding:14px 28px 16px;
+  background:rgba(15,31,2,.35);
+}
+.cart-suggest-head {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:10px;
+}
+.cart-suggest-label {
+  font-size:.6rem; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--green-lt); font-weight:600;
+}
+.cart-suggest-dots { display:flex; gap:5px; }
+.cart-suggest-dots i {
+  width:5px; height:5px; border-radius:50%;
+  background:rgba(230,236,231,.25); transition:background .3s;
+}
+.cart-suggest-dots i.on { background:var(--amber); }
+.cart-suggest-row {
+  display:flex; gap:10px;
+  transition:opacity .35s;
+}
+.cart-suggest-row.fading { opacity:0; }
+.cart-sug {
+  flex:1 1 0; min-width:0;
+  background:var(--surface-2);
+  border:1px solid var(--border-sub);
+  padding:10px 8px 11px;
+  cursor:pointer; text-align:center;
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  transition:border-color .25s, transform .25s, box-shadow .25s;
+}
+.cart-sug:hover {
+  border-color:rgba(212,160,23,.7);
+  transform:translateY(-2px);
+  box-shadow:0 0 18px rgba(212,160,23,.18);
+}
+.cart-sug-img {
+  width:40px; height:40px; object-fit:contain; display:block;
+}
+.cart-sug-emoji { font-size:1.6rem; line-height:40px; }
+.cart-sug-name {
+  font-size:.68rem; line-height:1.3; color:var(--white);
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+  overflow:hidden; width:100%;
+}
+.cart-sug-price {
+  font-size:.68rem; color:var(--amber); font-variant-numeric:tabular-nums;
+}
+@media(max-width:900px){
+  .cart-suggest { padding:12px 20px 14px; }
+  .cart-sug-img { width:34px; height:34px; }
+  .cart-sug-emoji { font-size:1.4rem; line-height:34px; }
+}
+@media (prefers-reduced-motion: reduce){
+  .cart-suggest-row { transition:none; }
 }
 
 /* ── COLLECTION CARDS - reduce card height, desktop + mobile (23-07-A) ── */
@@ -3035,7 +3119,7 @@ button.rv-nudge-skip {
         <li><a href="#" onclick="event.preventDefault(); openWhyNaturalModal()">Why Natural?</a></li>
         <li><a href="#" onclick="event.preventDefault(); const o=document.getElementById('sustainabilityOverlay'); o.classList.add('open'); lockBodyScroll();">Sustainability</a></li>
         <li><a href="#" class="footer-link-amber" onclick="event.preventDefault(); openBalticAmberModal()">Baltic Amber</a></li>
-        <li><a href="#">Ingredients</a></li>
+        <li><a href="/journal/ingredient-history.html">Ingredients</a></li>
         <li><a href="/journal/">Journal</a></li>
         <li><a href="https://profoundnaturals.online" target="_blank" class="footer-link-teal">Custom Scent</a></li>
       </ul>
@@ -3101,8 +3185,8 @@ button.rv-nudge-skip {
       <ul>
         <li><strong>Stripe</strong> - payment processing. Stripe receives order value and billing details to process transactions. Stripe's privacy policy applies to data it holds: stripe.com/privacy</li>
         <li><strong>Australia Post</strong> - name and shipping address are shared solely for order delivery</li>
-        <li><strong>Zoho Mail</strong> - transactional email delivery (order confirmations, notifications, gift card codes)</li>
-        <li><strong>Netlify</strong> - website hosting. Netlify may log technical metadata including IP addresses and request timestamps for security and operational purposes</li>
+        <li><strong>Email service provider</strong> - transactional email delivery (order confirmations, notifications, gift card codes)</li>
+        <li><strong>Website hosting</strong> - the site is hosted on Netlify, which may log technical metadata including IP addresses and request timestamps for security and operational purposes</li>
         <li><strong>Google Fonts</strong> - typefaces are loaded from Google's servers. Google may log connection metadata. No personal data submitted on this site is shared with Google</li>
       </ul>
       <p>No advertising networks, social media pixels, or analytics platforms are used on this site.</p>
@@ -3336,6 +3420,13 @@ button.rv-nudge-skip {
       <span class="cart-empty-icon"><img src="images/icons/shop-bag.png" alt="Empty cart" style="width:48px;height:48px;object-fit:contain;opacity:0.5;"></span>
       <p class="cart-empty-text">Your bag is empty</p>
     </div>
+  </div>
+  <div class="cart-suggest" id="cartSuggest" style="display:none">
+    <div class="cart-suggest-head">
+      <span class="cart-suggest-label" id="cartSuggestLabel">Pairs well with</span>
+      <div class="cart-suggest-dots" id="cartSuggestDots"></div>
+    </div>
+    <div class="cart-suggest-row" id="cartSuggestRow"></div>
   </div>
   <div class="cart-footer" id="cartFooter" style="display:none">
     <div class="gc-redeem-wrap">
@@ -3916,6 +4007,8 @@ function updateCartUI() {
     : `$${total.toFixed(2)}`;
     document.getElementById('afterpayLine').textContent = `or 4 × $${(total/4).toFixed(2)} with Afterpay`;
   }
+  // Bag contents drive the suggestion pool, so rebuild whenever they change.
+  if (typeof refreshCartSuggest === 'function') refreshCartSuggest();
 }
 
 const heroSeq = [
@@ -4302,6 +4395,141 @@ function toggleMobileMenu() {
 function toggleCart() {
   document.getElementById('cartDrawer').classList.toggle('open');
   document.getElementById('cartOverlay').classList.toggle('open');
+  if (typeof refreshCartSuggest === 'function') refreshCartSuggest();
+}
+
+/* ══════════ BAG SUGGESTIONS (28-07-D) ══════════
+   Builds a pool from what is actually in the bag, then cycles it three at a
+   time. Rotation only starts when the pool is bigger than one page, and only
+   while the drawer is open - no timer runs against a closed drawer.
+   Everything reads from the live `products` array, so it needs no maintenance
+   as the catalogue changes. */
+const CART_SUG_PER_PAGE = 3;
+const CART_SUG_MS = 5000;
+let _cartSugPool = [], _cartSugPage = 0, _cartSugTimer = null;
+
+// Categories that genuinely go together, used when the bag holds one thing and
+// same-category matches run out. Perfume buyers explore oils; soap buyers
+// explore oils; oil buyers explore absolutes and vice versa.
+const CART_SUG_PAIRS = {
+  'Botanical Perfume':        ['100% Pure Absolute', '100% Pure Essential Oil'],
+  'Natural Soap':             ['100% Pure Essential Oil', 'Botanical Perfume'],
+  '100% Pure Essential Oil':  ['100% Pure Absolute', 'Botanical Perfume'],
+  '100% Pure Absolute':       ['100% Pure Essential Oil', 'Botanical Perfume'],
+  '100% Pure Resinoid':       ['100% Pure Absolute', '100% Pure Essential Oil'],
+  'Jewellery':                ['100% Pure Essential Oil'],
+};
+
+function buildCartSugPool() {
+  // ids 74/75 are the same product at two sizes - never offer both.
+  const inBagIds = new Set(cart.map(c => c.id));
+  const twinBlocked = new Set();
+  if (inBagIds.has(74) || inBagIds.has(75)) { twinBlocked.add(74); twinBlocked.add(75); }
+
+  const eligible = products.filter(p =>
+    p.inStock !== false &&
+    !inBagIds.has(p.id) &&
+    !twinBlocked.has(p.id)
+  );
+  // Collapse the 74/75 size twins to one entry when neither is in the bag.
+  const seenTwin = new Set();
+  const deduped = eligible.filter(p => {
+    if (p.id !== 74 && p.id !== 75) return true;
+    if (seenTwin.has('rose')) return false;
+    seenTwin.add('rose'); return true;
+  });
+
+  if (cart.length === 0) return shuffle(deduped);
+
+  const bagCats = [...new Set(cart.map(c => {
+    const p = products.find(x => x.id === c.id);
+    return p && p.category;
+  }).filter(Boolean))];
+
+  const same = deduped.filter(p => bagCats.includes(p.category));
+  const pairCats = [...new Set(bagCats.flatMap(c => CART_SUG_PAIRS[c] || []))]
+    .filter(c => !bagCats.includes(c));
+  const paired = deduped.filter(p => pairCats.includes(p.category));
+  const rest   = deduped.filter(p => !same.includes(p) && !paired.includes(p));
+
+  return [...shuffle(same), ...shuffle(paired), ...shuffle(rest)];
+}
+
+function shuffle(a) {
+  const r = a.slice();
+  for (let i = r.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [r[i], r[j]] = [r[j], r[i]];
+  }
+  return r;
+}
+
+function cartSugCardHTML(p) {
+  const art = p.image
+    ? `<img class="cart-sug-img" src="${p.image}" alt="${p.name}">`
+    : `<span class="cart-sug-emoji">${p.emoji || ''}</span>`;
+  return `<div class="cart-sug" onclick="openSuggestion(${p.id})" role="button" tabindex="0"
+       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSuggestion(${p.id});}">
+      ${art}
+      <span class="cart-sug-name">${p.name}</span>
+      <span class="cart-sug-price">$${p.price.toFixed(2)}</span>
+    </div>`;
+}
+
+function paintCartSug() {
+  const row = document.getElementById('cartSuggestRow');
+  const dots = document.getElementById('cartSuggestDots');
+  if (!row) return;
+  const pages = Math.ceil(_cartSugPool.length / CART_SUG_PER_PAGE);
+  const start = _cartSugPage * CART_SUG_PER_PAGE;
+  const slice = _cartSugPool.slice(start, start + CART_SUG_PER_PAGE);
+  row.innerHTML = slice.map(cartSugCardHTML).join('');
+  dots.innerHTML = pages > 1
+    ? Array.from({ length: pages }, (_, i) => `<i class="${i === _cartSugPage ? 'on' : ''}"></i>`).join('')
+    : '';
+}
+
+function stopCartSug() { clearInterval(_cartSugTimer); _cartSugTimer = null; }
+
+function startCartSug() {
+  stopCartSug();
+  if (_cartSugPool.length <= CART_SUG_PER_PAGE) return;
+  _cartSugTimer = setInterval(() => {
+    const row = document.getElementById('cartSuggestRow');
+    const drawer = document.getElementById('cartDrawer');
+    if (!row || !drawer || !drawer.classList.contains('open')) { stopCartSug(); return; }
+    if (row.matches(':hover')) return;               // do not swap under the cursor
+    row.classList.add('fading');
+    setTimeout(() => {
+      _cartSugPage = (_cartSugPage + 1) % Math.ceil(_cartSugPool.length / CART_SUG_PER_PAGE);
+      paintCartSug();
+      row.classList.remove('fading');
+    }, 350);
+  }, CART_SUG_MS);
+}
+
+function refreshCartSuggest() {
+  const wrap = document.getElementById('cartSuggest');
+  const drawer = document.getElementById('cartDrawer');
+  if (!wrap || !drawer) return;
+  if (!drawer.classList.contains('open')) { stopCartSug(); return; }
+
+  _cartSugPool = buildCartSugPool();
+  if (_cartSugPool.length === 0) { wrap.style.display = 'none'; stopCartSug(); return; }
+
+  document.getElementById('cartSuggestLabel').textContent =
+    cart.length === 0 ? 'You might like' : 'Pairs well with';
+  _cartSugPage = 0;
+  paintCartSug();
+  wrap.style.display = 'block';
+  startCartSug();
+}
+
+// Clicking a suggestion closes the bag and opens the product, so variants and
+// sizes are still chosen deliberately rather than guessed at.
+function openSuggestion(id) {
+  toggleCart();
+  setTimeout(() => openModal(id), 260);
 }
 
 let selectedVariant = null;

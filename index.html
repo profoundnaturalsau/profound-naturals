@@ -2834,7 +2834,7 @@ button.rv-nudge-skip {
     <li><a href="/journal/" onclick="toggleMobileMenu()">Journal</a></li>
     <li><a href="#" onclick="event.preventDefault(); toggleMobileMenu(); setTimeout(openContactModal, 300)">Contact</a></li>
     <li><a href="#" onclick="event.preventDefault(); toggleMobileMenu(); setTimeout(openWhyNaturalModal, 300)">Why Natural?</a></li>
-    <li><a href="#" class="amber" onclick="event.preventDefault(); toggleMobileMenu(); setTimeout(openBalticAmberModal, 300)">Baltic Amber</a></li>
+    <li><a href="#" class="amber" onclick="event.preventDefault(); openBalticAmberModal(); toggleMobileMenu();">Baltic Amber</a></li>
   </ul>
   <div class="mobile-search-wrap">
     <input class="mobile-search" id="mobileSearch" type="text" placeholder="Search products…"
@@ -5171,7 +5171,7 @@ function closeNefertModalDirect() {
 })();
 </script>
 <script>
-console.log('PN BUILD 28-07-G');
+console.log('PN BUILD 28-07-H');
 (function(){
   var SIZE_TWINS = { 74: { '5ml': { id: 75, price: 42.95 } } };
 

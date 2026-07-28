@@ -211,6 +211,11 @@
     .cat-card { padding:24px 22px; }
     .cat-name { font-size:1.6rem; }
     .sheet-foot { padding:24px 22px 28px; }
+    /* suggested badge was oversized on phones - down ~42% (28-07) */
+    .cat-suggested::after {
+      font-size:.36rem; letter-spacing:.12em;
+      padding:3px 7px; top:10px; right:10px;
+    }
   }
 
   @media (prefers-reduced-motion: reduce){

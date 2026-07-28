@@ -1769,11 +1769,13 @@
   .mobile-menu-close:hover { color:var(--white); }
 
   .mobile-menu-links {
-    list-style:none; padding:32px 0; flex:1; overflow-y:auto;
+    list-style:none; padding:8px 0; flex:1;
+    display:flex; flex-direction:column;
   }
-  .mobile-menu-links li { border-bottom:1px solid var(--border-sub); }
+  .mobile-menu-links li { border-bottom:1px solid var(--border-sub); flex:1; display:flex; }
   .mobile-menu-links a {
-    display:block; padding:18px 28px;
+    flex:1; display:flex; align-items:center;
+    padding:0 28px;
     font-size:.72rem; letter-spacing:.22em; text-transform:uppercase;
     color:var(--white-dim); text-decoration:none;
     transition:color .2s, background .2s;
@@ -2669,15 +2671,15 @@
   .product-badge.out-of-stock:active { border-radius:0 5px 0 5px !important; }
 }
 
-/* ── MOBILE MENU: fit all six links without clipping (25-07-B) ──
-   "Why Natural?" was already in the markup but .mobile-menu-links is
-   flex:1 + overflow-y:auto, and six items at 18px vertical padding
-   overflowed the available height, so the last row was cut off mid-item
-   and read as an empty strip above the search box. Tightening the row
-   padding and the list padding recovers ~64px, enough for the sixth row
-   while keeping every tap target at 44px. */
-.mobile-menu-links { padding:18px 0 !important; }
-.mobile-menu-links a { padding:15px 28px !important; }
+/* ── MOBILE MENU: even auto-adjusting rows, no scrollbar (28-07-G) ──
+   Was flex:1 + overflow-y:auto with fixed row padding, so on shorter phones
+   the rows overflowed the drawer and a scrollbar appeared. Now the list is a
+   flex column and every row is flex:1, so the links divide the available
+   height evenly and rescale with the screen - no overflow, no scrollbar, at
+   any viewport height. Horizontal padding kept for the text indent. */
+.mobile-menu-links { padding:8px 0 !important; overflow:hidden !important; }
+.mobile-menu-links li { flex:1 !important; display:flex !important; }
+.mobile-menu-links a { padding:0 28px !important; display:flex !important; align-items:center !important; flex:1 !important; }
 
 /* ── NAV HAMBURGER: 10% smaller (25-07-B), a further 10% (28-07-B) ──
    22px -> 19.8px -> 17.8px bars, 5px -> 4.5px -> 4.05px gap. The .open
@@ -4699,11 +4701,18 @@ function closeContactModal() {
   unlockBodyScroll();
 }
 
+let _balticAmberOpenedAt = 0;
 function openBalticAmberModal() {
   document.getElementById('balticAmberOverlay').classList.add('open');
+  _balticAmberOpenedAt = Date.now();
   lockBodyScroll();
 }
-function closeBalticAmberModal(e) { if (e.target === document.getElementById('balticAmberOverlay')) closeBalticAmberModalDirect(); }
+function closeBalticAmberModal(e) {
+  /* swallow the Chrome-mobile ghost click that lands on the backdrop right
+     after the menu-close delay opens this modal from the burger menu (28-07-F) */
+  if (Date.now() - _balticAmberOpenedAt < 400) return;
+  if (e.target === document.getElementById('balticAmberOverlay')) closeBalticAmberModalDirect();
+}
 function closeBalticAmberModalDirect() {
   document.getElementById('balticAmberOverlay').classList.remove('open');
   unlockBodyScroll();
@@ -5162,7 +5171,7 @@ function closeNefertModalDirect() {
 })();
 </script>
 <script>
-console.log('PN BUILD 28-07-E');
+console.log('PN BUILD 28-07-G');
 (function(){
   var SIZE_TWINS = { 74: { '5ml': { id: 75, price: 42.95 } } };
 

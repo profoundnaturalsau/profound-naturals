@@ -46,6 +46,21 @@
   text-decoration:none;letter-spacing:.08em}
   .home:hover{color:var(--green-lt)}
   @media(max-width:600px){ .page{padding:36px 20px 26px} }
+
+  /* restored: classes defined only in the main sheet, scoped to beat .body h3 / .body p (28-07) */
+  .body .why-natural-lead{font-size:.95rem;color:var(--white);line-height:1.8;font-weight:300;margin-bottom:20px}
+  .body .why-natural-divider{width:60px;height:1px;background:linear-gradient(90deg,var(--amber),transparent);
+  margin:20px 0;opacity:.6}
+  .body .why-natural-section-title{font-family:var(--serif);font-size:1.1rem;font-weight:400;color:var(--amber);
+  letter-spacing:normal;margin:20px 0 8px}
+
+  /* Amber scrollbar: this page is the amber-themed twin of the modal, so it
+     matches the modal's scroll container rather than the site-wide green. */
+  ::-webkit-scrollbar { width:6px; height:6px; }
+  ::-webkit-scrollbar-track { background:var(--bg); }
+  ::-webkit-scrollbar-thumb { background:var(--amber); border-radius:3px; }
+  ::-webkit-scrollbar-thumb:hover { background:#f0c33c; }
+  * { scrollbar-width:thin; scrollbar-color:var(--amber) var(--bg); }
 </style>
 </head>
 <body>

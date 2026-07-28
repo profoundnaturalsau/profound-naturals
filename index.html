@@ -59,13 +59,17 @@
   *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
   html { scroll-behavior:smooth; overflow-x:hidden; max-width:100vw; }
 
-  /* Scrollbar styling — Chrome, Edge, Safari */
+  /* Scrollbar styling — Chrome, Edge, Safari.
+     Green is the site default. The resting thumb was amber while its hover
+     state was green, so the bar changed colour family on hover - both are
+     green now. The amber-themed modals override this for their own scroll
+     container further down the sheet. */
   ::-webkit-scrollbar { width:6px; height:6px; }
   ::-webkit-scrollbar-track { background:var(--bg); }
-  ::-webkit-scrollbar-thumb { background:var(--amber); border-radius:3px; }
+  ::-webkit-scrollbar-thumb { background:var(--green); border-radius:3px; }
   ::-webkit-scrollbar-thumb:hover { background:var(--green-lt); }
   /* Firefox */
-  * { scrollbar-width:thin; scrollbar-color:var(--amber) var(--bg); }
+  * { scrollbar-width:thin; scrollbar-color:var(--green) var(--bg); }
 
   /* Green tap highlight + no blue outline on all interactive elements */
   a, button, [onclick], [role="button"],
@@ -2280,6 +2284,101 @@
   .shop-result-note { display:none !important; }
 }
 
+/* ── FOOTER: Baltic Amber was never actually amber (28-07-B) ──
+   .footer-link-amber sets colour at specificity (0,1,0) but
+   ".footer-col ul li a" is (0,1,3), so var(--white-dim) won every time.
+   The text-shadow DID apply, because nothing competed for it - which is why
+   it looked like a dim white link wearing an amber halo. Matching the
+   descendant chain lets the colour through, and the glow is lifted to sit
+   in the same family as the other amber accents on the page. */
+.footer-col ul li a.footer-link-amber {
+  color:#d4a017;
+  text-shadow:0 0 10px rgba(212,160,23,.45), 0 0 22px rgba(212,160,23,.25);
+  transition:color .2s, text-shadow .25s;
+}
+.footer-col ul li a.footer-link-amber:hover {
+  color:#f0c33c;
+  text-shadow:0 0 12px rgba(212,160,23,.85), 0 0 30px rgba(212,160,23,.45);
+}
+
+/* ── SEARCH CLEAR ✕: glowing red, matching the other close controls (28-07-B) ── */
+.nav-search-clear {
+  color:#ff5c5c;
+  text-shadow:0 0 9px rgba(255,60,60,.55);
+  transition:color .2s, text-shadow .2s, transform .2s;
+}
+.nav-search-clear:hover {
+  color:#ff7a7a;
+  transform:scale(1.15);
+  text-shadow:0 0 14px rgba(255,60,60,.95), 0 0 26px rgba(255,60,60,.5);
+}
+
+/* ── HAMBURGER OPEN STATE: red X to match every other close control (28-07-B) ──
+   Geometry lives in the 25-07-B block further down the sheet, which would
+   override a duplicate here - only the colour is set at this point. */
+.nav-hamburger.open span {
+  background:#ff5c5c !important;
+  box-shadow:0 0 8px rgba(255,60,60,.75), 0 0 18px rgba(255,60,60,.4);
+}
+
+/* ── BAG BUTTON: keep the neon on touch devices (28-07-B) ──
+   The flat green bag on mobile was a stuck :hover. .cart-btn:hover fills the
+   background solid AND sets animation:none; on a touch device that state
+   latches after the first tap and never clears, so the button lost its glow
+   permanently. Scoping the fill to real pointers restores the neon outline,
+   and :active still gives a press response that releases on lift. */
+@media (hover:none) {
+  .cart-btn:hover {
+    background:transparent;
+    color:#b8e832;
+    font-weight:500;
+    border-color:rgba(184,232,50,0.5);
+    animation:bagGlow 3s ease-in-out infinite;
+  }
+  .cart-btn:hover::before { opacity:0; }
+  .cart-btn:active {
+    background:#b8e832; color:var(--surface);
+    font-weight:600; animation:none;
+  }
+  .cart-btn:active::before { opacity:.4; }
+}
+
+/* ── BAG BUTTON: 20% smaller on mobile (28-07-B) ──
+   Scales padding, type and the count badge together so the badge stays
+   pinned to the corner instead of drifting off the smaller button. */
+@media (max-width:900px) {
+  .cart-btn {
+    padding:8px 17.6px !important;
+    font-size:.57rem !important;
+    letter-spacing:.1em !important;
+  }
+  .cart-count {
+    width:14.4px !important; height:14.4px !important;
+    font-size:.48rem !important;
+    top:-5px !important; right:-5px !important;
+  }
+}
+
+/* ── AMBER MODAL SCROLLBARS (28-07) ──
+   The page keeps the green scrollbar. Only the amber-themed modals get an
+   amber one, and only inside their own scroll container - these are the two
+   whose section titles are var(--amber). The sustainability and native
+   modals are green-themed and are deliberately left alone.
+   Scoped to the element, so the document scrollbar behind the overlay is
+   unaffected. */
+.baltic-amber-modal::-webkit-scrollbar-thumb,
+.why-natural-modal::-webkit-scrollbar-thumb {
+  background:var(--amber);
+}
+.baltic-amber-modal::-webkit-scrollbar-thumb:hover,
+.why-natural-modal::-webkit-scrollbar-thumb:hover {
+  background:#f0c33c;
+}
+.baltic-amber-modal,
+.why-natural-modal {
+  scrollbar-color:var(--amber) var(--bg);
+}
+
 /* ── COLLECTION CARDS - reduce card height, desktop + mobile (23-07-A) ── */
 /* min-height is a floor only, so a card still grows if its copy needs the room */
 @media (min-width:901px){
@@ -2490,16 +2589,17 @@
 .mobile-menu-links { padding:18px 0 !important; }
 .mobile-menu-links a { padding:15px 28px !important; }
 
-/* ── NAV HAMBURGER: 10% smaller (25-07-B) ──
-   22px -> 19.8px bars, 5px -> 4.5px gap. The .open transforms are
-   geometry, not decoration: they equal bar height + gap (centre to
-   centre), so 6.5px must become 6px or the X arms will not meet.
-   Bar height stays 1.5px - it is already a hairline and 1.35px would
+/* ── NAV HAMBURGER: 10% smaller (25-07-B), a further 10% (28-07-B) ──
+   22px -> 19.8px -> 17.8px bars, 5px -> 4.5px -> 4.05px gap. The .open
+   transforms are geometry, not decoration: they equal bar height + gap
+   (centre to centre), so the translate must track the gap or the arms of
+   the X stop meeting - 6.5px -> 6px -> 5.55px (1.5 + 4.05).
+   Bar height stays 1.5px - it is already a hairline and thinner would
    round inconsistently across devices. */
-.nav-hamburger { gap:4.5px !important; }
-.nav-hamburger span { width:19.8px !important; }
-.nav-hamburger.open span:nth-child(1) { transform:translateY(6px) rotate(45deg) !important; }
-.nav-hamburger.open span:nth-child(3) { transform:translateY(-6px) rotate(-45deg) !important; }
+.nav-hamburger { gap:4.05px !important; }
+.nav-hamburger span { width:17.8px !important; }
+.nav-hamburger.open span:nth-child(1) { transform:translateY(5.55px) rotate(45deg) !important; }
+.nav-hamburger.open span:nth-child(3) { transform:translateY(-5.55px) rotate(-45deg) !important; }
 </style>
 
 <!-- ═══════════ STRUCTURED DATA: Organization & WebSite (added 14-07-26, additive only) ═══════════ -->
@@ -2605,11 +2705,10 @@ button.rv-nudge-skip {
 <div class="announcement"><span class="ship-line">Free Shipping On Orders Over $85</span><span class="ship-sep">&nbsp;·&nbsp;</span><span class="announce-sep"><img src="images/icons/australian-native.png" alt="" aria-hidden="true"></span><span class="ship-line">Free Express Shipping On Orders Over $180</span><span class="announce-sep"><img src="images/icons/australian-native.png" alt="" aria-hidden="true"></span><span class="ship-line announce-offer">10% Off Your First Order - Subscribe Below</span></div>
 
 <nav>
-  <a href="#" class="nav-logo"><img src="/images/logo-wide.png" alt="Profound Naturals"></a>
+  <a href="/" class="nav-logo" aria-label="Profound Naturals - home"><img src="/images/logo-wide.png" alt="Profound Naturals"></a>
   <ul class="nav-links">
     <li><a href="#shop">Shop</a></li>
     <li><a href="#collections">Collections</a></li>
-    <li><a href="#about">About</a></li>
     <li><a href="/journal/">Journal</a></li>
     <li><a href="#" onclick="event.preventDefault(); openContactModal()">Contact</a></li>
   </ul>
@@ -2634,13 +2733,12 @@ button.rv-nudge-skip {
 <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="toggleMobileMenu()"></div>
 <div class="mobile-menu" id="mobileMenu">
   <div class="mobile-menu-header">
-    <a href="#" class="mobile-menu-logo"><img src="/images/logo-wide.png" alt="Profound Naturals"></a>
+    <a href="/" class="mobile-menu-logo" aria-label="Profound Naturals - home"><img src="/images/logo-wide.png" alt="Profound Naturals"></a>
     <button class="mobile-menu-close" onclick="toggleMobileMenu()">✕</button>
   </div>
   <ul class="mobile-menu-links">
     <li><a href="#shop" onclick="toggleMobileMenu()">Shop</a></li>
     <li><a href="#collections" onclick="toggleMobileMenu()">Collections</a></li>
-    <li><a href="#about" onclick="toggleMobileMenu()">About</a></li>
     <li><a href="/journal/" onclick="toggleMobileMenu()">Journal</a></li>
     <li><a href="#" onclick="event.preventDefault(); toggleMobileMenu(); setTimeout(openContactModal, 300)">Contact</a></li>
     <li><a href="#" onclick="event.preventDefault(); toggleMobileMenu(); setTimeout(openWhyNaturalModal, 300)">Why Natural?</a></li>

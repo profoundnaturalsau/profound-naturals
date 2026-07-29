@@ -173,6 +173,7 @@ function renderPage(p) {
   letter-spacing:.12em;text-transform:uppercase;padding:2px 9px;border-radius:20px}
   .top{display:grid;grid-template-columns:132px 1fr;gap:16px;align-items:start;margin-bottom:14px}
   img.product{width:100%;border-radius:10px;background:var(--surface-2)}
+  .emoji-box{width:100%;aspect-ratio:1;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:3.4rem;line-height:1}
   .buy{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
   border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:16px;background:var(--surface-2)}
   .price{font-family:'Cinzel',serif;font-size:22px;color:var(--green-lt)}
@@ -208,7 +209,7 @@ function renderPage(p) {
     ${p.badge ? '<span class="badge">' + esc(p.badge) + '</span>' : ''}
   </div>
   <div class="top">
-    ${p.image ? '<img class="product" src="/' + esc(p.image) + '" alt="' + esc(fullName) + ' - Profound Naturals" width="300" height="300" loading="eager">' : '<div></div>'}
+    ${p.image ? '<img class="product" src="/' + esc(p.image) + '" alt="' + esc(fullName) + ' - Profound Naturals" width="300" height="300" loading="eager">' : '<div class="emoji-box" style="background:' + esc(p.bg || '#141d15') + '">' + esc(p.emoji || '') + '</div>'}
     <div class="buy">
       <div class="price">$${Number(p.price).toFixed(2)} <span>AUD</span></div>
       <a class="cta" href="/#shop">Shop Now</a>

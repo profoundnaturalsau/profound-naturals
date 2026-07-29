@@ -3746,6 +3746,8 @@ const products = [
   { id:4,  name:"Floral Fantasy",   category:"Botanical Perfume", emoji:"💐", bg:"#2a1828", price:98.00,  size:"50ml", badge:null,        desc:"A lush bouquet of living botanicals - neroli, ylang ylang and tuberose dancing over a soft musky base.", ingredients:"Neroli Absolute, Ylang Ylang, Tuberose, Rose Otto, White Musk" },
   { id:5,  name:"Pr-nfr",           category:"Botanical Perfume", emoji:"𓂀", bg:"#1c1a10", price:99.95,  size:"50ml", badge:"Rare", image:"images/icons/pr-nfr.svg", desc:"Inspired by the sacred embalming rooms of ancient Egypt, Pr-Nfr opens with an instant, clean forest freshness of black spruce before myrrh weaves a smoky, ceremonial earthiness into the heart - the same sacred resin used in ancient ritual and preservation. Warm Baltic amber and rich vanilla oleoresin settle into the base, drawing it to a deeply resinous, honeyed close. Simple in composition, profound in character - Pr-Nfr is a timeless, skin-warming fragrance that settles beautifully and lasts.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Organic Baltic Amber (Pinus succinifera), Organic Vanilla Oleoresin (Vanilla planifolia), Organic Myrrh EO, Organic Black Spruce Oil (Picea mariana)" },
   { id:6,  name:"Pr-nfrt",          category:"Botanical Perfume", emoji:"𓁿", bg:"#20101a", price:118.76, size:"50ml", badge:"Bestseller", inStock:false, image:"images/icons/pr-nfrt.svg", desc:"A radiant floral amber and the feminine counterpart to Pr-nfr. Rose and jasmine bloom at the heart, lifted by a breath of green galbanum, while davana lends a soft, fruity warmth that turns uniquely with the skin. A base of Baltic amber and sandalwood grounds the bouquet in golden, lingering warmth. Named for beauty itself - luminous, sensual and quietly profound.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Rose Absolute, Jasmine Sambac, Galbanum, Davana, Baltic Amber (Pinus succinifera), Sandalwood" },
+  { id:76, name:"The Old World",       category:"Botanical Perfume", emoji:"🏛️", bg:"#1e1710", price:129.95, size:"50ml", badge:"Rare", variants:["50ml","10ml"], desc:"Black spruce and galbanum open together, cool and green, a crisp breath of fresh forest air. Galbanum quickly takes the lead, sharp and resinous, with Baltic amber glowing warm behind it, while Virginian cedarwood threads a dry, woody calm through the heart. As the green slowly softens it settles into a deep amber hum, honeyed and low, lingering warm on the skin long after. Fresh at the first breath and profoundly grounded at the last, The Old World begins in the forest and ends in old resin. Available in 50ml and 10ml.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), Baltic Amber (Pinus succinifera), Virginian Cedarwood (Juniperus virginiana), Galbanum (Ferula gummosa), Black Spruce (Picea mariana), Triethyl Citrate (natural)" },
+  { id:78, name:"Sun-Kissed Lemonade", category:"Botanical Perfume", emoji:"🍋", bg:"#231d08", price:133.95, size:"50ml", badge:"Rare", variants:["50ml","10ml"], desc:"May chang opens bright and sherbet-sweet, all lemon candy and sunlit citrus, with davana lending a soft fruity warmth beneath. The heart barrels into osmanthus, ripe with apricot and stone fruit, while boronia, white champaca and tuberose bloom around it in a lush, honeyed bouquet. Vanilla oleoresin, tonka and benzoin draw it to a sweet, resinous close, with sandalwood lending a creamy calm underneath. Bright, fruity and unashamedly sweet from the first breath to the last. Available in 50ml and 10ml.", ingredients:"Ethanol PGF4 (Perfumers Alcohol), May Chang (Litsea cubeba), Davana (Artemisia pallens), Osmanthus (Osmanthus fragrans), Boronia (Boronia megastigma), White Champaca (Magnolia x alba), Tuberose (Polianthes tuberosa), Vanilla Oleoresin (Vanilla planifolia), Benzoin (Styrax tonkinensis), Tonka (Dipteryx odorata), Sandalwood (Santalum album)" },
   // ── Natural Soaps
   { id:7,  name:"Hemp Soap - Lavender",         category:"Natural Soap", emoji:"💜", bg:"#1a1428", price:9.00,  size:"115g", badge:null, image:"images/products/lavender-hemp-soap.png", desc:"A gentle, conditioning soap bar crafted on a rich base of extra virgin olive oil, coconut oil and hemp seed oil. Lavandin Grosso - a bold, intense variety of lavender known for its lasting clean scent - fills every lather with a fresh, herbaceous calm. Sweet almond oil and castor oil add a creamy, skin-loving richness that soothes as it cleanses. Simple, pure and deeply satisfying.", ingredients:"Olive Oil (Grade A Extra Virgin), Sustainable Palm Oil, Coconut Oil, Safflower Oil, Glycerine (Vegetable Origin), Hemp Seed Oil (Unrefined), Purified Water, Sodium Hydroxide (Saponifying Agent), Sorbitol, Propylene Glycol (Vegetable Glycerine Derived), Sorbitan Oleate (Emulsifier), Oat Protein, Ricinus communis (Castor Oil), Prunus Amygdalus Dulcis (Organic Sweet Almond Oil), Lavandula Hybrida B (Lavandin Grosso) Essential Oil" },
   { id:8,  name:"Hemp Soap - Eucalyptus",       category:"Natural Soap", emoji:"🌿", bg:"#101e14", price:9.00,  size:"115g", badge:null, image:"images/products/euca-hemp-soap.png", desc:"A deeply cleansing botanical soap bar built on a nourishing base of extra virgin olive oil, coconut oil and hemp seed oil. Two varieties of eucalyptus - the sharp, clarifying Kochii and the softer, more rounded Radiata - create a full-spectrum eucalyptus experience that awakens the senses and leaves skin feeling clean and refreshed. Enriched with apricot kernel oil, oat protein and Abyssinian oil for a gentle, conditioning lather that never strips.", ingredients:"Olive Oil (Grade A Extra Virgin), Sustainable Palm Oil, Coconut Oil, Safflower Oil, Glycerine (Vegetable Origin), Hemp Seed Oil (Unrefined), Purified Water, Sodium Hydroxide (Saponifying Agent), Sorbitol, Propylene Glycol (Vegetable Glycerine Derived), Sorbitan Oleate (Emulsifier), Oat Protein, Crambe Abyssinica (Abyssinian Oil Refined), Prunus Armeniaca (Apricot Kernel Oil), Eucalyptus Kochii EO, Eucalyptus Radiata EO" },
@@ -4261,6 +4263,22 @@ async function buyGiftCard() {
     showToast('Gift card purchase cancelled.', 'error');
     window.history.replaceState({}, '', '/');
   }
+})();
+
+// ── PRODUCT DEEP LINK: /?product=<slug|id> opens that product's modal ──
+// Lets a QR code or shared link land straight on the real product modal
+// (image/emoji, price, Afterpay, quantity, Add to Bag) instead of a static page.
+(function() {
+  var raw = new URLSearchParams(window.location.search).get('product');
+  if (!raw) return;
+  var slug = function(s){ return String(s).toLowerCase().replace(/&/g,' and ').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''); };
+  var target = /^\d+$/.test(raw)
+    ? products.find(function(p){ return p.id === Number(raw); })
+    : products.find(function(p){ return slug(p.name) === raw.toLowerCase(); });
+  if (!target) return;
+  var open = function(){ openModal(target.id); };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', open);
+  else open();
 })();
 
 // ── GIFT CARD REDEMPTION ──
@@ -5171,9 +5189,9 @@ function closeNefertModalDirect() {
 })();
 </script>
 <script>
-console.log('PN BUILD 28-07-H');
+console.log('PN BUILD 28-07-N');
 (function(){
-  var SIZE_TWINS = { 74: { '5ml': { id: 75, price: 42.95 } } };
+  var SIZE_TWINS = { 74: { '5ml': { id: 75, price: 42.95 } }, 76: { '10ml': { id: 77, price: 35.95 } }, 78: { '10ml': { id: 79, price: 37.95 } } };
 
   // pill accents so size pills don't show the default grey finish swatch
   swatchColors['10ml'] = '#8cc40f';

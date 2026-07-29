@@ -2105,41 +2105,69 @@
      :not(.single)  -> perfumes/soaps: collapses; closed shows nothing at all */
 .modal-ingredients {
   font-size:.72rem !important;
-  display:block !important;
   line-height:1.55 !important;
   min-height:0 !important;
   color:var(--white-dim) !important;
-  transition:max-height .35s ease, padding .35s ease, margin .35s ease !important;
 }
-/* SINGLE ingredient: always visible, no collapse. */
+/* SINGLE ingredient: always visible, no collapse, no animation.
+   JS adds both .single and .open for this case; this rule wins because the
+   collapsible rules below are all scoped to :not(.single). */
 .modal-ingredients.single {
-  max-height:none !important;
-  overflow:visible !important;
-  opacity:1 !important;
+  display:block !important;
   padding:9px 14px 9px 12px !important;
   margin-bottom:16px !important;
   background:var(--green-pale) !important;
   border-left:2px solid var(--green) !important;
 }
 /* MULTI ingredient, CLOSED: zero footprint - no height, padding, border or
-   background - so nothing shows above the price until the toggle is opened. */
+   background - so nothing shows above the price until the toggle is opened.
+
+   Animated with grid-template-rows 0fr -> 1fr instead of a max-height cap.
+   A max-height needs a hardcoded number larger than the tallest list that
+   will ever exist, which is exactly the guess that silently clips content the
+   day a list gets longer - it already did, the old 400px cap cut the tail off
+   the 16-item soap lists once text scaling pushed them past it. 1fr resolves
+   to the row's REAL height, so the box fits its content exactly at any
+   length, permanently. Browsers that cannot interpolate fr simply snap open
+   instead of easing: no animation, but never any clipping. */
 .modal-ingredients:not(.single) {
-  max-height:0 !important;
-  overflow:hidden !important;
-  opacity:1 !important;
+  display:grid !important;
+  grid-template-rows:0fr !important;
   padding:0 14px !important;
   margin-bottom:0 !important;
   background:transparent !important;
   border-left:none !important;
+  transition:grid-template-rows .35s ease, padding .35s ease, margin .35s ease, background .35s ease !important;
 }
-/* MULTI ingredient, OPEN: the full green box. */
+/* MULTI ingredient, OPEN: the full green box, sized to its own content. */
 .modal-ingredients:not(.single).open {
-  max-height:400px !important;
+  grid-template-rows:1fr !important;
   padding:9px 14px !important;
   margin-bottom:16px !important;
   background:var(--green-pale) !important;
   border-left:2px solid var(--green) !important;
 }
+/* The inner span is the animated row. To collapse to zero it needs its own
+   overflow:hidden AND min-height:0, because grid items default to
+   min-height:auto and would otherwise refuse to shrink below their content. */
+.modal-ingredients:not(.single) > span {
+  overflow:hidden !important;
+  min-height:0 !important;
+}
+/* ── "See more" displacement + clipped ingredients: the actual fix (28-07-O) ──
+   .modal-content is a flex column at every width, and on mobile it is also
+   flex:1 + overflow-y:auto, so it is height-constrained. That makes every
+   child a flex item with the default flex-shrink:1. Expanding the description
+   pushes the column past the available height, so flexbox SQUASHED the
+   children to compensate. Because .modal-ingredients carries overflow:hidden,
+   its box shrank while the text kept its natural position - the text appeared
+   to slide out of the green box, and the end of the list was cut off.
+   Session 10 fixed how the box is PAINTED (border-left + background instead of
+   a stretch-aligned ::before pseudo) but never addressed the squashing itself,
+   which is why the bug came back. Pinning every child at flex-shrink:0 stops
+   the squash at the source: the column keeps its natural height and
+   .modal-content scrolls instead, which is what it was already set up to do. */
+.modal-content > * { flex-shrink:0 !important; }
 /* Toggle is interactive for multi-ingredient; JS hides it entirely for the
    single case, so these only ever affect the collapsible boxes. */
 .modal-ing-toggle { pointer-events:auto !important; }
@@ -5189,7 +5217,7 @@ function closeNefertModalDirect() {
 })();
 </script>
 <script>
-console.log('PN BUILD 28-07-N');
+console.log('PN BUILD 28-07-O');
 (function(){
   var SIZE_TWINS = { 74: { '5ml': { id: 75, price: 42.95 } }, 76: { '10ml': { id: 77, price: 35.95 } }, 78: { '10ml': { id: 79, price: 37.95 } } };
 

@@ -1838,6 +1838,14 @@
     color:#35b8d4; border-color:#35b8d4;
     animation:btnGhostGlow 3s ease-in-out infinite; animation-delay:.6s;
   }
+  /* ── Gift Cards in menu footer: same pulsing amber as the hero .btn-amber (28-07-Z) ── */
+  .mobile-menu-footer a.gc {
+    color:var(--amber); border-color:rgba(212,160,23,.6);
+    animation:btnAmberGlow 3s ease-in-out infinite;
+  }
+  .mobile-menu-footer a.gc:hover, .mobile-menu-footer a.gc:active {
+    background:var(--amber); color:var(--surface); font-weight:600;
+  }
   .mobile-menu-footer a.teal:hover, .mobile-menu-footer a.teal:active {
     background:#35b8d4; color:var(--surface); font-weight:600;
   }
@@ -2217,6 +2225,14 @@
   mask-image:linear-gradient(180deg, #000 calc(100% - 1.8em), rgba(0,0,0,.45) calc(100% - .9em), transparent 100%);
 }
 .modal-desc-toggle.visible { margin-bottom:4px !important; }
+
+/* ── Tap-to-expand hit boxes (28-07-X) ──
+   The description TEXT (only while clamped) and the OPEN multi-ingredient box
+   are tappable, matching their JS handlers exactly. Expanded desc, never-
+   clamped desc, and the always-visible single-ingredient box stay inert, so
+   the pointer cursor appears on precisely the elements that respond. */
+.modal-desc.clamped { cursor:pointer; }
+.modal-ingredients:not(.single).open { cursor:pointer; }
 
 /* ── Mobile modal: 3-line description instead of 5 (28-07-T) ──
    The 5-line clamp pushed the price, quantity row and Add to Bag below the
@@ -2905,7 +2921,7 @@ button.rv-nudge-skip {
     <li><a href="/journal/" onclick="toggleMobileMenu()">Journal</a></li>
     <li><a href="#" onclick="event.preventDefault(); toggleMobileMenu(); setTimeout(openContactModal, 300)">Contact</a></li>
     <li><a href="#" onclick="event.preventDefault(); toggleMobileMenu(); setTimeout(openWhyNaturalModal, 300)">Why Natural?</a></li>
-    <li><a href="#" class="amber" onclick="event.preventDefault(); openBalticAmberModal(); toggleMobileMenu();">Baltic Amber</a></li>
+    <li><a href="#" class="amber" onclick="openBalticAmberFromMenu(event)">Baltic Amber</a></li>
   </ul>
   <div class="mobile-search-wrap">
     <input class="mobile-search" id="mobileSearch" type="text" placeholder="Search products…"
@@ -2914,7 +2930,7 @@ button.rv-nudge-skip {
     <button class="mobile-search-btn" onclick="mobileSearchSubmit()">⌕</button>
   </div>
   <div class="mobile-menu-footer">
-    <a href="#shop" onclick="toggleMobileMenu()">Shop the Range</a>
+    <a href="#gc-section" class="gc" onclick="toggleMobileMenu(); setTimeout(function(){document.getElementById('gc-section').scrollIntoView({behavior:'smooth'});}, 300); return false;">Gift Cards</a>
     <a href="https://profoundnaturals.online" target="_blank" class="teal">Custom Scent</a>
   </div>
 </div>
@@ -3993,7 +4009,7 @@ function productCardHTML(p, i) {
           <div class="product-price">
             ${cardPriceHTML(p)}
             ${sizeNoteHTML(p)}
-            <span class="afterpay-note">${p.inStock === false ? 'Currently unavailable' : `or 4 × $${(p.price/4).toFixed(2)} with Afterpay`}</span>
+            <span class="afterpay-note">${p.inStock === false ? 'Currently unavailable' : 'Afterpay, Klarna, Zip'}</span>
           </div>
           ${p.inStock === false
             ? `<span class="product-badge out-of-stock" data-label="sold" style="position:relative;top:auto;left:auto;" onclick="event.stopPropagation(); openNotifyModal(${p.id})"></span>`
@@ -4831,6 +4847,36 @@ function toggleModalDesc() {
   }
 }
 
+/* ── Tap-to-expand hit boxes (28-07-X) ──
+   Hit boxes are exact, state-gated, and match the cursor CSS one-to-one:
+   - Desc text, CLAMPED only  -> expands. Expanded or never-overflowing desc
+     is inert (.clamped is stripped in both states, so the guard is the class
+     itself - no separate bookkeeping to drift out of sync). Accidental
+     collapse mid-read is impossible; "See less" remains the only collapse.
+   - Ingredients box, OPEN + MULTI only -> collapses. The single-ingredient
+     box is always-visible by design and stays inert; the closed multi box
+     has zero footprint so it is untappable by geometry, and the full-width
+     Ingredients button remains the expand control.
+   - Selection guard: a click that ends a text selection never toggles.
+   Handlers ride the same toggle functions as the buttons, so button text and
+   arrow state can never desynchronise from the tap path. */
+(function(){
+  const descEl = document.getElementById('modalDesc');
+  const ingWrap = document.getElementById('modalIngredientsWrap');
+  function selecting(){
+    const s = window.getSelection && window.getSelection();
+    return !!(s && String(s).length);
+  }
+  if (descEl) descEl.addEventListener('click', function(){
+    if (selecting()) return;
+    if (descEl.classList.contains('clamped')) toggleModalDesc();
+  });
+  if (ingWrap) ingWrap.addEventListener('click', function(){
+    if (selecting()) return;
+    if (ingWrap.classList.contains('open') && !ingWrap.classList.contains('single')) toggleModalIngredients();
+  });
+})();
+
 function openContactModal() {
   document.getElementById('contactOverlay').classList.add('open');
   lockBodyScroll();
@@ -4840,22 +4886,98 @@ function closeContactModal() {
   unlockBodyScroll();
 }
 
+/* ── BALTIC AMBER MODAL - hardened (28-07-W) ──
+   Previous mobile-menu fixes (28-07-F/H) guarded only the BACKDROP close
+   against the post-tap synthetic click; the ✕ button path was unguarded, and
+   nothing verified the modal actually stayed open. This block closes every
+   gap at once:
+   1. ONE time gate covers ALL close paths (backdrop and ✕) for 600ms.
+   2. Scroll-lock bookkeeping via _balticAmberLockHeld, so no path can
+      over- or under-count _modalLockCount no matter what order fires.
+   3. openBalticAmberFromMenu() is the burger menu's single entry point:
+      opens, closes the menu, then RE-ASSERTS .open at 700ms - if anything
+      (ghost click, stray handler, transition glitch) stripped it, it comes
+      straight back. The failure class dies here rather than being guessed at.
+   4. [PN amber] console breadcrumbs so a remote-debug session on the phone
+      shows exactly which step fired. Remove once confirmed on device. */
 let _balticAmberOpenedAt = 0;
+let _balticAmberLockHeld = false;
+let _balticAmberClosedByUser = false;
 function openBalticAmberModal() {
-  document.getElementById('balticAmberOverlay').classList.add('open');
+  const ov = document.getElementById('balticAmberOverlay');
+  if (!ov) { console.warn('[PN amber] overlay element missing'); return; }
+  ov.classList.add('open');
   _balticAmberOpenedAt = Date.now();
-  lockBodyScroll();
+  _balticAmberClosedByUser = false;
+  if (!_balticAmberLockHeld) { lockBodyScroll(); _balticAmberLockHeld = true; }
+  console.log('[PN amber] modal opened');
+}
+function _balticAmberCloseAllowed() {
+  return Date.now() - _balticAmberOpenedAt > 600;
 }
 function closeBalticAmberModal(e) {
-  /* swallow the Chrome-mobile ghost click that lands on the backdrop right
-     after the menu-close delay opens this modal from the burger menu (28-07-F) */
-  if (Date.now() - _balticAmberOpenedAt < 400) return;
+  if (!_balticAmberCloseAllowed()) { console.log('[PN amber] backdrop click swallowed (within 600ms of open)'); return; }
   if (e.target === document.getElementById('balticAmberOverlay')) closeBalticAmberModalDirect();
 }
 function closeBalticAmberModalDirect() {
+  if (!_balticAmberCloseAllowed()) { console.log('[PN amber] close swallowed (within 600ms of open)'); return; }
+  _balticAmberClosedByUser = true;
   document.getElementById('balticAmberOverlay').classList.remove('open');
-  unlockBodyScroll();
+  if (_balticAmberLockHeld) { unlockBodyScroll(); _balticAmberLockHeld = false; }
+  console.log('[PN amber] modal closed');
 }
+let _balticAmberLastFire = 0;
+function openBalticAmberFromMenu(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  /* dedupe: touchend fallback + click can both arrive for one tap */
+  if (Date.now() - _balticAmberLastFire < 350) { console.log('[PN amber] duplicate fire ignored'); return; }
+  _balticAmberLastFire = Date.now();
+  console.log('[PN amber] burger menu link fired');
+  openBalticAmberModal();
+  /* conditional, not a blind toggle - if this handler ever double-fires, a
+     second toggleMobileMenu() would reopen the menu we just closed */
+  const _menu = document.getElementById('mobileMenu');
+  if (_menu && _menu.classList.contains('open')) toggleMobileMenu();
+  setTimeout(function(){
+    const ov = document.getElementById('balticAmberOverlay');
+    /* only re-assert if .open was stripped by something OTHER than our own
+       close functions - a legitimate user close must never be reverted */
+    if (ov && !ov.classList.contains('open') && !_balticAmberClosedByUser) {
+      console.warn('[PN amber] modal lost .open within 700ms - re-asserting');
+      ov.classList.add('open');
+      _balticAmberOpenedAt = Date.now();
+      if (!_balticAmberLockHeld) { lockBodyScroll(); _balticAmberLockHeld = true; }
+    } else {
+      console.log('[PN amber] 700ms check: modal still open, all good');
+    }
+  }, 700);
+}
+
+/* ── touchend fallback for the amber menu link (28-07-Z) ──
+   Chromium repro proves the click path works, so if the owner's device still
+   misfires, either the build is stale (check the PN BUILD console stamp) or
+   the engine swallows the click event itself. This fallback fires on
+   touchend - which precedes and outlives click in every tap - with movement
+   (<10px) and duration (<500ms) gates so scroll flicks and long-presses that
+   merely pass through the link never trigger it, and preventDefault +
+   the 350ms dedupe in openBalticAmberFromMenu stop double-firing where the
+   click DOES arrive. Hit box remains exactly the <a>, unchanged. */
+(function(){
+  const link = document.querySelector('.mobile-menu-links a.amber');
+  if (!link) { console.warn('[PN amber] menu link not found for touchend fallback'); return; }
+  let sx = 0, sy = 0, st = 0;
+  link.addEventListener('touchstart', function(e){
+    const t = e.changedTouches[0]; sx = t.clientX; sy = t.clientY; st = Date.now();
+  }, { passive:true });
+  link.addEventListener('touchend', function(e){
+    const t = e.changedTouches[0];
+    if (Math.abs(t.clientX - sx) > 10 || Math.abs(t.clientY - sy) > 10) return;
+    if (Date.now() - st > 500) return;
+    console.log('[PN amber] touchend fallback fired');
+    e.preventDefault();
+    openBalticAmberFromMenu(e);
+  });
+})();
 
 function openWhyNaturalModal() {
   document.getElementById('whyNaturalOverlay').classList.add('open');
@@ -5310,7 +5432,7 @@ function closeNefertModalDirect() {
 })();
 </script>
 <script>
-console.log('PN BUILD 28-07-V');
+console.log('PN BUILD 28-07-Z');
 (function(){
   var SIZE_TWINS = PN_SIZE_TWINS;   /* shared with the card size-note, declared once near the products array */
 

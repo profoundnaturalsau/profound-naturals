@@ -717,6 +717,13 @@
   .product-footer { display:flex; align-items:center; justify-content:space-between; margin-top:auto; }
   .product-price { font-family:var(--sans); font-size:1.25rem; font-weight:300; letter-spacing:.06em; font-variant-numeric:tabular-nums; color:var(--white); }
   .afterpay-note { display:block; font-family:var(--sans); font-variant-numeric:tabular-nums; font-size:.59rem; color:rgba(255,255,255,.35); letter-spacing:.05em; margin-top:2px; font-style:normal; }
+  /* Alternate-size note. Sits under the price as its own line rather than
+     inline: the mobile grid is two columns, so a card is roughly 181px wide
+     and the price row has only about 100px once the Add button is placed -
+     "$129.95" alone takes about 60px, leaving no room for an inline tag.
+     Kept a touch brighter than .afterpay-note so it reads as product
+     information rather than fine print, but still clearly secondary. */
+  .size-note { display:block; font-family:var(--sans); font-size:.58rem; color:rgba(255,255,255,.45); letter-spacing:.05em; margin-top:3px; white-space:nowrap; }
 
   .add-to-cart {
     background:var(--green); color:#000000;
@@ -1630,6 +1637,10 @@
     .product-desc { font-size:.72rem; margin-bottom:12px; -webkit-line-clamp:2; display:-webkit-box; -webkit-box-orient:vertical; overflow:hidden; }
     .product-price { font-size:1rem; }
     .afterpay-note { display:none; }
+    /* Afterpay is hidden here to save height, so the size note takes that
+       freed slot - it stays visible because it is the only place a mobile
+       shopper learns a second size exists. */
+    .size-note { font-size:.54rem; margin-top:2px; }
     .product-badge { font-size:.5rem; padding:3px 7px; top:8px; left:8px; letter-spacing:.08em; }
     .product-badge.rare { font-size:.52rem; }
     .product-category { font-size:.5rem; letter-spacing:.1em; }
@@ -3867,6 +3878,21 @@ function ratingStarsHTML(avg, size) {
   return `<span class="rating-stars" style="font-size:${fs}"><span class="rating-stars-fill" style="width:${pct}%"></span></span>`;
 }
 
+/* Card note for products sold in more than one SIZE. The card shows the base
+   (larger) price, so without this nobody browsing the grid can tell a smaller
+   size exists at all - the modal was the only place it appeared.
+   Only size variants qualify: Aroma Necklaces carries finish variants
+   (Gold/Silver/Rose Gold) and must not get a size note, so entries are matched
+   against a millilitre pattern rather than just "has variants". */
+function sizeNoteHTML(p) {
+  if (!p.variants || p.variants.length < 2) return '';
+  const sizes = p.variants.filter(v => /^\d+(\.\d+)?\s*ml$/i.test(v));
+  if (sizes.length < 2) return '';
+  const others = sizes.filter(v => v !== p.size);
+  if (!others.length) return '';
+  return `<span class="size-note">also in ${others.join(', ')}</span>`;
+}
+
 function cardRatingHTML(id) {
   const r = productRatings[id];
   if (!r || !r.count) return '';
@@ -3900,6 +3926,7 @@ function productCardHTML(p, i) {
         <div class="product-footer">
           <div class="product-price">
             $${p.price.toFixed(2)}
+            ${sizeNoteHTML(p)}
             <span class="afterpay-note">${p.inStock === false ? 'Currently unavailable' : `or 4 × $${(p.price/4).toFixed(2)} with Afterpay`}</span>
           </div>
           ${p.inStock === false
@@ -5217,7 +5244,7 @@ function closeNefertModalDirect() {
 })();
 </script>
 <script>
-console.log('PN BUILD 28-07-O');
+console.log('PN BUILD 28-07-P');
 (function(){
   var SIZE_TWINS = { 74: { '5ml': { id: 75, price: 42.95 } }, 76: { '10ml': { id: 77, price: 35.95 } }, 78: { '10ml': { id: 79, price: 37.95 } } };
 

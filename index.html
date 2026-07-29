@@ -717,13 +717,12 @@
   .product-footer { display:flex; align-items:center; justify-content:space-between; margin-top:auto; }
   .product-price { font-family:var(--sans); font-size:1.25rem; font-weight:300; letter-spacing:.06em; font-variant-numeric:tabular-nums; color:var(--white); }
   .afterpay-note { display:block; font-family:var(--sans); font-variant-numeric:tabular-nums; font-size:.59rem; color:rgba(255,255,255,.35); letter-spacing:.05em; margin-top:2px; font-style:normal; }
-  /* Alternate-size note. Sits under the price as its own line rather than
-     inline: the mobile grid is two columns, so a card is roughly 181px wide
-     and the price row has only about 100px once the Add button is placed -
-     "$129.95" alone takes about 60px, leaving no room for an inline tag.
-     Kept a touch brighter than .afterpay-note so it reads as product
-     information rather than fine print, but still clearly secondary. */
-  .size-note { display:block; font-family:var(--sans); font-size:.58rem; color:rgba(255,255,255,.45); letter-spacing:.05em; margin-top:3px; white-space:nowrap; }
+  /* Multi-size price: desktop shows the range, mobile shows the single price
+     plus .size-note. Set at 1.15rem rather than the 1.25rem solo price so the
+     16-character range keeps clear margin on the narrowest 280px card. */
+  .price-solo  { display:none; }
+  .price-range { display:inline; font-size:1.15rem; white-space:nowrap; }
+  .size-note { display:none; font-family:var(--sans); font-size:.58rem; color:rgba(255,255,255,.45); letter-spacing:.05em; margin-top:3px; white-space:nowrap; }
 
   .add-to-cart {
     background:var(--green); color:#000000;
@@ -1634,13 +1633,26 @@
     .product-img { aspect-ratio:4/3; font-size:3rem; }
     .product-info { padding:12px 14px 14px; }
     .product-name { font-size:1rem; }
-    .product-desc { font-size:.72rem; margin-bottom:12px; -webkit-line-clamp:2; display:-webkit-box; -webkit-box-orient:vertical; overflow:hidden; }
+    /* Card description is clamped to 2 lines here (desktop has no clamp and
+       shows the full text, so this is mobile-only). The clamp cut the second
+       line off hard mid-sentence; this softens it into the card the same way
+       .modal-desc.clamped does. The fade is deliberately short - about .75em,
+       roughly the lower third of the last line - because with only two lines
+       visible, fading a full line the way the 5-line modal does would dim
+       half the description. Every product description is long enough to
+       truncate here (shortest is 102 characters against ~54 of space), so
+       this needs no overflow detection. */
+    .product-desc { font-size:.72rem; margin-bottom:12px; -webkit-line-clamp:2; display:-webkit-box; -webkit-box-orient:vertical; overflow:hidden;
+      -webkit-mask-image:linear-gradient(180deg, #000 calc(100% - .75em), rgba(0,0,0,.45) calc(100% - .3em), transparent 100%);
+      mask-image:linear-gradient(180deg, #000 calc(100% - .75em), rgba(0,0,0,.45) calc(100% - .3em), transparent 100%); }
     .product-price { font-size:1rem; }
     .afterpay-note { display:none; }
-    /* Afterpay is hidden here to save height, so the size note takes that
-       freed slot - it stays visible because it is the only place a mobile
-       shopper learns a second size exists. */
-    .size-note { font-size:.54rem; margin-top:2px; }
+    /* Mobile: the two-column grid leaves only ~90px of price row on a 360px
+       phone, so the range is dropped and the smaller price moves to its own
+       line in the slot the hidden Afterpay note frees up. */
+    .price-range { display:none; }
+    .price-solo  { display:inline; }
+    .size-note { display:block; font-size:.54rem; margin-top:2px; }
     .product-badge { font-size:.5rem; padding:3px 7px; top:8px; left:8px; letter-spacing:.08em; }
     .product-badge.rare { font-size:.52rem; }
     .product-category { font-size:.5rem; letter-spacing:.1em; }
@@ -2205,6 +2217,26 @@
   mask-image:linear-gradient(180deg, #000 calc(100% - 1.8em), rgba(0,0,0,.45) calc(100% - .9em), transparent 100%);
 }
 .modal-desc-toggle.visible { margin-bottom:4px !important; }
+
+/* ── Mobile modal: 3-line description instead of 5 (28-07-T) ──
+   The 5-line clamp pushed the price, quantity row and Add to Bag below the
+   fold on a phone, so buying required a scroll before anything had been
+   opened. Three lines frees roughly 40px and puts Add to Bag in view on open;
+   scrolling is then only needed once See more or Ingredients is expanded,
+   which is the intended behaviour.
+   Placed after the top-level rule and marked !important because that rule and
+   the one inside the max-width:900px block have identical specificity, so
+   otherwise whichever sits later in the file would win by accident.
+   The fade is shortened to match: 1.8em was tuned for "4 clean lines plus a
+   5th fading", which over 3 lines would leave only 2 readable. */
+@media(max-width:900px){
+  .modal-desc.clamped {
+    -webkit-line-clamp:3 !important;
+    line-clamp:3 !important;
+    -webkit-mask-image:linear-gradient(180deg, #000 calc(100% - 1.15em), rgba(0,0,0,.45) calc(100% - .5em), transparent 100%) !important;
+    mask-image:linear-gradient(180deg, #000 calc(100% - 1.15em), rgba(0,0,0,.45) calc(100% - .5em), transparent 100%) !important;
+  }
+}
 
 /* Desktop modal vertical diet: the right column carried 96px of padding plus
    fat margins, forcing internal scroll even with the clamped description.
@@ -3878,6 +3910,35 @@ function ratingStarsHTML(avg, size) {
   return `<span class="rating-stars" style="font-size:${fs}"><span class="rating-stars-fill" style="width:${pct}%"></span></span>`;
 }
 
+/* Size-twin pricing. The smaller size of a multi-size product is a separate
+   checkout id with its own price. Declared here rather than inside the
+   variant-pricing IIFE at the foot of the page because the product cards need
+   to read it, and they render (renderProducts) before that IIFE executes.
+   This is the single source of truth - the IIFE consumes this same object, so
+   the card price and the modal price can never drift apart. */
+const PN_SIZE_TWINS = { 74: { '5ml': { id: 75, price: 42.95 } }, 76: { '10ml': { id: 77, price: 35.95 } }, 78: { '10ml': { id: 79, price: 37.95 } } };
+
+/* Card price. Multi-size products show a range on desktop, where there is
+   room for it (about 169px of price row even on the narrowest 280px card,
+   and the range needs ~161px). Mobile keeps the single price plus the
+   .size-note line underneath: the two-column grid leaves only ~90px on a
+   360px phone, so a range there would force the price down to ~0.68rem,
+   smaller than the product name. Both markup variants are always emitted and
+   CSS picks one per breakpoint, so there is no JS resize handling. */
+function cardPriceHTML(p) {
+  const base = `$${p.price.toFixed(2)}`;
+  const twins = (typeof PN_SIZE_TWINS !== 'undefined' && PN_SIZE_TWINS[p.id]) || null;
+  if (!twins) return base;
+  const sizes = (p.variants || []).filter(v => /^\d+(\.\d+)?\s*ml$/i.test(v));
+  const lows = sizes.filter(v => v !== p.size)
+                    .map(v => twins[v] && twins[v].price)
+                    .filter(x => typeof x === 'number');
+  if (!lows.length) return base;
+  const lo = Math.min.apply(null, lows);
+  return `<span class="price-solo">${base}</span>` +
+         `<span class="price-range">$${lo.toFixed(2)} - ${base}</span>`;
+}
+
 /* Card note for products sold in more than one SIZE. The card shows the base
    (larger) price, so without this nobody browsing the grid can tell a smaller
    size exists at all - the modal was the only place it appeared.
@@ -3890,7 +3951,12 @@ function sizeNoteHTML(p) {
   if (sizes.length < 2) return '';
   const others = sizes.filter(v => v !== p.size);
   if (!others.length) return '';
-  return `<span class="size-note">also in ${others.join(', ')}</span>`;
+  const twins = (typeof PN_SIZE_TWINS !== 'undefined' && PN_SIZE_TWINS[p.id]) || null;
+  const parts = others.map(v => {
+    const t = twins && twins[v];
+    return t ? v + ' $' + t.price.toFixed(2) : v;
+  });
+  return `<span class="size-note">also in ${parts.join(', ')}</span>`;
 }
 
 function cardRatingHTML(id) {
@@ -3925,7 +3991,7 @@ function productCardHTML(p, i) {
         <p class="product-desc">${d(p.desc)}</p>
         <div class="product-footer">
           <div class="product-price">
-            $${p.price.toFixed(2)}
+            ${cardPriceHTML(p)}
             ${sizeNoteHTML(p)}
             <span class="afterpay-note">${p.inStock === false ? 'Currently unavailable' : `or 4 × $${(p.price/4).toFixed(2)} with Afterpay`}</span>
           </div>
@@ -5244,9 +5310,9 @@ function closeNefertModalDirect() {
 })();
 </script>
 <script>
-console.log('PN BUILD 28-07-P');
+console.log('PN BUILD 28-07-T');
 (function(){
-  var SIZE_TWINS = { 74: { '5ml': { id: 75, price: 42.95 } }, 76: { '10ml': { id: 77, price: 35.95 } }, 78: { '10ml': { id: 79, price: 37.95 } } };
+  var SIZE_TWINS = PN_SIZE_TWINS;   /* shared with the card size-note, declared once near the products array */
 
   // pill accents so size pills don't show the default grey finish swatch
   swatchColors['10ml'] = '#8cc40f';

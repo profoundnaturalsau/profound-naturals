@@ -5310,7 +5310,7 @@ function closeNefertModalDirect() {
 })();
 </script>
 <script>
-console.log('PN BUILD 28-07-T');
+console.log('PN BUILD 28-07-V');
 (function(){
   var SIZE_TWINS = PN_SIZE_TWINS;   /* shared with the card size-note, declared once near the products array */
 
@@ -5403,27 +5403,13 @@ console.log('PN BUILD 28-07-T');
   function dockBanner(){
     var b = banner();
     if (!b) return;
-    if (window.innerWidth <= 900) { b.style.left=''; b.style.top=''; b.style.right=''; return; }
     // Desktop no longer renders the chip (the count moved inline above the
-    // grid), so there is nothing to position - skip the per-scroll measuring.
+    // grid), so there is nothing to position at any width - just clear any
+    // inline offsets a previous build left behind.
+    // The old desktop measuring block that used to live here sat after an
+    // unconditional return and was firing "unreachable code after return
+    // statement" in the console on every load. Removed (28-07-V).
     b.style.left=''; b.style.top=''; b.style.right='';
-    return;
-    /* eslint-disable no-unreachable */
-    var input = document.getElementById('navSearch');
-    if (!input) return;
-    var r = input.getBoundingClientRect();
-    var inputVisible = r.width > 0 && r.bottom > 0 && r.top < window.innerHeight;
-    if (inputVisible) {
-      // dock directly under the search input
-      b.style.top   = (r.bottom + 6) + 'px';
-      b.style.right = Math.max(12, window.innerWidth - r.right) + 'px';
-    } else {
-      // input scrolled out of view - pin the pill to the top of the viewport
-      b.style.top   = '14px';
-      b.style.right = '16px';
-    }
-    b.style.left = 'auto';
-    /* eslint-enable no-unreachable */
   }
 
   function gridIsInView(){
@@ -5823,6 +5809,56 @@ console.log('PN BUILD 28-07-T');
 
   document.addEventListener('DOMContentLoaded', sync);
   sync();
+})();
+
+/* ── PRODUCT URL SYNC (28-07-U) ──
+   Opening a product now writes /?product=<slug> into the address bar, so every
+   product has a real, copyable URL and the browser Back button closes the
+   modal instead of leaving the site. Previously this was one-directional: a
+   ?product= link would open the modal, but clicking a product never updated
+   the URL, so there was nothing to copy or share.
+
+   Registered last, after the variant-pricing wrapper, so it sits outermost in
+   the openModal chain and cannot be overwritten by a later wrapper. The
+   captured _open is therefore the variant-pricing version, which means
+   restoring a product via Back still runs the size/price setup.
+
+   History handling is deliberately conservative:
+   - Opening from the grid PUSHES one entry, so Back closes the modal.
+   - Opening another product while one is already open REPLACES instead, so
+     browsing product to product cannot pile up history entries.
+   - Closing REPLACES back to '/' and never calls history.back(): for someone
+     arriving straight from a QR code the product URL is the first entry in
+     their history, so back() would walk them off the site. */
+(function(){
+  if (typeof openModal !== 'function' || typeof closeModalDirect !== 'function') return;
+  var slugify = function(s){
+    return String(s).toLowerCase().replace(/&/g,' and ').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  };
+  var onProductUrl = function(){ return /[?&]product=/.test(window.location.search); };
+
+  var _open = openModal;
+  openModal = function(id){
+    _open(id);
+    var p = products.find(function(x){ return x.id === id; });
+    if (!p) return;
+    var url = '?product=' + slugify(p.name);
+    try {
+      if (onProductUrl()) history.replaceState({ pnProduct:id }, '', url);
+      else history.pushState({ pnProduct:id }, '', url);
+    } catch(err) {}
+  };
+
+  var _close = closeModalDirect;
+  closeModalDirect = function(){
+    _close();
+    try { if (onProductUrl()) history.replaceState({}, '', '/'); } catch(err) {}
+  };
+
+  window.addEventListener('popstate', function(e){
+    if (e.state && e.state.pnProduct) _open(e.state.pnProduct);
+    else _close();
+  });
 })();
 </script>
 </body>

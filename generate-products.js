@@ -5,6 +5,7 @@
     - products/<slug>.html   (one page per product, styled as the site modal)
     - sitemap.xml            (homepage + all product pages)
     - robots.txt             (points crawlers at the sitemap)
+    - feed.xml               (Google Merchant Center product feed)
 
   Usage:  node generate-products.js
   Requires: Node 18+, no dependencies.
@@ -96,7 +97,14 @@ function renderPage(p) {
       '@type': 'Offer',
       price: Number(p.price).toFixed(2),
       priceCurrency: 'AUD',
-      availability: 'https://schema.org/InStock',
+      /* Must follow the data, not a constant. Google crawls this page and
+         compares it against the Merchant Center feed; a page claiming InStock
+         while feed.xml says out_of_stock is a disapproval, and repeated
+         availability mismatches put the whole account at risk of suspension.
+         Ids 6, 9, 10 and 16 carry inStock:false. */
+      availability: p.inStock === false
+        ? 'https://schema.org/OutOfStock'
+        : 'https://schema.org/InStock',
       url: url,
       seller: { '@type': 'Organization', name: 'Profound Naturals', url: SITE },
       // Fixes Search Console "Missing field" warnings for Merchant listings.
@@ -242,7 +250,9 @@ function goBack(){
 </body>
 </html>`;
 
-  return { slug, url, pageHtml };
+  // product is carried through so feed.xml reuses this exact slug and never
+  // links to a page that does not exist.
+  return { slug, url, pageHtml, product: p };
 }
 
 /* ── 4. Generate ── */
@@ -520,3 +530,116 @@ fs.writeFileSync(path.join(__dirname, 'sitemap.xml'), sitemap);
 fs.writeFileSync(path.join(__dirname, 'robots.txt'),
   'User-agent: *\nAllow: /\n\nSitemap: ' + SITE + '/sitemap.xml\n');
 console.log('Wrote sitemap.xml (' + urls.length + ' URLs, incl ' + journalUrls.length + ' journal) and robots.txt');
+
+/* ── 6. feed.xml - Google Merchant Center product feed ──────────────────
+   Merchant Center only ever found 2 products by crawling. A feed is the
+   only way to submit the full catalogue.
+
+   Built from the SAME page records the sitemap uses, so every <g:link>
+   points at a file this script has just written. Re-deriving slugs
+   independently would risk a feed full of 404s, which gets an account
+   suspended rather than a single item disapproved.
+
+   Size twins: the site shows one card per product, but products.json
+   carries a separate purchasable id per size (74/75 Damask Rose, 76/77
+   The Old World, 78/79 Sun-Kissed Lemonade). Each buyable size gets its
+   own feed item at its own price, sharing an item_group_id so Google
+   groups them as variants of one product.
+
+   NOT submitted here, deliberately:
+     - shipping: account-level Merchant Center shipping settings are the
+       authority. A per-item value that disagrees with them just creates
+       a mismatch to debug.
+     - google_product_category: Google auto-assigns. A wrong id is worse
+       than none. product_type carries the real category instead.
+     - gtin: these are own-manufactured goods with no barcode. brand +
+       mpn is the valid identifier pair for a manufacturer. */
+
+const EXCLUDE_OOS = true;  // keep out-of-stock items out of the destinations
+                           // rather than letting them sit as disapprovals.
+                           // Flip to false to submit them and accept 4
+                           // disapprovals instead. Never "fix" them by
+                           // claiming they are in stock.
+
+const feedItems = [];
+
+/* every product on the site, using the page this run just generated */
+for (const page of pages) {
+  feedItems.push({ p: page.product, id: page.product.id, url: page.url,
+                   size: page.product.size, price: page.product.price,
+                   group: page.slug });
+}
+
+/* extra purchasable sizes that exist in products.json but not on the site */
+if (jsonPath) {
+  const siteIds = new Set(products.map(p => p.id));
+  const byName = {};
+  for (const page of pages) byName[page.product.name] = page;
+
+  JSON.parse(fs.readFileSync(jsonPath, 'utf8')).products
+    .filter(s => !siteIds.has(s.id))
+    .forEach(s => {
+      const twin = byName[s.name];
+      if (!twin) {
+        console.warn(`  ! feed: "${s.name}" (id ${s.id}) has no matching site page - skipped`);
+        return;
+      }
+      feedItems.push({ p: twin.product, id: s.id, url: twin.url,
+                       size: (s.variants && s.variants[0]) || s.size,
+                       price: s.price, group: twin.slug });
+    });
+}
+
+/* Strip tags AND decode entities before esc() re-escapes once. Without the
+   decode, a desc containing "&amp;" ships as "&amp;amp;" and the listing
+   literally displays "&amp;". &amp; must be decoded last. */
+const plain = s => String(s || '')
+  .replace(/<[^>]*>/g, ' ')
+  .replace(/&nbsp;/g, ' ').replace(/&hellip;/g, '\u2026')
+  .replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+  .replace(/&quot;/g, '"').replace(/&#0?39;|&apos;/g, "'")
+  .replace(/&amp;/g, '&')
+  .replace(/\s+/g, ' ').trim();
+
+const feedXml = '<?xml version="1.0" encoding="UTF-8"?>\n' +
+  '<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">\n<channel>\n' +
+  '  <title>Profound Naturals</title>\n' +
+  '  <link>' + SITE + '</link>\n' +
+  '  <description>Handcrafted botanical perfumes, pure essential oils, absolutes and natural soaps. Australian made.</description>\n' +
+  feedItems.map(it => {
+    const p = it.p;
+    const title = truncate(p.name + (it.size ? ' ' + it.size : ''), 150);
+    const desc = truncate(plain(p.desc) ||
+      (p.name + ' - handcrafted botanical product by Profound Naturals. Australian made, no added synthetics, cruelty-free.'), 4900);
+    const img = p.image ? SITE + '/' + p.image : SITE + '/images/pn-square.jpg';
+    const oos = p.inStock === false;
+
+    const rows = [
+      '    <g:id>PN-' + it.id + '</g:id>',
+      '    <title>' + esc(title) + '</title>',
+      '    <description>' + esc(desc) + '</description>',
+      '    <link>' + it.url + '</link>',
+      '    <g:image_link>' + esc(img) + '</g:image_link>',
+      '    <g:availability>' + (oos ? 'out_of_stock' : 'in_stock') + '</g:availability>',
+      '    <g:price>' + Number(it.price).toFixed(2) + ' AUD</g:price>',
+      '    <g:condition>new</g:condition>',
+      '    <g:brand>Profound Naturals</g:brand>',
+      '    <g:mpn>PN-' + it.id + '</g:mpn>',
+    ];
+    if (p.category) rows.push('    <g:product_type>' + esc(p.category) + '</g:product_type>');
+    // twins share a group so Google shows them as sizes of one product
+    if (feedItems.filter(x => x.group === it.group).length > 1) {
+      rows.push('    <g:item_group_id>' + it.group + '</g:item_group_id>');
+    }
+    if (oos && EXCLUDE_OOS) {
+      rows.push('    <g:excluded_destination>Shopping_ads</g:excluded_destination>');
+      rows.push('    <g:excluded_destination>Free_listings</g:excluded_destination>');
+    }
+    return '  <item>\n' + rows.join('\n') + '\n  </item>';
+  }).join('\n') +
+  '\n</channel>\n</rss>\n';
+
+fs.writeFileSync(path.join(__dirname, 'feed.xml'), feedXml);
+const oosCount = feedItems.filter(it => it.p.inStock === false).length;
+console.log('Wrote feed.xml (' + feedItems.length + ' items, ' + oosCount +
+  ' out of stock' + (EXCLUDE_OOS ? ' and excluded from destinations' : '') + ')');

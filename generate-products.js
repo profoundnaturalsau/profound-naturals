@@ -105,7 +105,11 @@ function renderPage(p) {
         '@type': 'OfferShippingDetails',
         shippingRate: {
           '@type': 'MonetaryAmount',
-          value: Number(p.price) >= 85 ? '0.00' : '8.95',
+          /* Per-product schema can only express a single flat figure, so it
+             carries tier 1 ($10.95). Google's Merchant Center shipping rule is
+             the authority at checkout and overrides this. Items priced $85+
+             clear the free-shipping threshold on their own. */
+          value: Number(p.price) >= 85 ? '0.00' : '10.95',
           currency: 'AUD'
         },
         shippingDestination: {
@@ -279,15 +283,69 @@ function extractModalBody(containerNeedle, bodyClass) {
 }
 
 const INFO_PAGES = [
-  { slug: 'why-natural', label: 'Why Natural?', h1: 'Why <em>Natural?</em>',
+  { slug: 'why-natural',
+    extraCss: `
+  /* restored: classes defined only in the main sheet, scoped to beat .body h3 / .body p (28-07) */
+  .body .why-natural-lead{font-size:.95rem;color:var(--white);line-height:1.8;font-weight:300;margin-bottom:20px}
+  .body .why-natural-divider{width:60px;height:1px;background:linear-gradient(90deg,var(--amber),transparent);
+  margin:20px 0;opacity:.6}
+  .body .why-natural-section-title{font-family:var(--serif);font-size:1.1rem;font-weight:400;color:var(--amber);
+  letter-spacing:normal;margin:20px 0 8px}
+
+  /* Amber scrollbar: this page is the amber-themed twin of the modal, so it
+     matches the modal's scroll container rather than the site-wide green. */
+  ::-webkit-scrollbar { width:6px; height:6px; }
+  ::-webkit-scrollbar-track { background:var(--bg); }
+  ::-webkit-scrollbar-thumb { background:var(--amber); border-radius:3px; }
+  ::-webkit-scrollbar-thumb:hover { background:#f0c33c; }
+  * { scrollbar-width:thin; scrollbar-color:var(--amber) var(--bg); }`, label: 'Why Natural?', h1: 'Why <em>Natural?</em>',
     container: 'class="why-natural-modal"', bodyClass: 'why-natural-body',
     title: 'Why Natural? Synthetic Fragrance Concerns Explained',
     desc: 'Endocrine disruptors, phthalates, synthetic musks and the transparency problem - why Profound Naturals uses only natural botanical ingredients.' },
   { slug: 'baltic-amber', label: 'Baltic Amber', h1: 'Baltic Amber',
+    extraCss: `
+  /* These classes are used throughout the copy below but were only ever
+     defined in the main site stylesheet, so on this standalone page the
+     dividers rendered as zero-height empty divs and the lead paragraph was
+     indistinguishable from body text.
+     Scoped under .body deliberately: this page defines ".body h2,.body h3"
+     and ".body p" at specificity (0,1,1), which would beat a bare
+     .baltic-amber-section-title at (0,1,0) and leave it inert. Under .body
+     each rule is (0,2,0) and wins. */
+  .body .baltic-amber-lead{font-size:.95rem;color:var(--white);line-height:1.8;font-weight:300;margin-bottom:20px}
+  .body .baltic-amber-divider{width:60px;height:1px;background:linear-gradient(90deg,var(--amber),transparent);
+  margin:20px 0;opacity:.6}
+  .body .baltic-amber-section-title{font-family:var(--serif);font-size:1.1rem;font-weight:400;color:var(--amber);
+  letter-spacing:normal;margin:20px 0 8px;text-shadow:0 0 12px rgba(212,160,23,.3)}
+  /* Full-width rule above the closing disclaimer, so it reads as a footnote
+     separated from the article rather than as another section break. Same
+     specificity as the divider rule above but later in source order, so the
+     width override lands on the element carrying both classes. */
+  .body .policy-note-divider{width:100%;background:linear-gradient(90deg,rgba(212,160,23,.4),transparent);
+  margin:26px 0 14px}
+
+  @media(max-width:600px){ .page{padding:36px 20px 26px} }
+
+  /* Amber scrollbar: this page is the amber-themed twin of the modal, so it
+     matches the modal's scroll container rather than the site-wide green. */
+  ::-webkit-scrollbar { width:6px; height:6px; }
+  ::-webkit-scrollbar-track { background:var(--bg); }
+  ::-webkit-scrollbar-thumb { background:var(--amber); border-radius:3px; }
+  ::-webkit-scrollbar-thumb:hover { background:#f0c33c; }
+  * { scrollbar-width:thin; scrollbar-color:var(--amber) var(--bg); }`,
+    canonical: SITE + '/journal/baltic-amber.html',
     container: 'class="baltic-amber-modal"', bodyClass: 'baltic-amber-body',
-    title: 'Baltic Amber Essential Oil - History & Character',
-    desc: 'Steam-distilled from fossilised tree resin millions of years old - the history and character of Baltic Amber, from the Amber Road to Chinese medicine.' },
-  { slug: 'sustainability', label: 'Sustainability', h1: 'Sustainability',
+    ogUrl: SITE + '/journal/baltic-amber.html',
+    title: 'Baltic Amber Oil - History & Character',
+    desc: 'Baltic Amber oil - dry-distilled from 40-million-year-old fossil resin. Succinite, succinic acid, its rarity, master-fixative role in perfumery and ancient history.' },
+  { slug: 'sustainability',
+    extraCss: `
+  /* restored: classes defined only in the main sheet, scoped to beat .body h3 / .body p (28-07) */
+  .body .sustain-lead{font-size:.95rem;color:var(--white);line-height:1.8;font-weight:300;margin-bottom:20px}
+  .body .sustain-divider{width:60px;height:1px;background:linear-gradient(90deg,var(--green-lt),transparent);
+  margin:20px 0;opacity:.6}
+  .body .sustain-section-title{font-family:var(--serif);font-size:1.1rem;font-weight:400;color:var(--green-lt);
+  margin:20px 0 8px;text-shadow:0 0 12px rgba(140,196,15,.25)}`, label: 'Sustainability', h1: 'Sustainability',
     container: 'class="sustain-modal"', bodyClass: 'sustain-body',
     title: 'Sustainability - An Honest Commitment',
     desc: 'Recycled protective wrap, amber glass bottles, refillable inhalers and an honest account of what is not perfect yet at Profound Naturals.' },
@@ -295,11 +353,19 @@ const INFO_PAGES = [
     container: 'id="privacyModal"', bodyClass: 'policy-modal-body',
     title: 'Privacy Policy',
     desc: 'How Profound Naturals collects, uses and protects personal information under the Privacy Act 1988 and the Australian Privacy Principles.' },
-  { slug: 'shipping-returns', label: 'Shipping & Returns', h1: 'Shipping &amp; Returns',
+  { slug: 'shipping-returns',
+    extraCss: `
+  /* restored: classes defined only in the main sheet, scoped to beat .body h3 / .body p (28-07) */
+  .body .policy-note{background:var(--surface-2);border-left:2px solid var(--green);
+  padding:12px 16px;margin:16px 0;font-size:.8rem}`, label: 'Shipping & Returns', h1: 'Shipping &amp; Returns',
     container: 'id="shippingModal"', bodyClass: 'policy-modal-body',
     title: 'Shipping & Returns',
-    desc: 'Standard $8.95 (free over $85), Express $13.95 (free over $180). Australia-wide via Australia Post, hand-packed and dispatched in 1-3 business days.' },
-  { slug: 'returns-refunds', label: 'Returns & Refund Policy', h1: 'Returns &amp; Refund Policy',
+    desc: 'Flat rate shipping $10.95 Australia-wide - free on orders over $85. Via Australia Post, hand-packed and dispatched in 1-3 business days.' },
+  { slug: 'returns-refunds',
+    extraCss: `
+  /* restored: classes defined only in the main sheet, scoped to beat .body h3 / .body p (28-07) */
+  .body .policy-note{background:var(--surface-2);border-left:2px solid var(--green);
+  padding:12px 16px;margin:16px 0;font-size:.8rem}`, label: 'Returns & Refund Policy', h1: 'Returns &amp; Refund Policy',
     container: 'id="returnsModal"', bodyClass: 'policy-modal-body',
     title: 'Returns & Refund Policy',
     desc: 'Refunds and replacements under Australian Consumer Law - consumer guarantees, how to make a claim, and what is not covered.' },
@@ -307,7 +373,11 @@ const INFO_PAGES = [
     container: 'id="faqModal"', bodyClass: 'policy-modal-body',
     title: 'Frequently Asked Questions',
     desc: 'Dispatch and delivery times, returns, oil purity, natural ingredients, free samples and perfume-making workshops - answered.' },
-  { slug: 'australian-native', label: 'Australian Native', h1: 'Australian Native Botanicals',
+  { slug: 'australian-native',
+    extraCss: `
+  /* restored: classes defined only in the main sheet, scoped to beat .body h3 / .body p (28-07) */
+  .body .au-native-modal-divider{width:48px;height:1px;
+  background:linear-gradient(90deg,var(--green-lt),var(--amber));margin:4px 0 20px;opacity:.5}`, label: 'Australian Native', h1: 'Australian Native Botanicals',
     container: 'class="au-native-modal"', bodyClass: 'au-native-modal-body',
     title: 'Australian Native Botanicals',
     desc: 'Plants native to Australia, grown and harvested on Country - ethically and sustainably sourced native botanicals at Profound Naturals.' },
@@ -315,6 +385,12 @@ const INFO_PAGES = [
 
 function renderInfoPage(pg, bodyHtml) {
   const url = SITE + '/' + pg.slug + '.html';
+  /* Some info pages deliberately canonicalise elsewhere. baltic-amber.html is
+     a shop-side duplicate of the journal article; the journal version is the
+     one that should rank, so it must NOT self-canonicalise. Without this
+     override, regenerating silently reverts that decision and creates a
+     duplicate-content pair - a change nothing would flag until rankings moved. */
+  const canonical = pg.canonical || url;
   const ld = { '@context':'https://schema.org', '@type':'WebPage', name: pg.title,
     url: url, isPartOf: { '@id': SITE + '/#website' },
     publisher: { '@id': SITE + '/#org' }, inLanguage: 'en-AU' };
@@ -323,12 +399,12 @@ function renderInfoPage(pg, bodyHtml) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${pg.title} | Profound Naturals</title>
+<title>${esc(pg.title)} | Profound Naturals</title>
 <meta name="description" content="${esc(pg.desc)}">
-<link rel="canonical" href="${url}">
+<link rel="canonical" href="${canonical}">
 <link rel="icon" type="image/png" href="/images/logo.png">
 <meta property="og:type" content="website">
-<meta property="og:url" content="${url}">
+<meta property="og:url" content="${pg.ogUrl || url}">
 <meta property="og:title" content="${esc(pg.title)} | Profound Naturals">
 <meta property="og:description" content="${esc(pg.desc)}">
 <meta property="og:image" content="${SITE}/images/pn-square.jpg">
@@ -366,6 +442,7 @@ function renderInfoPage(pg, bodyHtml) {
   text-decoration:none;letter-spacing:.08em}
   .home:hover{color:var(--green-lt)}
   @media(max-width:600px){ .page{padding:36px 20px 26px} }
+${pg.extraCss || ''}
 </style>
 </head>
 <body>

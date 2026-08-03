@@ -119,8 +119,39 @@ exports.handler = async (event) => {
     return bad('Invalid order total');
   }
 
-  const standardFree = subtotal >= 85;
-  const expressFree  = subtotal >= 180;
+  /* ── SHIPPING (Aug 2026) ────────────────────────────────────────────
+     ONE flat rate. Tiers were removed after modelling real pack sizes:
+     nothing in the catalogue is big or heavy enough to need a second one.
+
+     Every order that can still pay shipping is bounded by the $85 free
+     threshold, and the worst cases are tiny against an XS satchel
+     (215x280mm, 5kg limit, ~1445cm3 usable):
+       9 x Sweet Orange  $80.55   205g    422cm3
+       9 x Hemp Soap     $81.00  1150g   1215cm3
+       4 x Necklaces     $72.00   190g    216cm3
+     Heaviest possible paid order uses 23% of the weight allowance, so
+     weight is never the binding constraint - the free threshold caps
+     order size long before a satchel fills. An item-count tier just
+     overcharged customers on orders that still cost $10.55 to send.
+
+     Cost: XS prepaid satchel $10.55, or $10.02 buying 10+ packs of 10.
+     Postage AND packaging included, any weight to 5kg, no cubic weight.
+
+     Express was removed entirely: it lost money above the XS satchel, and
+     essential oils are Class 3 flammable liquids, which AusPost permits
+     only by ROAD under a contract exemption.
+
+     Flat-packed easels will NOT fit this model - they need their own
+     shipping class here and a matching Merchant Center shipping label,
+     priced on cubic weight (volume/4000), once one exists to measure. */
+  const SHIPPING_CENTS = 1095;
+  const FREE_THRESHOLD = 85;
+
+  const standardFree = subtotal >= FREE_THRESHOLD;
+  const shippingCents = SHIPPING_CENTS;
+  const shippingLabel = standardFree
+    ? 'Standard Shipping - Free'
+    : `Standard Shipping - $${(shippingCents / 100).toFixed(2)}`;
 
   // Names and descriptions come from the catalogue, so a crafted request cannot
   // rewrite what appears on the Stripe receipt, in the dashboard, or in the
@@ -149,22 +180,11 @@ exports.handler = async (event) => {
       {
         shipping_rate_data: {
           type: 'fixed_amount',
-          fixed_amount: { amount: standardFree ? 0 : 895, currency: 'aud' },
-          display_name: standardFree ? 'Standard Shipping - Free' : 'Standard Shipping - $8.95',
+          fixed_amount: { amount: standardFree ? 0 : shippingCents, currency: 'aud' },
+          display_name: shippingLabel,
           delivery_estimate: {
             minimum: { unit: 'business_day', value: 3 },
             maximum: { unit: 'business_day', value: 7 },
-          },
-        },
-      },
-      {
-        shipping_rate_data: {
-          type: 'fixed_amount',
-          fixed_amount: { amount: expressFree ? 0 : 1395, currency: 'aud' },
-          display_name: expressFree ? 'Express Shipping - Free' : 'Express Shipping - $13.95',
-          delivery_estimate: {
-            minimum: { unit: 'business_day', value: 1 },
-            maximum: { unit: 'business_day', value: 3 },
           },
         },
       },

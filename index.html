@@ -2881,7 +2881,7 @@ button.rv-nudge-skip {
      horizontal overflow without creating that scroll container. -->
 <div id="page-wrap" style="overflow-x:hidden;overflow-x:clip;width:100%;max-width:100vw;position:relative;">
 
-<div class="announcement"><span class="ship-line">Free Shipping On Orders Over $85</span><span class="ship-sep">&nbsp;·&nbsp;</span><span class="announce-sep"><img src="images/icons/australian-native.png" alt="" aria-hidden="true"></span><span class="ship-line">Free Express Shipping On Orders Over $180</span><span class="announce-sep"><img src="images/icons/australian-native.png" alt="" aria-hidden="true"></span><span class="ship-line announce-offer">10% Off Your First Order - Subscribe Below</span></div>
+<div class="announcement"><span class="ship-line">Free Shipping On Orders Over $85</span><span class="announce-sep"><img src="images/icons/australian-native.png" alt="" aria-hidden="true"></span><span class="ship-line announce-offer">10% Off Your First Order - Subscribe Below</span></div>
 
 <nav>
   <a href="/" class="nav-logo" aria-label="Profound Naturals - home"><img src="/images/logo-wide.png" alt="Profound Naturals"></a>
@@ -2988,7 +2988,7 @@ button.rv-nudge-skip {
   <div class="trust-item"><span class="trust-icon"><img src="images/icons/clean-formulas.png" alt="No Added Synthetics"></span> No Added Synthetics</div>
   <div class="trust-item"><span class="trust-icon"><img src="images/icons/cruelty-free.png" alt="Completely Cruelty-Free"></span> Completely Cruelty-Free</div>
   <div class="trust-item"><span class="trust-icon"><img src="images/icons/sustainable-packaging.png" alt="Sustainable Packaging"></span> Sustainable Packaging</div>
-  <div class="trust-item trust-shipping"><span class="ship-line">Free Shipping On Orders Over $85</span><span class="ship-sep">&nbsp;·&nbsp;</span><span class="ship-line">Free Express Shipping On Orders Over $180</span></div>
+  <div class="trust-item trust-shipping"><span class="ship-line">Free Shipping On Orders Over $85</span></div>
 </div>
 
 <!-- SHOP -->
@@ -3189,7 +3189,7 @@ button.rv-nudge-skip {
 
 <!-- SHIPPING BAR -->
 <div class="shipping-bar">
-  Free Shipping On Orders Over $85 &nbsp;&nbsp;·&nbsp;&nbsp; Free Express Shipping On Orders Over $180
+  Free Shipping On Orders Over $85
 </div>
 
 <!-- FOOTER -->
@@ -3321,8 +3321,8 @@ button.rv-nudge-skip {
 
       <h3>Shipping Rates</h3>
       <ul>
-        <li><strong>Standard Shipping</strong> - $8.95 · free on orders $85 and over</li>
-        <li><strong>Express Shipping</strong> - $13.95 · free on orders $180 and over</li>
+        <li><strong>Standard Shipping</strong> - $10.95 flat rate, Australia-wide</li>
+        <li><strong>Free Shipping</strong> - on all orders $85 and over</li>
       </ul>
       <p>Profound Naturals ships within Australia only via Australia Post. International shipping is not currently available. Delivery timeframes are subject to Australia Post schedules and may vary by location.</p>
 
@@ -3330,7 +3330,7 @@ button.rv-nudge-skip {
       <p>Every order is hand-packed in small batches and typically dispatched within 1-3 business days of payment confirmation. During high-volume periods this may extend slightly - every order receives the same care regardless of when it was placed.</p>
 
       <h3>Tracking</h3>
-      <p>A tracking number is emailed once your order has been dispatched. You can track your parcel directly at auspost.com.au. Express orders include priority tracking.</p>
+      <p>A tracking number is emailed once your order has been dispatched. You can track your parcel directly at auspost.com.au.</p>
 
       <h3>Natural Product Variation</h3>
       <p>As handcrafted small-batch products made from natural ingredients, slight variations in colour, texture, or appearance between batches are normal. These are not defects - they are an inherent characteristic of genuine botanical goods.</p>
@@ -3395,7 +3395,7 @@ button.rv-nudge-skip {
       Orders placed before 1PM are dispatched the same day. Orders placed after 1PM are dispatched the following business day. Every order is hand-packed before it leaves.</p>
 
       <p><strong>How long will delivery take?</strong><br>
-      Once dispatched, delivery times are in Australia Post's hands. Standard shipping typically takes 2-6 business days depending on location. Express is generally 1-3 business days. A tracking number will be emailed once dispatched. Full shipping detail is available under Shipping &amp; Returns in the footer.</p>
+      Once dispatched, delivery times are in Australia Post's hands. Shipping typically takes 2-6 business days depending on location. A tracking number will be emailed once dispatched. Full shipping detail is available under Shipping &amp; Returns in the footer.</p>
 
       <p><strong>Is international shipping available?</strong><br>
       Not at this stage. Profound Naturals ships within Australia only.</p>
@@ -5638,7 +5638,7 @@ console.log('PN BUILD 28-07-Z');
               "@type": "OfferShippingDetails",
               "shippingRate": {
                 "@type": "MonetaryAmount",
-                "value": Number(p.price) >= 85 ? "0.00" : "8.95",
+                "value": Number(p.price) >= 85 ? "0.00" : "10.95",
                 "currency": "AUD"
               },
               "shippingDestination": {
